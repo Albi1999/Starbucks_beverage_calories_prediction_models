@@ -1,0 +1,57 @@
+---
+title: "Available Packages"
+author: "Alberto Calabrese"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Packages
+These are the available packages that we can use for the Statistical Learning project:
+
+```
+library(MASS)
+
+library(corrplot)
+
+library(car)
+
+library(ISLR2)
+
+library(faraway)
+
+library(pROC)
+
+library(e1071)
+
+library(class)
+
+library(boot)
+
+library(glmnet)
+
+library(gRbase)
+
+library(igraph)
+
+library(xtable)
+
+library(numDeriv)
+```
+
+### Installation of the packages
+To install the packages in your machine you can execute this line of code:
+```
+install.packages("MASS", "corrplot", "car", "ISLR2", "faraway", "pROC", "e1071", "class", "boot", "glmnet", "gRbase", "igraph", "xtable", "numDeriv")
+```
+
+### Information about the packages
+To obtain information about the packages and study all the function that they include you can search it in the packages section of RStudio, or you can select it with the cursor and then press F1 to open automatically the help section with the relative information about the package.
+
+You can also execute:
+```
+help("name_of_the_package")
+```
