@@ -2,6 +2,7 @@
 
 # Load the libraries ----
 library("readxl")
+library("corrplot")
 
 # Load data ----
 
@@ -183,8 +184,68 @@ is.na(theatre_month)
 # Ok, no more NA
 
 
+# My part: ------
+# the task is understand the correlation between the expenses and entries
+# The data are entries_area, entries_cine_area, entries_theatre_area, expense_area, expense_cine_area, expense_theatre_area
+# Create the code to do it
+
+# Calculate correlation between entries and expenses for each area
+
+# Transform the data by inverting the rows and columns
+
+# Transpose the data frame
+entries_activity_t <- as.data.frame(t(entries_activity))
+
+# Set the column names of the transposed data frame to the elements in the first column
+colnames(entries_activity_t) <- entries_activity_t[1, ]
+
+# Remove the first row of the transposed data frame
+entries_activity_t <- entries_activity_t[-1, ]
+
+# Transpose the data frame
+expense_activity_t <- as.data.frame(t(expense_activity))
+
+# Set the column names of the transposed data frame to the elements in the first column
+colnames(expense_activity_t) <- expense_activity_t[1, ]
+
+# Remove the first row of the transposed data frame
+expense_activity_t <- expense_activity_t[-1, ]
+
+# Transform in numeric boh the data set
+expense_activity_t <- as.data.frame(sapply(expense_activity_t, as.numeric))
+entries_activity_t <- as.data.frame(sapply(entries_activity_t, as.numeric))
 
 
+cor_entries_expense_cine <- cor(expense_activity_t$"Attività cinematografica", entries_activity_t$"Attività cinematografica")
+cor_entries_expense_thea <- cor(expense_activity_t$"Attività teatrale", entries_activity_t$"Attività teatrale")
+cor_entries_expense_con <- cor(expense_activity_t$"Attività concertistica", entries_activity_t$"Attività concertistica")
+cor_entries_expense_spo <- cor(expense_activity_t$"Attività sportiva", entries_activity_t$"Attività sportiva")
+cor_entries_expense_bal <- cor(expense_activity_t$`Attività di ballo e concertini`, entries_activity_t$`Attività di ballo e concertini`)
+cor_entries_expense_via <- cor(expense_activity_t$"Attrazioni dello spettacolo viaggiante", entries_activity_t$"Attrazioni dello spettacolo viaggiante")
+cor_entries_expense_mos <- cor(expense_activity_t$"Mostre ed esposizioni", entries_activity_t$"Mostre ed esposizioni")
+
+# Print the correlation coefficients
+print(paste("Correlation between cinema entries and cinema expenses: ", cor_entries_expense_cine))
+print(paste("Correlation between theatre entries and theatre expenses: ", cor_entries_expense_thea))
+print(paste("Correlation between concert entries and concert expenses: ", cor_entries_expense_con))
+print(paste("Correlation between sport entries and sport expenses: ", cor_entries_expense_spo))
+print(paste("Correlation between dance entries and dance expenses: ", cor_entries_expense_bal))
+print(paste("Correlation between travelling show entries and travelling show expenses: ", cor_entries_expense_via))
+print(paste("Correlation between exhibitions entries and exhibitions expenses: ", cor_entries_expense_mos))
+
+# Plot the results with corrplot ----
+# Load the library
+corrplot(cor(expense_activity_t, entries_activity_t), method = "number")
+
+
+
+corrplot(cor(expense_activity_t, entries_activity_t), method = "number", type = "upper", tl.col = "black", tl.srt = 45, diag = FALSE, addCoef.col = "black", addCoefasPercent = TRUE)
+
+
+
+
+# Understand the correlation between the number shows and ????
+# Understand the correlation between the different macro areas
 
 
 
