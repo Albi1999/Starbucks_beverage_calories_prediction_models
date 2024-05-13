@@ -77,7 +77,8 @@ org_act_mos_area <- read_excel("Data/Number of show organizers in the regions.xl
 # 11. Understand the correlation between the different macro areas
 
 # MODELS
-# Regression and model part between the regional data (Cinema, Teatro, Generale, Organizzatori, Luoghi)
+# Regression and model part between the regional data 
+# (Cinema, Teatro, Generale, Organizzatori, Luoghi)
 # 1. Creazione modelli
 #   1.1 Regressione lineare
 #   1.2 Regressione lineare multipla
@@ -102,4 +103,89 @@ org_act_mos_area <- read_excel("Data/Number of show organizers in the regions.xl
 # Esplorative data analysis ----
 # This part is dedicated to the explorative data analysis of the data loaded above
 # The aim is to understand the data structure and the main characteristics of the data
+## 1. Understand the data structure ----
+# Summary of the models to understand the data structure
+summary(shows_cine_area)
+summary(entries_cine_area)
+summary(expense_cine_area)
+summary(pla_act_cin_area)
+summary(pla_act_tea_area)
+summary(pla_act_con_area)
+summary(pla_act_spo_area)
+summary(pla_act_bal_area)
+summary(pla_act_via_area)
+summary(pla_act_mos_area)
+summary(shows_area)
+summary(entries_area)
+summary(expense_area)
+summary(shows_activity)
+summary(entries_activity)
+summary(expense_activity)
+summary(theatre_month)
+summary(cinema_month)
+summary(total_month)
+summary(org_act_cin_area)
+summary(org_act_tea_area)
+summary(org_act_con_area)
+summary(org_act_spo_area)
+summary(org_act_bal_area)
+summary(org_act_via_area)
+summary(org_act_mos_area)
+
+## 2. Understand the main characteristics of the data ----
+# Data transformation to understand the main characteristics of the data
+total_month$Spesa.del.pubblico <- as.numeric(gsub(",", ".", total_month$Spesa.del.pubblico))
+cinema_month$Spesa.del.pubblico <- as.numeric(gsub(",", ".", cinema_month$Spesa.del.pubblico))
+theatre_month$Spesa.del.pubblico <- as.numeric(gsub(",", ".", theatre_month$Spesa.del.pubblico))
+
+## NA values in the data ----
+# Check if there are NA values in the data
+is.na(total_month)
+is.na(cinema_month)
+is.na(theatre_month)
+
+# Since we have some NA in the monthly data
+# We have to remove them from the data to avoid problems in the analysis by sobstituting them with the regression estimation of the column.
+for (i in 2:ncol(total_month)) {
+  total_month[,i][is.na(total_month[,i])] <- lm(total_month[,i] ~ total_month$Numero.spettacoli, 
+                                                data = total_month)$fitted.values
+}
+
+for (i in 2:ncol(total_month)) {
+  total_month[,i][is.na(total_month[,i])] <- lm(total_month[,i] ~ total_month$Ingressi, 
+                                                data = total_month)$fitted.values
+}
+
+for (i in 2:ncol(cinema_month)) {
+  cinema_month[,i][is.na(cinema_month[,i])] <- lm(cinema_month[,i] ~ cinema_month$Numero.spettacoli, 
+                                                  data = cinema_month)$fitted.values
+}
+
+for (i in 2:ncol(cinema_month)) {
+  cinema_month[,i][is.na(cinema_month[,i])] <- lm(cinema_month[,i] ~ cinema_month$Ingressi, 
+                                                  data = cinema_month)$fitted.values
+}
+
+for (i in 2:ncol(theatre_month)) {
+  theatre_month[,i][is.na(theatre_month[,i])] <- lm(theatre_month[,i] ~ theatre_month$Numero.spettacoli, 
+                                                    data = theatre_month)$fitted.values
+}
+
+for (i in 2:ncol(theatre_month)) {
+  theatre_month[,i][is.na(theatre_month[,i])] <- lm(theatre_month[,i] ~ theatre_month$Ingressi, 
+                                                    data = theatre_month)$fitted.values
+}
+
+# Check if the NA values have been removed
+is.na(total_month)
+is.na(cinema_month)
+is.na(theatre_month)
+# Ok, no more NA
+
+
+
+
+
+
+
 
