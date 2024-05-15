@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 7. Understand the correlation between the places and the activities
 8. Understand the correlation between the places and the entries (spettatori)
 9. Understand the correlation between the expenses and entries
-10. Understand the correlation between the number shows and ????
+10. Understand the correlation between the number shows and entries
 11. Understand the correlation between the different macro areas
 
 
