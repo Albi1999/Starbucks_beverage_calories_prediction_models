@@ -251,8 +251,8 @@ print(paste("Correlation between cinema places and cinema expenses: ",
 print(paste("Correlation between cinema places and cinema expenses: ",
             cor(pla_act_cin_area$'2018', expense_area$'2018')))
 
-
-cor_cin_expence_area <- cor(pla_act_cin_area[-1,-1], expense_area[-1,-1])
+#### DEVO TRASPORRE QUESTI DATI :(
+cor_cin_expence_area <- cor(pla_act_cin_area[,-1], expense_area[,-1])
 
 corrplot(cor_cin_expence_area, method = "number", tl.col = "black", addCoef.col = "black", tl.srt = 45)
 text(x = 2, y = 10.5, labels = "Correlation between places and expenses")
