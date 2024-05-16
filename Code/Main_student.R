@@ -4,7 +4,7 @@
 library("corrplot")
 
 # Load data ----
-students <- read.csv("Data/study_performance.csv", sep = ",", header = TRUE) 
+students <- read.csv("Data/study_performance.csv", sep = ",", header = TRUE)
 head(students)
 
 # Transform the data ----
@@ -52,7 +52,10 @@ hist(stud$reading_score, main = "Reading Score", xlab = "Score", col = "#005cff"
 hist(stud$writing_score, main = "Writing Score", xlab = "Score", col = "#52b640")
 
 # Correlation matrix ----
-numerical_vars <- c("math_score", "test_preparation_course", "reading_score", "writing_score", "gender", "lunch")
+par(mfrow=c(1,1))
+
+numerical_vars <- c("math_score", "reading_score", "writing_score")
+#numerical_vars <- c("math_score", "reading_score", "writing_score")
 cor_matrix_2 <- cor(stud[numerical_vars])
 corrplot(cor_matrix_2, method = "number", order = "hclust", tl.col = "black", tl.srt = 45, addCoef.col = "black")
 
@@ -117,3 +120,10 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 str(stud[numerical_vars])
 pairs(stud[numerical_vars], diag.panel=panel.hist, upper.panel=panel.cor)
 pairs(stud[numerical_vars], diag.panel=panel.hist, upper.panel=panel.cor, lower.panel=panel.smooth)
+
+
+# Regression:
+
+
+
+
