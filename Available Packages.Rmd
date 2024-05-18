@@ -2,7 +2,9 @@
 title: "Available Packages"
 author: "Alberto Calabrese"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  pdf_document: default
+  pdf: default
 ---
 
 ```{r setup, include=FALSE}
