@@ -98,7 +98,9 @@ stud_numeric_original <- stud_dummy[, c("math_score", "reading_score", "writing_
 heatmap(cor(stud_numeric_original), 
         col = colorRampPalette(c("#005cff", "#fbfbfb", "#d90000"))(100), 
         symm = TRUE, 
-        margins = c(10, 10))
+        margins = c(10, 10), 
+        cexRow = 1.4,
+        cexCol = 1.4)
 
 # Displays the correlation matrix using a  corrplot
 corrplot(cor(stud_numeric_original), method = "number", tl.col = "black", tl.srt = 45, addCoef.col = "black")
@@ -338,7 +340,7 @@ y = stud$general_score
 # built from combinations od this score 
 mod_1 <- lm(y ~ pass_exam + test_preparation_course + parental_level_of_education + lunch + gender + race_ethnicity, data = stud)
 summary(mod_1)
-
+AIC(mod_1)
 # Math score with other scores
 mod_2 <- lm(math_score ~ reading_score + writing_score + pass_exam + test_preparation_course + parental_level_of_education + lunch + gender + race_ethnicity, data = stud)
 summary(mod_2)
