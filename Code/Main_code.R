@@ -341,6 +341,22 @@ y = stud$general_score
 mod_1 <- lm(y ~ pass_exam + test_preparation_course + parental_level_of_education + lunch + gender + race_ethnicity, data = stud)
 summary(mod_1)
 AIC(mod_1)
+
+glm_mod_1 <- glm(y ~ pass_exam + test_preparation_course + parental_level_of_education + lunch, data = stud, family = "gaussian")
+summary(glm_mod_1)
+AIC(glm_mod_1)
+
+glm_mod_2 <- glm(y ~ test_preparation_course + parental_level_of_education + lunch, data = students, family = "gaussian")
+summary(glm_mod_2)
+AIC(glm_mod_2)
+
+### Cambiare ricodifica dei dati...... 
+### togliere i dummy e usare i dati originali dove però devo 
+### ricodificare usando solo numeri 
+### per le variabili categoriche 
+
+
+
 # Math score with other scores
 mod_2 <- lm(math_score ~ reading_score + writing_score + pass_exam + test_preparation_course + parental_level_of_education + lunch + gender + race_ethnicity, data = stud)
 summary(mod_2)
@@ -406,6 +422,7 @@ mod_forward <- mod__4
 
 AIC(mod_forward)
 AIC(mod_backward)
+AIC(mod_full)
 
 BIC(mod_forward)
 BIC(mod_backward)
