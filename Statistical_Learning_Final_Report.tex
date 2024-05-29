@@ -1,0 +1,466 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Statistical Learning Final Report},
+  pdfauthor={Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Statistical Learning Final Report}
+\author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
+\date{2024-05-29}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\section{Introduction}\label{introduction}
+
+Here Eleonora you can write the introduction of the project describing
+the scope and the data used.
+
+\section{Libraries}\label{libraries}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(corrplot)}
+\FunctionTok{library}\NormalTok{(knitr)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Data}\label{data}
+
+The data set we are going to use is the ``Starbucks \ldots.'' dataset
+from Kaggle.
+
+It contains 242 rows and 18 columns.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"Data/starbucks.csv"}\NormalTok{, }\AttributeTok{header =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{sep =} \StringTok{","}\NormalTok{)}
+
+\CommentTok{\# Overview of the data}
+\FunctionTok{summary}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Beverage_category    Beverage         Beverage_prep         Calories    
+##  Length:242         Length:242         Length:242         Min.   :  0.0  
+##  Class :character   Class :character   Class :character   1st Qu.:120.0  
+##  Mode  :character   Mode  :character   Mode  :character   Median :185.0  
+##                                                           Mean   :193.9  
+##                                                           3rd Qu.:260.0  
+##                                                           Max.   :510.0  
+##  Total.Fat..g.    Trans.Fat..g.   Saturated.Fat..g.  Sodium..mg.    
+##  Min.   : 0.000   Min.   :0.000   Min.   :0.0000    Min.   : 0.000  
+##  1st Qu.: 0.200   1st Qu.:0.100   1st Qu.:0.0000    1st Qu.: 0.000  
+##  Median : 2.500   Median :0.500   Median :0.0000    Median : 5.000  
+##  Mean   : 2.905   Mean   :1.307   Mean   :0.0376    Mean   : 6.364  
+##  3rd Qu.: 4.500   3rd Qu.:2.000   3rd Qu.:0.1000    3rd Qu.:10.000  
+##  Max.   :15.000   Max.   :9.000   Max.   :0.3000    Max.   :40.000  
+##  Total.Carbohydrates..g. Cholesterol..mg. Dietary.Fibre..g.   Sugars..g.   
+##  Min.   :  0.0           Min.   : 0.00    Min.   :0.0000    Min.   : 0.00  
+##  1st Qu.: 70.0           1st Qu.:21.00    1st Qu.:0.0000    1st Qu.:18.00  
+##  Median :125.0           Median :34.00    Median :0.0000    Median :32.00  
+##  Mean   :128.9           Mean   :35.99    Mean   :0.8058    Mean   :32.96  
+##  3rd Qu.:170.0           3rd Qu.:50.75    3rd Qu.:1.0000    3rd Qu.:43.75  
+##  Max.   :340.0           Max.   :90.00    Max.   :8.0000    Max.   :84.00  
+##   Protein..g.     Vitamin.A....DV.   Vitamin.C....DV.   Calcium....DV.    
+##  Min.   : 0.000   Length:242         Length:242         Length:242        
+##  1st Qu.: 3.000   Class :character   Class :character   Class :character  
+##  Median : 6.000   Mode  :character   Mode  :character   Mode  :character  
+##  Mean   : 6.979                                                           
+##  3rd Qu.:10.000                                                           
+##  Max.   :20.000                                                           
+##  Iron....DV.        Caffeine..mg.     
+##  Length:242         Length:242        
+##  Class :character   Class :character  
+##  Mode  :character   Mode  :character  
+##                                       
+##                                       
+## 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    242 obs. of  18 variables:
+##  $ Beverage_category      : chr  "Coffee" "Coffee" "Coffee" "Coffee" ...
+##  $ Beverage               : chr  "Brewed Coffee" "Brewed Coffee" "Brewed Coffee" "Brewed Coffee" ...
+##  $ Beverage_prep          : chr  "Short" "Tall" "Grande" "Venti" ...
+##  $ Calories               : int  3 4 5 5 70 100 70 100 150 110 ...
+##  $ Total.Fat..g.          : num  0.1 0.1 0.1 0.1 0.1 3.5 2.5 0.2 6 4.5 ...
+##  $ Trans.Fat..g.          : num  0 0 0 0 0.1 2 0.4 0.2 3 0.5 ...
+##  $ Saturated.Fat..g.      : num  0 0 0 0 0 0.1 0 0 0.2 0 ...
+##  $ Sodium..mg.            : int  0 0 0 0 5 15 0 5 25 0 ...
+##  $ Total.Carbohydrates..g.: int  5 10 10 10 75 85 65 120 135 105 ...
+##  $ Cholesterol..mg.       : int  0 0 0 0 10 10 6 15 15 10 ...
+##  $ Dietary.Fibre..g.      : int  0 0 0 0 0 0 1 0 0 1 ...
+##  $ Sugars..g.             : int  0 0 0 0 9 9 4 14 14 6 ...
+##  $ Protein..g.            : num  0.3 0.5 1 1 6 6 5 10 10 8 ...
+##  $ Vitamin.A....DV.       : chr  "0%" "0%" "0%" "0%" ...
+##  $ Vitamin.C....DV.       : chr  "0%" "0%" "0%" "0%" ...
+##  $ Calcium....DV.         : chr  "0%" "0%" "0%" "2%" ...
+##  $ Iron....DV.            : chr  "0%" "0%" "0%" "0%" ...
+##  $ Caffeine..mg.          : chr  "175" "260" "330" "410" ...
+\end{verbatim}
+
+\subsection{Data Transformation}\label{data-transformation}
+
+We have to remove the percentage sign from the data and set the other
+variables as numeric.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Remove percentage sign from the data}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Vitamin.C....DV. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"\%"}\NormalTok{, }\StringTok{""}\NormalTok{, data}\SpecialCharTok{$}\NormalTok{Vitamin.C....DV.))}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Calcium....DV. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"\%"}\NormalTok{, }\StringTok{""}\NormalTok{, data}\SpecialCharTok{$}\NormalTok{Calcium....DV.))}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Iron....DV. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"\%"}\NormalTok{, }\StringTok{""}\NormalTok{, data}\SpecialCharTok{$}\NormalTok{Iron....DV.))}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Vitamin.A....DV. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"\%"}\NormalTok{, }\StringTok{""}\NormalTok{, data}\SpecialCharTok{$}\NormalTok{Vitamin.A....DV.))}
+
+\CommentTok{\# Set the other variables as numeric}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Calories }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Calories)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Trans.Fat..g. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Trans.Fat..g.)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Total.Fat..g. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Total.Fat..g.)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Cholesterol..mg. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Cholesterol..mg.)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Sodium..mg. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Sodium..mg.)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Total.Carbohydrates..g. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Total.Carbohydrates..g.)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Dietary.Fibre..g. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Dietary.Fibre..g.)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Sugars..g. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Sugars..g.)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{Caffeine..mg. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Caffeine..mg.)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Data Cleaning}\label{data-cleaning}
+
+We have some NA values in the data. The NA values are in the
+Caffeine..mg. column. We will remove the rows with NA values.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_cleaned }\OtherTok{\textless{}{-}}\NormalTok{ data[}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Caffeine..mg.),]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Rename Columns}\label{rename-columns}
+
+We will rename the cleaned data columns by removing the dots and the
+unity of measure in order to obtain a more readable dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{colnames}\NormalTok{(data\_cleaned) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Beverage\_category"}\NormalTok{, }\StringTok{"Beverage"}\NormalTok{,}
+                            \StringTok{"Beverage\_prep"}\NormalTok{, }\StringTok{"Calories"}\NormalTok{,}
+                            \StringTok{"Total\_Fat"}\NormalTok{, }\StringTok{"Trans\_Fat"}\NormalTok{,}
+                            \StringTok{"Saturated\_Fat"}\NormalTok{, }\StringTok{"Sodium"}\NormalTok{,}
+                            \StringTok{"Total\_Carbohydrates"}\NormalTok{, }\StringTok{"Cholesterol"}\NormalTok{,}
+                            \StringTok{"Dietary\_Fibre"}\NormalTok{, }\StringTok{"Sugars"}\NormalTok{,}
+                            \StringTok{"Protein"}\NormalTok{, }\StringTok{"Vitamin\_A"}\NormalTok{,}
+                            \StringTok{"Vitamin\_C"}\NormalTok{, }\StringTok{"Calcium"}\NormalTok{,}
+                            \StringTok{"Iron"}\NormalTok{, }\StringTok{"Caffeine"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Correlation Analysis}\label{correlation-analysis}
+
+We will calculate the correlation matrix and plot it.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Remove first 3 columns for the correlation matrix since them are categorical}
+\NormalTok{data\_num }\OtherTok{\textless{}{-}}\NormalTok{ data\_cleaned[, }\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{)]}
+
+\CommentTok{\# Calculate the correlation matrix}
+
+\NormalTok{correlation\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(data\_num)}
+
+\CommentTok{\# Plot the correlation matrix using corrplot}
+\FunctionTok{corrplot}\NormalTok{(correlation\_matrix, }\AttributeTok{method =} \StringTok{"number"}\NormalTok{, }\AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }
+         \AttributeTok{tl.srt =} \DecValTok{45}\NormalTok{, }\AttributeTok{addCoef.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{number.cex =} \FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Heatmap of the correlation matrix}
+\FunctionTok{heatmap}\NormalTok{(}\FunctionTok{cor}\NormalTok{(data\_num), }
+        \AttributeTok{col =} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"\#005cff"}\NormalTok{, }\StringTok{"\#fbfbfb"}\NormalTok{, }\StringTok{"\#d90000"}\NormalTok{))(}\DecValTok{100}\NormalTok{), }
+        \AttributeTok{symm =} \ConstantTok{TRUE}\NormalTok{, }
+        \AttributeTok{margins =} \FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{), }
+        \AttributeTok{cexRow =} \FloatTok{1.2}\NormalTok{,}
+        \AttributeTok{cexCol =} \FloatTok{1.2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis-2} \end{center}
+
+Add some comments on the graph that we obtained.
+
+\section{Data Visualization}\label{data-visualization}
+
+\subsection{Histograms}\label{histograms}
+
+We will plot some histograms to visualize the data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Histogram of the data with density distribution}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\NormalTok{col }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}\#ff0000\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#f70028\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#ee0040\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#e50055\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#dc0069\textquotesingle{}}\NormalTok{,}
+         \StringTok{\textquotesingle{}\#d2007b\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#c7008d\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#bb009e\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#ae00ae\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#a000be\textquotesingle{}}\NormalTok{,}
+         \StringTok{\textquotesingle{}\#8f00cc\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#7d00da\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#6700e7\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#4900f3\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#0000ff\textquotesingle{}}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
+  \FunctionTok{hist}\NormalTok{(data\_num[, i], }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
+       \AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(data\_num)[i], }\AttributeTok{col =}\NormalTok{ col[i], }\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{  dens }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data\_num[, i], }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{, }\AttributeTok{adjust=}\FloatTok{1.25}\NormalTok{)}
+  \FunctionTok{lines}\NormalTok{(dens, }\AttributeTok{col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-1} \end{center}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-2} \end{center}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-3} \end{center}
+
+\subsection{Pairplot}\label{pairplot}
+
+We will plot a pairplot to visualize the relationship between the
+variables.
+
+First of all we have to define the function for the pairplot.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Histogram function}
+\NormalTok{panel.hist }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, colour, ...)}
+\NormalTok{\{}
+\NormalTok{  usr }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\StringTok{"usr"}\NormalTok{)}
+  \FunctionTok{on.exit}\NormalTok{(}\FunctionTok{par}\NormalTok{(usr))}
+  \FunctionTok{par}\NormalTok{(}\AttributeTok{usr =} \FunctionTok{c}\NormalTok{(usr[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{], }\DecValTok{0}\NormalTok{, }\FloatTok{1.5}\NormalTok{))}
+\NormalTok{  h }\OtherTok{\textless{}{-}} \FunctionTok{hist}\NormalTok{(x, }\AttributeTok{plot =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{  breaks }\OtherTok{\textless{}{-}}\NormalTok{ h}\SpecialCharTok{$}\NormalTok{breaks}
+\NormalTok{  nB }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(breaks)}
+\NormalTok{  y }\OtherTok{\textless{}{-}}\NormalTok{ h}\SpecialCharTok{$}\NormalTok{counts}
+\NormalTok{  y }\OtherTok{\textless{}{-}}\NormalTok{ y }\SpecialCharTok{/} \FunctionTok{max}\NormalTok{(y)}
+  \FunctionTok{rect}\NormalTok{(breaks[}\SpecialCharTok{{-}}\NormalTok{nB], }\DecValTok{0}\NormalTok{, breaks[}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{], y, }\AttributeTok{col =}\NormalTok{ colour, ...)}
+\NormalTok{\}}
+
+\CommentTok{\# Correlations function}
+\NormalTok{panel.cor }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, y, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{, }\AttributeTok{prefix =} \StringTok{""}\NormalTok{, cex.cor, ...)}
+\NormalTok{\{}
+\NormalTok{  usr }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\StringTok{"usr"}\NormalTok{)}
+  \FunctionTok{on.exit}\NormalTok{(}\FunctionTok{par}\NormalTok{(usr))}
+  \FunctionTok{par}\NormalTok{(}\AttributeTok{usr =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\NormalTok{  r }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(}\FunctionTok{cor}\NormalTok{(x, y))}
+\NormalTok{  txt }\OtherTok{\textless{}{-}} \FunctionTok{format}\NormalTok{(}\FunctionTok{c}\NormalTok{(r, }\FloatTok{0.123456789}\NormalTok{), }\AttributeTok{digits =}\NormalTok{ digits)[}\DecValTok{1}\NormalTok{]}
+\NormalTok{  txt }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(prefix, txt)}
+  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{missing}\NormalTok{(cex.cor)) cex.cor }\OtherTok{\textless{}{-}} \FloatTok{0.5}\SpecialCharTok{/}\FunctionTok{strwidth}\NormalTok{(txt)}
+  \FunctionTok{text}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, txt, }\AttributeTok{cex =}\NormalTok{ cex.cor }\SpecialCharTok{*}\NormalTok{ r)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Now we can split the data into 3 groups in order to have a better
+visualization.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_num1 }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{]}
+\NormalTok{data\_num2 }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\DecValTok{6}\SpecialCharTok{:}\DecValTok{10}\NormalTok{]}
+\NormalTok{data\_num3 }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\DecValTok{11}\SpecialCharTok{:}\DecValTok{15}\NormalTok{]}
+
+\FunctionTok{pairs}\NormalTok{(data\_num1, }
+      \AttributeTok{diag.panel =}\NormalTok{ panel.hist,}
+      \AttributeTok{upper.panel =}\NormalTok{ panel.cor, }
+      \AttributeTok{lower.panel =}\NormalTok{ panel.smooth,}
+      \AttributeTok{colour =} \StringTok{"\#4ea5ff"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/pairplot-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{pairs}\NormalTok{(data\_num2, }
+      \AttributeTok{diag.panel =}\NormalTok{ panel.hist,}
+      \AttributeTok{upper.panel =}\NormalTok{ panel.cor,}
+      \AttributeTok{lower.panel =}\NormalTok{ panel.smooth,}
+      \AttributeTok{colour =} \StringTok{"\#00cd5c"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/pairplot-2} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{pairs}\NormalTok{(data\_num3, }
+      \AttributeTok{diag.panel =}\NormalTok{ panel.hist,}
+      \AttributeTok{upper.panel =}\NormalTok{ panel.cor,}
+      \AttributeTok{lower.panel =}\NormalTok{ panel.smooth,}
+      \AttributeTok{colour =} \StringTok{"\#ff810f"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/pairplot-3} \end{center}
+
+ADD COMMENTS ON THE GRAPH
+
+\subsection{Barplot}\label{barplot}
+
+We will plot a barplot of the data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Barplot of the data}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
+  \FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data\_num[, i]), }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
+          \AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(data\_num)[i], }\AttributeTok{col =}\NormalTok{ col[i], }\AttributeTok{border =}\NormalTok{ col[i])}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/barplot-1} \end{center}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/barplot-2} \end{center}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/barplot-3} \end{center}
+
+ADD COMMENTS ON THE GRAPH
+
+\subsection{Boxplot}\label{boxplot}
+
+We will plot a boxplot of the data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Boxplot of the data}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
+  \FunctionTok{boxplot}\NormalTok{(data\_num[, i], }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
+          \AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(data\_num)[i], }\AttributeTok{col =}\NormalTok{ col[i])}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-1} \end{center}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-2} \end{center}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-3} \end{center}
+
+ADD COMMENTS ON THE GRAPH
+
+\end{document}
