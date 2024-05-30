@@ -58,7 +58,7 @@ str(data)
 
 Note that several variables in our dataset, namely "Vitamin.A....DV.", "Vitamin.C....DV.", "Calcium....DV." and "Iron....DV.", are represented as percentages. Consequently, the percentage symbol is included in our data. However, when conducting statistical analysis using R, the presence of non-numeric characters such as the percentage symbol can cause complications, interfering with the processing and analysis of the data. Therefore, we proceeded to remove it.
 
-Similarly, as R primarily operates on numeric and categorical data, we also convert the other variables into numeric format.
+Similarly, as R primarily operates on numeric and categorical data, we also convert all the other numerical variables into numeric format.
 
 These preprocessing steps ensure a smooth and efficient analysis, making it easier to explore, visualize, and understand our data.
 
@@ -141,7 +141,7 @@ heatmap(cor(data_num),
 
 ```
 
-Add some comments on the graph that we obtained.
+Thanks to the use of a heatmap : Add some comments on the graph that we obtained.
 
 # Data Visualization
 
