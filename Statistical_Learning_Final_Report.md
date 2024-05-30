@@ -1,7 +1,7 @@
 ---
 title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
-date: "2024-05-29"
+date: "2024-05-30"
 output:
   html_document:
     toc: true
@@ -27,6 +27,8 @@ output:
 
 Here Eleonora you can write the introduction of the project describing the scope and the data used.
 
+Thank you Albi, I will. What is our project scope though?
+
 # Libraries
 
 
@@ -37,9 +39,11 @@ library(knitr)
 
 # Data
 
-The data set we are going to use is the "Starbucks ...." dataset from Kaggle.
+The dataset we will analyze in this project is *Starbucks Beverage Components* from Kaggle, that you can find at the following link: <https://www.kaggle.com/datasets/henryshan/starbucks>.
 
-It contains 242 rows and 18 columns.
+This data provides a comprehensive guide to the nutritional content of the beverages available on the Starbucks menu. We have a total of $242$ samples described by $18$ variables. These attributes include the name of the beverage, its categorization and preparation method, the total caloric content and the constituents of the beverage.
+
+In the upcoming code lines, we import the dataset and generate a summary visualization.
 
 
 ``` r
@@ -115,7 +119,11 @@ str(data)
 
 ## Data Transformation
 
-We have to remove the percentage sign from the data and set the other variables as numeric.
+Note that several variables in our dataset, namely "Vitamin.A....DV.", "Vitamin.C....DV.", "Calcium....DV." and "Iron....DV.", are represented as percentages. Consequently, the percentage symbol is included in our data. However, when conducting statistical analysis using R, the presence of non-numeric characters such as the percentage symbol can cause complications, interfering with the processing and analysis of the data. Therefore, we proceeded to remove it.
+
+Similarly, as R primarily operates on numeric and categorical data, we also convert the other variables into numeric format.
+
+These preprocessing steps ensure a smooth and efficient analysis, making it easier to explore, visualize, and understand our data.
 
 
 ``` r
@@ -139,7 +147,13 @@ data$Caffeine..mg. <- as.numeric(data$Caffeine..mg.)
 
 ## Data Cleaning
 
-We have some NA values in the data. The NA values are in the Caffeine..mg. column. We will remove the rows with NA values.
+Another challenge we have to face is the presence of missing data. Indeed, in "Caffeine..mg." column there are some NA values. This is a common issue in data analysis and needs to be addressed appropriately to ensure the validity of our statistical results.
+
+There are different approaches to deal with this issue. We did - COMPLETE.
+
+One way to handle this issue is removing the observations with NA values.
+
+A different approach is to fill in the NA values with the average of the observed values for that specific attribute. This method helps to preserve the overall data distribution while addressing the missing data points.
 
 
 ``` r
@@ -148,7 +162,7 @@ data_cleaned <- data[!is.na(data$Caffeine..mg.),]
 
 ## Rename Columns
 
-We will rename the cleaned data columns by removing the dots and the unity of measure in order to obtain a more readable dataset.
+Lastly, taking in consideration our cleaned data, we rename the columns by removing dots and units of measure, in order to obtain a more readable dataset.
 
 
 ``` r
@@ -165,7 +179,9 @@ colnames(data_cleaned) <- c("Beverage_category", "Beverage",
 
 # Correlation Analysis
 
-We will calculate the correlation matrix and plot it.
+After completing these preliminary preprocessing steps, we calculate the correlation matrix for our dataset. This computation helps us in comprehending the interrelationships among the dataset’s variables. In the correlation matrix, a value near to $1$ at the $ij$ position indicates a strong positive correlation between the $i$-th and $j$-th variables. Conversely, a value close to $-1$ signifies a strong negative correlation. A value near $0$ suggests that the two variables do not significantly influence each other.
+
+Observe that the first three columns of our data are categorical features, therefore for these we cannot compute Pearson's correlation coefficient. In the following code lines we remove them to compute and plot such matrix.
 
 
 ``` r
@@ -178,7 +194,7 @@ correlation_matrix <- cor(data_num)
 
 # Plot the correlation matrix using corrplot
 corrplot(correlation_matrix, method = "number", tl.col = "black", 
-         tl.srt = 45, addCoef.col = "black", number.cex = 0.7)
+         tl.srt = 45, addCoef.col = "black", number.cex = 0.5)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/correlation_analysis-1.png" style="display: block; margin: auto;" />
@@ -189,8 +205,8 @@ heatmap(cor(data_num),
         col = colorRampPalette(c("#005cff", "#fbfbfb", "#d90000"))(100), 
         symm = TRUE, 
         margins = c(10, 10), 
-        cexRow = 1.4,
-        cexCol = 1.4)
+        cexRow = 1.2,
+        cexCol = 1.2)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/correlation_analysis-2.png" style="display: block; margin: auto;" />
@@ -330,3 +346,9 @@ for (i in 1:ncol(data_num)) {
 <img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-1.png" style="display: block; margin: auto;" /><img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-2.png" style="display: block; margin: auto;" /><img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-3.png" style="display: block; margin: auto;" />
 
 ADD COMMENTS ON THE GRAPH
+
+# Regression Analysis
+
+## Linear Regression
+
+## Logistic Regression

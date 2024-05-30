@@ -97,7 +97,7 @@
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\usepackage{bookmark}
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
@@ -108,7 +108,7 @@
 
 \title{Statistical Learning Final Report}
 \author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
-\date{2024-05-29}
+\date{2024-05-30}
 
 \begin{document}
 \maketitle
@@ -117,12 +117,16 @@
 \setcounter{tocdepth}{3}
 \tableofcontents
 }
-\section{Introduction}\label{introduction}
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
 
 Here Eleonora you can write the introduction of the project describing
 the scope and the data used.
 
-\section{Libraries}\label{libraries}
+Thank you Albi, I will. What is our project scope though?
+
+\hypertarget{libraries}{%
+\section{Libraries}\label{libraries}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -131,12 +135,21 @@ the scope and the data used.
 \end{Highlighting}
 \end{Shaded}
 
-\section{Data}\label{data}
+\hypertarget{data}{%
+\section{Data}\label{data}}
 
-The data set we are going to use is the ``Starbucks \ldots.'' dataset
-from Kaggle.
+The dataset we will analyze in this project is \emph{Starbucks Beverage
+Components} from Kaggle, that you can find at the following link:
+\url{https://www.kaggle.com/datasets/henryshan/starbucks}.
 
-It contains 242 rows and 18 columns.
+This data provides a comprehensive guide to the nutritional content of
+the beverages available on the Starbucks menu. We have a total of
+\(242\) samples described by \(18\) variables. These attributes include
+the name of the beverage, its categorization and preparation method, the
+total caloric content and the constituents of the beverage.
+
+In the upcoming code lines, we will be importing the dataset and
+generating a summary visualization.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -213,10 +226,22 @@ It contains 242 rows and 18 columns.
 ##  $ Caffeine..mg.          : chr  "175" "260" "330" "410" ...
 \end{verbatim}
 
-\subsection{Data Transformation}\label{data-transformation}
+\hypertarget{data-transformation}{%
+\subsection{Data Transformation}\label{data-transformation}}
 
-We have to remove the percentage sign from the data and set the other
-variables as numeric.
+Note that several variables in our dataset, namely Vitamin A, Vitamin C,
+Calcium and Iron, are represented as percentages. Consequently, the
+percentage symbol is included in our data. However, when conducting
+statistical analysis using R, the presence of non-numeric characters
+such as the percentage symbol can cause complications, interfering with
+the processing and analysis of the data. Therefore, we proceeded to
+remove it.
+
+Similarly, as R primarily operates on numeric and categorical data, we
+also convert the other variables into numeric format.
+
+This preprocessing steps ensure a smooth and efficient analysis, making
+it easier to explore, visualize, and understand our data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -239,10 +264,21 @@ variables as numeric.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Data Cleaning}\label{data-cleaning}
+\hypertarget{data-cleaning}{%
+\subsection{Data Cleaning}\label{data-cleaning}}
 
-We have some NA values in the data. The NA values are in the
-Caffeine..mg. column. We will remove the rows with NA values.
+Another challenge we have to face is the presence of missing data.
+Indeed, in ``Caffeine..mg.'' column there are some NA values. This is a
+common issue in data analysis and needs to be addressed appropriately to
+ensure the validity of our statistical results.
+
+One way to handle this issue is removing the observations with NA
+values.
+
+A different approach is to fill in the NA values with the average of the
+observed values for that specific attribute. This method helps to
+preserve the overall data distribution while addressing the missing data
+points.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -250,10 +286,12 @@ Caffeine..mg. column. We will remove the rows with NA values.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Rename Columns}\label{rename-columns}
+\hypertarget{rename-columns}{%
+\subsection{Rename Columns}\label{rename-columns}}
 
-We will rename the cleaned data columns by removing the dots and the
-unity of measure in order to obtain a more readable dataset.
+Taking in consideration our cleaned data, we rename the columns by
+removing dots and units of measure, in order to obtain a more readable
+dataset.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -269,9 +307,16 @@ unity of measure in order to obtain a more readable dataset.
 \end{Highlighting}
 \end{Shaded}
 
-\section{Correlation Analysis}\label{correlation-analysis}
+\hypertarget{correlation-analysis}{%
+\section{Correlation Analysis}\label{correlation-analysis}}
 
-We will calculate the correlation matrix and plot it.
+Once done with these initial preprocessing steps, we compute the
+correlation matrix of our data. This helps us in understanding the
+relationships between the variables of our dataset, showing a value
+close to \(1\) in position \(ij\) if variable \(i\) is strongly
+positively correlated to variable \(j\), close to \(-1\) if instead they
+are strongly negatively correlated and close to \(0\) if they don't have
+a big influence on each other.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -306,9 +351,11 @@ We will calculate the correlation matrix and plot it.
 
 Add some comments on the graph that we obtained.
 
-\section{Data Visualization}\label{data-visualization}
+\hypertarget{data-visualization}{%
+\section{Data Visualization}\label{data-visualization}}
 
-\subsection{Histograms}\label{histograms}
+\hypertarget{histograms}{%
+\subsection{Histograms}\label{histograms}}
 
 We will plot some histograms to visualize the data.
 
@@ -334,7 +381,8 @@ We will plot some histograms to visualize the data.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-3} \end{center}
 
-\subsection{Pairplot}\label{pairplot}
+\hypertarget{pairplot}{%
+\subsection{Pairplot}\label{pairplot}}
 
 We will plot a pairplot to visualize the relationship between the
 variables.
@@ -417,7 +465,8 @@ visualization.
 
 ADD COMMENTS ON THE GRAPH
 
-\subsection{Barplot}\label{barplot}
+\hypertarget{barplot}{%
+\subsection{Barplot}\label{barplot}}
 
 We will plot a barplot of the data.
 
@@ -440,7 +489,8 @@ We will plot a barplot of the data.
 
 ADD COMMENTS ON THE GRAPH
 
-\subsection{Boxplot}\label{boxplot}
+\hypertarget{boxplot}{%
+\subsection{Boxplot}\label{boxplot}}
 
 We will plot a boxplot of the data.
 
@@ -462,5 +512,14 @@ We will plot a boxplot of the data.
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-3} \end{center}
 
 ADD COMMENTS ON THE GRAPH
+
+\hypertarget{regression-analysis}{%
+\section{Regression Analysis}\label{regression-analysis}}
+
+\hypertarget{linear-regression}{%
+\subsection{Linear Regression}\label{linear-regression}}
+
+\hypertarget{logistic-regression}{%
+\subsection{Logistic Regression}\label{logistic-regression}}
 
 \end{document}
