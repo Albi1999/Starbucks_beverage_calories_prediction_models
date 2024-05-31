@@ -55,6 +55,8 @@ This data provides a comprehensive guide to the nutritional content of the bever
 
 In the upcoming code lines, we import the dataset and generate a summary visualization. This initial step allows us to gain a better understanding of the data structure and the variables involved.
 
+**MAYBE WE CAN REMOVE THE SUMMARY AND THE STR FUNCTION BECAUSE THEY STEAL MORE THAN A PAGE FROM OUR FINAL REPORT AND SINCE WE HAVE TO STAY IN 25 PAGES WE HAVE TO BE CAREFUL.**
+
 ```{r data, message=TRUE}
 data <- read.csv("Data/starbucks.csv", header = TRUE, sep = ",")
 
@@ -143,16 +145,17 @@ correlation_matrix <- cor(data_num)
 
 # Plot the correlation matrix using corrplot
 corrplot(correlation_matrix, method = "number", tl.col = "black", 
-         tl.srt = 45, addCoef.col = "black", number.cex = 0.5)
+         tl.srt = 45, addCoef.col = "black", number.cex = 0.5, tl.cex = 0.7)
+```
 
+```{r correlation_analysis_heatmap}
 # Heatmap of the correlation matrix
 heatmap(cor(data_num), 
         col = colorRampPalette(c("#005cff", "#fbfbfb", "#d90000"))(100), 
         symm = TRUE, 
-        margins = c(10, 10), 
-        cexRow = 1.2,
-        cexCol = 1.2)
-
+        margins = c(8, 8), 
+        cexRow = 0.8,
+        cexCol = 0.8)
 ```
 
 Moreover, we visualized the correlation matrix through a heatmap. The heatmap provides a visual representation of the correlation matrix, making it easier to identify patterns and relationships between the variables. The color gradient helps to distinguish between positive and negative correlations, with darker shades indicating stronger correlations.
@@ -163,9 +166,9 @@ Moreover, we visualized the correlation matrix through a heatmap. The heatmap pr
 
 We will plot some histograms to visualize the data.
 
-```{r histograms}
+```{r histograms, fig.height=6, fig.width=7}
 # Histogram of the data with density distribution
-par(mfrow = c(2, 3))
+par(mfrow = c(5, 3), mar = c(2, 2, 2, 2))
 col <- c('#ff0000', '#f70028', '#ee0040', '#e50055', '#dc0069',
          '#d2007b', '#c7008d', '#bb009e', '#ae00ae', '#a000be',
          '#8f00cc', '#7d00da', '#6700e7', '#4900f3', '#0000ff')
@@ -214,7 +217,7 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 }
 ```
 
-```{r pairplot}
+```{r pairplot, fig.height=12, fig.width=12}
 pairs(data_num, 
       diag.panel = panel.hist,
       upper.panel = panel.cor, 
@@ -228,9 +231,9 @@ ADD COMMENTS ON THE GRAPH
 
 We will plot a barplot of the data. The barplot is a graphical representation of the data that displays the frequency of each category in a categorical variable. This visualization helps us to understand the distribution of the data and identify the most common categories in the dataset.
 
-```{r barplot}
+```{r barplot, fig.height=6, fig.width=7}
 # Barplot of the data
-par(mfrow = c(2, 3))
+par(mfrow = c(5, 3), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   barplot(table(data_num[, i]), main = colnames(data_num)[i],
           xlab = colnames(data_num)[i], col = col[i], border = col[i])
@@ -244,29 +247,29 @@ ADD COMMENTS ON THE GRAPH
 
 We create a barplot to visualize the distribution of the 'Beverage_category' variable and the 'Beverage_prep' variable in order to understand the most common beverages and preparation methods.
 
-```{r beverage_barplot}
+```{r beverage_barplot, fig.height=4, fig.width=6}
 # Beverage category
-par(mfrow = c(1, 1))
+par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
 barplot(table(data$Beverage_category),
         main = "Distribution of Beverage Categories",
         ylab = "Count",
         col = "#4ea5ff",
         las = 2, 
-        cex.names = 0.8)
+        cex.names = 0.6)
 
 # Beverage preparation
-par(mfrow = c(1, 1))
 barplot(table(data$Beverage_prep),
         main = "Distribution of Beverage Preparation",
         ylab = "Count",
         col = "#ff810f",
         las = 2,
-        cex.names = 0.8)
+        cex.names = 0.6)
 ```
 
 Now we want to compare the total calories for each categories of bevarage. First we aggrgate the data to obtain the total calories for each categories of bevarage and then we create a barplot to visualize the results.
 
-```{r total_calories}
+```{r total_calories, fig.height=4, fig.width=6}
+par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
 total_calories_by_category <- aggregate(Calories ~ Beverage_category,
                                         data = data_cleaned, sum)
 
@@ -276,12 +279,13 @@ barplot(height = total_calories_by_category$Calories,
         ylab = "Total Calories",
         col = "#4ea5ff",
         las = 2,
-        cex.names = 0.8)
+        cex.names = 0.6)
 ```
 
 Now we want to compare the total sugars for each preparation of bevarage. First we aggrgate the data to obtain the total sugars for each preparation of bevarage and then we create a barplot to visualize the results.
 
-```{r total_sugars}
+```{r total_sugars, fig.height=4, fig.width=6}
+par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
 total_sugar_by_prep <- aggregate(Total_Carbohydrates ~ Beverage_prep,
                                  data = data_cleaned, sum)
 
@@ -291,16 +295,16 @@ barplot(height = total_sugar_by_prep$Total_Carbohydrates,
         ylab = "Total Sugars (g)",
         col = "#ff810f",
         las = 2,
-        cex.names = 0.8)
+        cex.names = 0.6)
 ```
 
 ## Boxplot
 
 We will plot a boxplot of the data. The boxplot is a graphical representation of the data that displays the distribution of the data, including the median, quartiles, and outliers. This visualization helps us to identify the spread and variability of the data.
 
-```{r boxplot}
+```{r boxplot, fig.height=5, fig.width=7}
 # Boxplot of the data
-par(mfrow = c(2, 3))
+par(mfrow = c(3, 5), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   boxplot(data_num[, i], main = colnames(data_num)[i],
           xlab = colnames(data_num)[i], col = col[i])
@@ -313,7 +317,7 @@ We will plot a scatterplot of the data. The scatterplot is a graphical represent
 
 We create a scatterplot to compare the amounts of calories and fat for each categories of bevarage. We assign distinct colors to each beverage category and create a legend to identify each category.
 
-```{r fat_comparison_1}
+```{r fat_comparison, fig.height=4, fig.width=6}
 # Set the variable as factor
 data_cleaned$Beverage_category <- as.factor(data_cleaned$Beverage_category)
 
@@ -355,8 +359,8 @@ legend("topright", legend = c("Total Fat", "Trans Fat"),
 
 Create scatterplot to look into relantionship between calories and other variables. We will plot the relationship between calories and sodium, protein, vitamin C and fiber.
 
-```{r scatterplot}
-par(mfrow = c(2, 2))
+```{r scatterplot, fig.height=4, fig.width=7}
+par(mfrow = c(2, 2), mar = c(4, 4, 2, 2))
 with(data_cleaned, {
   plot(Calories, Sodium , main = "Relation between Calories and Sodium",
        xlab = "Calories", ylab = "Sodium (mg)", col = col[1])

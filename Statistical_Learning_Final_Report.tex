@@ -352,7 +352,7 @@ plot such matrix.
 
 \CommentTok{\# Plot the correlation matrix using corrplot}
 \FunctionTok{corrplot}\NormalTok{(correlation\_matrix, }\AttributeTok{method =} \StringTok{"number"}\NormalTok{, }\AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }
-         \AttributeTok{tl.srt =} \DecValTok{45}\NormalTok{, }\AttributeTok{addCoef.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{number.cex =} \FloatTok{0.5}\NormalTok{)}
+         \AttributeTok{tl.srt =} \DecValTok{45}\NormalTok{, }\AttributeTok{addCoef.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{number.cex =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{tl.cex =} \FloatTok{0.7}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -364,13 +364,13 @@ plot such matrix.
 \FunctionTok{heatmap}\NormalTok{(}\FunctionTok{cor}\NormalTok{(data\_num), }
         \AttributeTok{col =} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"\#005cff"}\NormalTok{, }\StringTok{"\#fbfbfb"}\NormalTok{, }\StringTok{"\#d90000"}\NormalTok{))(}\DecValTok{100}\NormalTok{), }
         \AttributeTok{symm =} \ConstantTok{TRUE}\NormalTok{, }
-        \AttributeTok{margins =} \FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{), }
-        \AttributeTok{cexRow =} \FloatTok{1.2}\NormalTok{,}
-        \AttributeTok{cexCol =} \FloatTok{1.2}\NormalTok{)}
+        \AttributeTok{margins =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{8}\NormalTok{), }
+        \AttributeTok{cexRow =} \FloatTok{0.8}\NormalTok{,}
+        \AttributeTok{cexCol =} \FloatTok{0.8}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis-2} \end{center}
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis_heatmap-1} \end{center}
 
 Moreover, we visualized the correlation matrix through a heatmap. The
 heatmap provides a visual representation of the correlation matrix,
@@ -388,7 +388,7 @@ We will plot some histograms to visualize the data.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Histogram of the data with density distribution}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \NormalTok{col }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}\#ff0000\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#f70028\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#ee0040\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#e50055\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#dc0069\textquotesingle{}}\NormalTok{,}
          \StringTok{\textquotesingle{}\#d2007b\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#c7008d\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#bb009e\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#ae00ae\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#a000be\textquotesingle{}}\NormalTok{,}
          \StringTok{\textquotesingle{}\#8f00cc\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#7d00da\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#6700e7\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#4900f3\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\#0000ff\textquotesingle{}}\NormalTok{)}
@@ -402,10 +402,6 @@ We will plot some histograms to visualize the data.
 \end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-1} \end{center}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-2} \end{center}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-3} \end{center}
 
 ADD COMMENTS ON THE GRAPH
 
@@ -477,7 +473,7 @@ dataset.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Barplot of the data}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
   \FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data\_num[, i]), }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
           \AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(data\_num)[i], }\AttributeTok{col =}\NormalTok{ col[i], }\AttributeTok{border =}\NormalTok{ col[i])}
@@ -486,10 +482,6 @@ dataset.
 \end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/barplot-1} \end{center}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/barplot-2} \end{center}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/barplot-3} \end{center}
 
 ADD COMMENTS ON THE GRAPH
 
@@ -502,13 +494,13 @@ to understand the most common beverages and preparation methods.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Beverage category}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Beverage\_category),}
         \AttributeTok{main =} \StringTok{"Distribution of Beverage Categories"}\NormalTok{,}
         \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{,}
         \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
         \AttributeTok{las =} \DecValTok{2}\NormalTok{, }
-        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{)}
+        \AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -517,13 +509,12 @@ to understand the most common beverages and preparation methods.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Beverage preparation}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
 \FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Beverage\_prep),}
         \AttributeTok{main =} \StringTok{"Distribution of Beverage Preparation"}\NormalTok{,}
         \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{,}
         \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{,}
         \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
-        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{)}
+        \AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -536,6 +527,7 @@ the results.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \NormalTok{total\_calories\_by\_category }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(Calories }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Beverage\_category,}
                                         \AttributeTok{data =}\NormalTok{ data\_cleaned, sum)}
 
@@ -545,7 +537,7 @@ the results.
         \AttributeTok{ylab =} \StringTok{"Total Calories"}\NormalTok{,}
         \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
         \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
-        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{)}
+        \AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -558,6 +550,7 @@ results.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \NormalTok{total\_sugar\_by\_prep }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(Total\_Carbohydrates }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Beverage\_prep,}
                                  \AttributeTok{data =}\NormalTok{ data\_cleaned, sum)}
 
@@ -567,7 +560,7 @@ results.
         \AttributeTok{ylab =} \StringTok{"Total Sugars (g)"}\NormalTok{,}
         \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{,}
         \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
-        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{)}
+        \AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -583,7 +576,7 @@ us to identify the spread and variability of the data.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Boxplot of the data}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
   \FunctionTok{boxplot}\NormalTok{(data\_num[, i], }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
           \AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(data\_num)[i], }\AttributeTok{col =}\NormalTok{ col[i])}
@@ -592,10 +585,6 @@ us to identify the spread and variability of the data.
 \end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-1} \end{center}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-2} \end{center}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-3} \end{center}
 
 \subsection{Scatterplot}\label{scatterplot}
 
@@ -634,7 +623,7 @@ category and create a legend to identify each category.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison_1-1} \end{center}
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison-1} \end{center}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -656,7 +645,7 @@ category and create a legend to identify each category.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison_1-2} \end{center}
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison-2} \end{center}
 
 Create scatterplot to look into relantionship between calories and other
 variables. We will plot the relationship between calories and sodium,
@@ -664,7 +653,7 @@ protein, vitamin C and fiber.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \FunctionTok{with}\NormalTok{(data\_cleaned, \{}
   \FunctionTok{plot}\NormalTok{(Calories, Sodium , }\AttributeTok{main =} \StringTok{"Relation between Calories and Sodium"}\NormalTok{,}
        \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Sodium (mg)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{1}\NormalTok{])}
