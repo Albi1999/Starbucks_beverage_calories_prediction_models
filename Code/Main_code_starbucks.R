@@ -39,38 +39,42 @@ data$Dietary.Fibre..g. <- as.numeric(data$Dietary.Fibre..g.)
 data$Sugars..g. <- as.numeric(data$Sugars..g.)
 data$Caffeine..mg. <- as.numeric(data$Caffeine..mg.)
 
-#we have some missing values in the variable caffeine 
+# We have some missing values in the variable caffeine 
 is.na(data$Caffeine..mg.)
-#different way to impute NA ----> median is suitable choice  because we look into structure of the variable
+# There are different way to impute NA
+# Use the median is a suitable choice because we look 
+# into structure of the variable
 summary(data$Caffeine..mg.)
 
-#check 
-unique(data$Total.Fat..g.)
-summary(data$Total.Fat..g.)
 
-#create a copy of original dataset 
-
+# create a copy of original dataset 
 data_cleaned <- data
 
-#Presence of Outliers: Looking at the summary statistics provided, the presence of outliers is indicated by the large difference between the mean (89.52 mg.) and the median (75 mg.). 
-#Outliers can skew the mean, making it less representative of the central tendency of the data.
-#The median, being resistant to outliers, provides a better measure of central tendency in this scenario.
-#Possibly non-normal distribution 
-#With 23 missing values out of 242 observations, the dataset has a relatively small proportion of missing values (approximately 9.5%). 
+# Presence of Outliers: Looking at the summary statistics provided, 
+# the presence of outliers is indicated by the large difference 
+# between the mean (89.52 mg.) and the median (75 mg.).
 
-# calculate the median fo the  'Caffeine..mg.', without NA
-median_caffeine <- median(data_cleaned$Caffeine..mg., na.rm = TRUE)
+# Outliers can skew the mean, making it less representative of the 
+# central tendency of the data.
 
-# Impute NA with median
-data_cleaned$Caffeine..mg.[is.na(data_cleaned$Caffeine..mg.)] <- median_caffeine
+# The median, being resistant to outliers, provides a better 
+# measure of central tendency in this scenario.
+
+# Possibly non-normal distribution 
+# With 23 missing values out of 242 observations, 
+# the dataset has a relatively small proportion of missing values 
+# (approximately 9.5%). 
+
+
+# Impute NA with median of the  'Caffeine..mg.', without NA
+data_cleaned$Caffeine..mg.[is.na(data_cleaned$Caffeine..mg.)] <- median(data_cleaned$Caffeine..mg., na.rm = TRUE)
 
 # no more NA ---> now we can work directly on cleaned dataset 
 summary(data_cleaned$Caffeine..mg.)
 is.na(data_cleaned$Caffeine..mg.)
 
 
-# rename the cleaned data columns by removing the dots and the unity of measure
-
+# Rename the cleaned data columns by removing the dots and the unity of measure
 colnames(data_cleaned) <- c("Beverage_category", "Beverage",
                             "Beverage_prep", "Calories",
                             "Total_Fat", "Trans_Fat",
@@ -93,6 +97,7 @@ data_num <- data_cleaned[, -c(1:3)]
 correlation_matrix <- cor(data_num)
 
 ## Plot the correlation matrix ----
+par(mfrow = c(1, 1))
 corrplot(correlation_matrix, method = "number", tl.col = "black", 
          tl.srt = 45, addCoef.col = "black", number.cex = 0.7)
 
@@ -151,37 +156,80 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
   text(0.5, 0.5, txt, cex = cex.cor * r)
 }
 
-# Split the data into 3 groups in order to have a better visualization
-data_num1 <- data_num[, 1:5]
-data_num2 <- data_num[, 6:10]
-data_num3 <- data_num[, 11:15]
 
-pairs(data_num1, 
+pairs(data_num, 
       diag.panel = panel.hist,
       upper.panel = panel.cor, 
       lower.panel = panel.smooth,
       colour = "#4ea5ff")
 
-pairs(data_num2, 
-      diag.panel = panel.hist,
-      upper.panel = panel.cor,
-      lower.panel = panel.smooth,
-      colour = "#00cd5c")
-
-pairs(data_num3, 
-      diag.panel = panel.hist,
-      upper.panel = panel.cor,
-      lower.panel = panel.smooth,
-      colour = "#ff810f")
-
-
 ## Barplot ----
-# Barplot of the data
+# Barplot of the data grouped by categories
 par(mfrow = c(5, 3))
 for (i in 1:ncol(data_num)) {
   barplot(table(data_num[, i]), main = colnames(data_num)[i],
           xlab = colnames(data_num)[i], col = col[i])
 }
+
+### Beverage ----
+# frequency for 'Beverage_category' ----> 
+# how we can see the most famous bevarage?
+
+# We create a barplot to visualize the distribution 
+# of the 'Beverage_category' variable
+par(mfrow = c(1, 1))
+barplot(table(data$Beverage_category),
+        main = "Distribution of Beverage Categories",
+        ylab = "Count",
+        col = "#4ea5ff",
+        las = 2, 
+        cex.names = 0.8)
+
+# We create a barplot to visualize the distribution 
+# of the preparation of the bevarage
+par(mfrow = c(1, 1))
+barplot(table(data$Beverage_prep),
+        main = "Distribution of Beverage Preparation",
+        ylab = "Count",
+        col = "#ff810f",
+        las = 2,
+        cex.names = 0.8)
+
+# "#00cd5c" green
+
+# Now we want to compare the total calories for each categories of bevarage
+
+# First we aggrgate the data to obtain the total calories 
+# for each categories of bevarage
+
+# Then we create a barplot to visualize the results
+
+total_calories_by_category <- aggregate(Calories ~ Beverage_category, data = data_cleaned, sum)
+
+barplot(height = total_calories_by_category$Calories,
+        names.arg = total_calories_by_category$Beverage_category,
+        main = "Total Calories by Beverage Category",
+        ylab = "Total Calories",
+        col = "#4ea5ff",
+        las = 2,
+        cex.names = 0.8)
+
+# Now we want to compare the total sugars for each preparation of bevarage
+
+# First we aggrgate the data to obtain the total sugars 
+# for each preparation of bevarage
+
+# Then we create a barplot to visualize the results
+
+total_sugar_by_prep <- aggregate(Total_Carbohydrates ~ Beverage_prep, data = data_cleaned, sum)
+
+barplot(height = total_sugar_by_prep$Total_Carbohydrates,
+        names.arg = total_sugar_by_prep$Beverage_prep,
+        main = "Total Sugars by Beverage Preparation",
+        ylab = "Total Sugars (g)",
+        col = "#ff810f",
+        las = 2,
+        cex.names = 0.8)
 
 ## Boxplot ----
 # Boxplot of the data
@@ -191,61 +239,8 @@ for (i in 1:ncol(data_num)) {
           xlab = colnames(data_num)[i], col = col[i])
 }
 
-# frequency for 'Beverage_category' ----> how we can see the most famous bevarage?
-beverage_counts <- table(data$Beverage_category)
 
-# create a barplot for the variable 
-barplot(beverage_counts,
-        main = "Distribution of Beverage Categories",
-        xlab = "Beverage Category",
-        ylab = "Count",
-        col = "skyblue",
-        las = 2, 
-        cex.names = 0.8)
-
-
-# frequency for 'Beverage_prep'
-beverage_prep_counts <- table(data$Beverage_prep)
-
-#barplot 
-barplot(beverage_prep_counts,
-        main = "Distribution of Beverage Preparation",
-        xlab = "Preparation",
-        ylab = "Count",
-        col = "skyblue",
-        las = 2, 
-        cex.names = 0.8)
-
-#we want to obtain a barplot in which we can see the amount of total calories for each categories of bevarage 
-
-# Aggrega i dati per ottenere il totale delle calorie per ogni categoria di bevanda
-total_calories_by_category <- aggregate(Calories ~ Beverage_category, data = data_cleaned, sum)
-
-# Crea il barplot utilizzando le funzioni base di R
-barplot(height = total_calories_by_category$Calories,
-        names.arg = total_calories_by_category$Beverage_category,
-        main = "Total Calories by Beverage Category",
-        xlab = "Beverage Category",
-        ylab = "Total Calories",
-        col = "skyblue",
-        las = 2, # Ruota le etichette dell'asse x per essere verticali
-        cex.names = 0.8) # Dimensione delle etichette dell'asse x
-
-#same to compare bevarage preparation and sugar 
-
-total_sugar_by_prep <- aggregate(Total_Carbohydrates ~ Beverage_prep, data = data_cleaned, sum)
-
-barplot(height = total_sugar_by_prep$Total_Carbohydrates,
-        names.arg = total_sugar_by_prep$Beverage_prep,
-        main = "Total Sugars by Beverage Preparation",
-        xlab = "Beverage Preparation",
-        ylab = "Total Sugars (g)",
-        col = "skyblue",
-        las = 2, # Ruota le etichette dell'asse x per essere verticali
-        cex.names = 0.8) # Dimensione delle etichette dell'asse x
-
-#other data visualization 
-
+## Scatterplot ----
 # variable Beverage_category factor
 data_cleaned$Beverage_category <- as.factor(data_cleaned$Beverage_category)
 
@@ -253,47 +248,53 @@ data_cleaned$Beverage_category <- as.factor(data_cleaned$Beverage_category)
 colors <- rainbow(length(unique(data_cleaned$Beverage_category)))
 color_map <- setNames(colors, levels(data_cleaned$Beverage_category))
 
-# create a scatterplot to compare amounts of calories and fat for each categories of bevarage 
+# Create a scatterplot to compare amounts of calories and fat 
+# for each categories of bevarage
+par(mfrow = c(1, 1))
 plot(data_cleaned$Calories, 
      data_cleaned$Total_Fat_g,
      col = color_map[data_cleaned$Beverage_category],
-     pch = 19, # Tipo di punto
+     pch = 19,
      xlab = "Calories",
      ylab = "Total Fat (g)",
      main = "Calories vs Total Fat")
 
-#legend
+# Legend
 legend("topright", 
        legend = levels(data_cleaned$Beverage_category), 
        col = colors, 
        pch = 19)
 
-#comparision between total fat and trans fat ( che cazzo sono?)
+# Comparision between total fat and trans fat ( che cazzo sono?)
 
-#numeric variable -> calculate density
+# Numeric variable -> calculate density
 total_fat_density <- density(data_cleaned$Total_Fat)
 trans_fat_density <- density(data_cleaned$Trans_Fat)
 
 # create a grafico sovrapposto 
-plot(total_fat_density, col = "skyblue", main = "Comparison of Total Fat and Trans Fat Distributions", 
+plot(total_fat_density, col = "#4ea5ff", main = "Comparison of Total Fat and Trans Fat Distributions", 
      xlab = "Fat Content (g)", ylab = "Density", ylim = c(0, max(total_fat_density$y, trans_fat_density$y)),
      xlim = range(data_cleaned$Total_Fat, data_cleaned$Trans_Fat), 
      lwd = 2, lty = 1)
-lines(trans_fat_density, col = "orange", lwd = 2, lty = 1)
-legend("topright", legend = c("Total Fat", "Trans Fat"), col = c("skyblue", "orange"), lwd = 2, lty = 1)
+lines(trans_fat_density, col = "#ff810f", lwd = 2, lty = 1)
+legend("topright", legend = c("Total Fat", "Trans Fat"), col = c("#4ea5ff", "#ff810f"), lwd = 2, lty = 1)
 
-#create scatterplot to look into relantionship between calories and other variables 
+# Create scatterplot to look into relantionship between 
+# calories and other variables 
 
 str(data_cleaned)
 
 par(mfrow = c(2, 2))  # Imposta il layout dei grafici a griglia 2x2
 with(data_cleaned, {
-  plot(Calories, Sodium , main = "Relation between Calories and Sodium", xlab = "Calories", ylab = "Sodium (mg)")
-  plot(Calories, Protein , main = "Relation between Calories and Protein", xlab = "Calories", ylab = "Protein (g)")
-  plot(Calories, Vitamin_C , main = "Relation between Calories and Vitamin C", xlab = "Calories", ylab = "Vitamin C (mg)")
-  plot(Calories, Cholesterol , main = "Relation between Calories and Fiber", xlab = "Calories", ylab = "Fiber (g)")
+  plot(Calories, Sodium , main = "Relation between Calories and Sodium", xlab = "Calories", ylab = "Sodium (mg)", col = col[1])
+  plot(Calories, Protein , main = "Relation between Calories and Protein", xlab = "Calories", ylab = "Protein (g)", col = col[5])
+  plot(Calories, Vitamin_C , main = "Relation between Calories and Vitamin C", xlab = "Calories", ylab = "Vitamin C (mg)", col = col[10])
+  plot(Calories, Cholesterol , main = "Relation between Calories and Fiber", xlab = "Calories", ylab = "Fiber (g)", col = col[15])
 })
 
-#There's increase in every feature with increase in calories
-#features like proteins and fiber rapidly increase, instead vitamin and cholesterol more flat growing 
-#confirm by correlation coefficients 
+# There's increase in every feature with increase in calories
+
+# Features like proteins and fiber rapidly increase, 
+# instead vitamin and cholesterol more flat growing 
+
+# Confirmed by correlation coefficients 

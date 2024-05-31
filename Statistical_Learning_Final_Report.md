@@ -1,7 +1,7 @@
 ---
 title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
-date: "2024-05-30"
+date: "2024-05-31"
 output:
   html_document:
     toc: true
@@ -29,6 +29,10 @@ Here Eleonora you can write the introduction of the project describing the scope
 
 Thank you Albi, I will. What is our project scope though?
 
+I think that we have to analyze the dataset and perform some statistical analysis on it. We can start by calculating the correlation matrix and then we can visualize the data through histograms, pairplots, barplots and boxplots. Finally, we can perform a regression analysis.
+
+
+
 # Libraries
 
 
@@ -43,7 +47,7 @@ The dataset we will analyze in this project is *Starbucks Beverage Components* f
 
 This data provides a comprehensive guide to the nutritional content of the beverages available on the Starbucks menu. We have a total of $242$ samples described by $18$ variables. These attributes include the name of the beverage, its categorization and preparation method, the total caloric content and the constituents of the beverage.
 
-In the upcoming code lines, we import the dataset and generate a summary visualization.
+In the upcoming code lines, we import the dataset and generate a summary visualization. This initial step allows us to gain a better understanding of the data structure and the variables involved.
 
 
 ``` r
@@ -149,15 +153,26 @@ data$Caffeine..mg. <- as.numeric(data$Caffeine..mg.)
 
 Another challenge we have to face is the presence of missing data. Indeed, in "Caffeine..mg." column there are some NA values. This is a common issue in data analysis and needs to be addressed appropriately to ensure the validity of our statistical results.
 
-There are different approaches to deal with this issue. We did - COMPLETE.
+There are different approaches to deal with this issue.
 
 One way to handle this issue is removing the observations with NA values.
 
-A different approach is to fill in the NA values with the average of the observed values for that specific attribute. This method helps to preserve the overall data distribution while addressing the missing data points.
+A different approach is to fill in the NA values with the average or the median of the observed values for that specific attribute. This method helps to preserve the overall data distribution while addressing the missing data points.
+
+In our case, we decided to impute the NA values in the "Caffeine..mg." column with the median of the observed values for that attribute. This choice is suitable because we have observed that the data is skewed, and the median is a more robust measure of central tendency in the presence of outliers.
 
 
 ``` r
-data_cleaned <- data[!is.na(data$Caffeine..mg.),]
+data_cleaned <- data
+data_cleaned$Caffeine..mg.[is.na(data_cleaned$Caffeine..mg.)] <- median(
+  data_cleaned$Caffeine..mg., na.rm = TRUE)
+
+summary(data_cleaned$Caffeine..mg.)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00   70.00   75.00   88.14  130.00  410.00
 ```
 
 ## Rename Columns
@@ -211,7 +226,7 @@ heatmap(cor(data_num),
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/correlation_analysis-2.png" style="display: block; margin: auto;" />
 
-Thanks to the use of a heatmap : Add some comments on the graph that we obtained.
+Moreover, we visualized the correlation matrix through a heatmap. The heatmap provides a visual representation of the correlation matrix, making it easier to identify patterns and relationships between the variables. The color gradient helps to distinguish between positive and negative correlations, with darker shades indicating stronger correlations.
 
 # Data Visualization
 
@@ -236,11 +251,13 @@ for (i in 1:ncol(data_num)) {
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/histograms-1.png" style="display: block; margin: auto;" /><img src="Statistical_Learning_Final_Report_files/figure-html/histograms-2.png" style="display: block; margin: auto;" /><img src="Statistical_Learning_Final_Report_files/figure-html/histograms-3.png" style="display: block; margin: auto;" />
 
+ADD COMMENTS ON THE GRAPH
+
 ## Pairplot
 
-We will plot a pairplot to visualize the relationship between the variables.
+We will plot a pairplot to visualize the relationship between the variables. The pairplot is a grid of scatterplots that shows the relationship between each pair of variables in the dataset. This visualization helps us to identify patterns and correlations between the variables.
 
-First of all we have to define the function for the pairplot.
+First of all we have to define the function for the pairplot. We will define a function for the histogram, the correlation and the smooth line.
 
 
 ``` r
@@ -272,15 +289,9 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 }
 ```
 
-Now we can split the data into 3 groups in order to have a better visualization.
-
 
 ``` r
-data_num1 <- data_num[, 1:5]
-data_num2 <- data_num[, 6:10]
-data_num3 <- data_num[, 11:15]
-
-pairs(data_num1, 
+pairs(data_num, 
       diag.panel = panel.hist,
       upper.panel = panel.cor, 
       lower.panel = panel.smooth,
@@ -289,31 +300,11 @@ pairs(data_num1,
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/pairplot-1.png" style="display: block; margin: auto;" />
 
-``` r
-pairs(data_num2, 
-      diag.panel = panel.hist,
-      upper.panel = panel.cor,
-      lower.panel = panel.smooth,
-      colour = "#00cd5c")
-```
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/pairplot-2.png" style="display: block; margin: auto;" />
-
-``` r
-pairs(data_num3, 
-      diag.panel = panel.hist,
-      upper.panel = panel.cor,
-      lower.panel = panel.smooth,
-      colour = "#ff810f")
-```
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/pairplot-3.png" style="display: block; margin: auto;" />
-
 ADD COMMENTS ON THE GRAPH
 
 ## Barplot
 
-We will plot a barplot of the data.
+We will plot a barplot of the data. The barplot is a graphical representation of the data that displays the frequency of each category in a categorical variable. This visualization helps us to understand the distribution of the data and identify the most common categories in the dataset.
 
 
 ``` r
@@ -329,9 +320,77 @@ for (i in 1:ncol(data_num)) {
 
 ADD COMMENTS ON THE GRAPH
 
+
+### Beverages Barplot
+
+We create a barplot to visualize the distribution of the 'Beverage_category' variable and the 'Beverage_prep' variable in order to understand the most common beverages and preparation methods.
+
+
+``` r
+# Beverage category
+par(mfrow = c(1, 1))
+barplot(table(data$Beverage_category),
+        main = "Distribution of Beverage Categories",
+        ylab = "Count",
+        col = "#4ea5ff",
+        las = 2, 
+        cex.names = 0.8)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/beverage_barplot-1.png" style="display: block; margin: auto;" />
+
+``` r
+# Beverage preparation
+par(mfrow = c(1, 1))
+barplot(table(data$Beverage_prep),
+        main = "Distribution of Beverage Preparation",
+        ylab = "Count",
+        col = "#ff810f",
+        las = 2,
+        cex.names = 0.8)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/beverage_barplot-2.png" style="display: block; margin: auto;" />
+
+Now we want to compare the total calories for each categories of bevarage. First we aggrgate the data to obtain the total calories for each categories of bevarage and then we create a barplot to visualize the results.
+
+
+``` r
+total_calories_by_category <- aggregate(Calories ~ Beverage_category,
+                                        data = data_cleaned, sum)
+
+barplot(height = total_calories_by_category$Calories,
+        names.arg = total_calories_by_category$Beverage_category,
+        main = "Total Calories by Beverage Category",
+        ylab = "Total Calories",
+        col = "#4ea5ff",
+        las = 2,
+        cex.names = 0.8)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/total_calories-1.png" style="display: block; margin: auto;" />
+
+Now we want to compare the total sugars for each preparation of bevarage. First we aggrgate the data to obtain the total sugars for each preparation of bevarage and then we create a barplot to visualize the results.
+
+
+``` r
+total_sugar_by_prep <- aggregate(Total_Carbohydrates ~ Beverage_prep,
+                                 data = data_cleaned, sum)
+
+barplot(height = total_sugar_by_prep$Total_Carbohydrates,
+        names.arg = total_sugar_by_prep$Beverage_prep,
+        main = "Total Sugars by Beverage Preparation",
+        ylab = "Total Sugars (g)",
+        col = "#ff810f",
+        las = 2,
+        cex.names = 0.8)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/total_sugars-1.png" style="display: block; margin: auto;" />
+
 ## Boxplot
 
-We will plot a boxplot of the data.
+We will plot a boxplot of the data. The boxplot is a graphical representation of the data that displays the distribution of the data, including the median, quartiles, and outliers. This visualization helps us to identify the spread and variability of the data.
 
 
 ``` r
@@ -344,6 +403,80 @@ for (i in 1:ncol(data_num)) {
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-1.png" style="display: block; margin: auto;" /><img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-2.png" style="display: block; margin: auto;" /><img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-3.png" style="display: block; margin: auto;" />
+
+## Scatterplot
+
+We will plot a scatterplot of the data. The scatterplot is a graphical representation of the data that displays the relationship between two variables. This visualization helps us to identify patterns and correlations between the variables.
+
+We create a scatterplot to compare the amounts of calories and fat for each categories of bevarage. We assign distinct colors to each beverage category and create a legend to identify each category.
+
+
+``` r
+# Set the variable as factor
+data_cleaned$Beverage_category <- as.factor(data_cleaned$Beverage_category)
+
+# Assign distinct colors to each beverage category
+colors <- rainbow(length(unique(data_cleaned$Beverage_category)))
+color_map <- setNames(colors, levels(data_cleaned$Beverage_category))
+
+# Create a scatterplot to compare amounts of calories and fat 
+# for each categories of bevarage
+par(mfrow = c(1, 1))
+plot(data_cleaned$Calories, 
+     data_cleaned$Total_Fat_g,
+     col = color_map[data_cleaned$Beverage_category],
+     pch = 19,
+     xlab = "Calories",
+     ylab = "Total Fat (g)",
+     main = "Calories vs Total Fat")
+
+# Legend
+legend("topleft", legend = levels(data_cleaned$Beverage_category), 
+       col = colors, cex = 0.4, pch = 19)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison_1-1.png" style="display: block; margin: auto;" />
+
+``` r
+# Comparision between total fat and trans fat ( che cazzo sono?)
+
+# Numeric variable -> calculate density
+total_fat_density <- density(data_cleaned$Total_Fat)
+trans_fat_density <- density(data_cleaned$Trans_Fat)
+
+plot(total_fat_density, col = "#4ea5ff",
+     main = "Comparison of Total Fat and Trans Fat Distributions", 
+     xlab = "Fat Content (g)", ylab = "Density", 
+     ylim = c(0, max(total_fat_density$y, trans_fat_density$y)),
+     xlim = range(data_cleaned$Total_Fat, data_cleaned$Trans_Fat), 
+     lwd = 2, lty = 1)
+lines(trans_fat_density, col = "#ff810f", lwd = 2, lty = 1)
+legend("topright", legend = c("Total Fat", "Trans Fat"),
+       col = c("#4ea5ff", "#ff810f"), lwd = 2, lty = 1)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison_1-2.png" style="display: block; margin: auto;" />
+
+Create scatterplot to look into relantionship between calories and other variables. We will plot the relationship between calories and sodium, protein, vitamin C and fiber.
+
+
+``` r
+par(mfrow = c(2, 2))
+with(data_cleaned, {
+  plot(Calories, Sodium , main = "Relation between Calories and Sodium",
+       xlab = "Calories", ylab = "Sodium (mg)", col = col[1])
+  plot(Calories, Protein , main = "Relation between Calories and Protein",
+       xlab = "Calories", ylab = "Protein (g)", col = col[5])
+  plot(Calories, Vitamin_C , main = "Relation between Calories and Vitamin C",
+       xlab = "Calories", ylab = "Vitamin C (mg)", col = col[10])
+  plot(Calories, Cholesterol , main = "Relation between Calories and Fiber",
+       xlab = "Calories", ylab = "Fiber (g)", col = col[15])
+})
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/scatterplot-1.png" style="display: block; margin: auto;" />
+
+There's increase in every feature with increase in calories. Features like proteins and fiber rapidly increase, instead vitamin and cholesterol more flat growing. Confirmed by correlation coefficients 
 
 ADD COMMENTS ON THE GRAPH
 

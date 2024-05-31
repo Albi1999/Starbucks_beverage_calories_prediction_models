@@ -97,7 +97,7 @@
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
@@ -108,7 +108,7 @@
 
 \title{Statistical Learning Final Report}
 \author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
-\date{2024-05-30}
+\date{2024-05-31}
 
 \begin{document}
 \maketitle
@@ -117,16 +117,19 @@
 \setcounter{tocdepth}{3}
 \tableofcontents
 }
-\hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
+\section{Introduction}\label{introduction}
 
 Here Eleonora you can write the introduction of the project describing
 the scope and the data used.
 
 Thank you Albi, I will. What is our project scope though?
 
-\hypertarget{libraries}{%
-\section{Libraries}\label{libraries}}
+I think that we have to analyze the dataset and perform some statistical
+analysis on it. We can start by calculating the correlation matrix and
+then we can visualize the data through histograms, pairplots, barplots
+and boxplots. Finally, we can perform a regression analysis.
+
+\section{Libraries}\label{libraries}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -135,8 +138,7 @@ Thank you Albi, I will. What is our project scope though?
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{data}{%
-\section{Data}\label{data}}
+\section{Data}\label{data}
 
 The dataset we will analyze in this project is \emph{Starbucks Beverage
 Components} from Kaggle, that you can find at the following link:
@@ -148,8 +150,9 @@ the beverages available on the Starbucks menu. We have a total of
 the name of the beverage, its categorization and preparation method, the
 total caloric content and the constituents of the beverage.
 
-In the upcoming code lines, we will be importing the dataset and
-generating a summary visualization.
+In the upcoming code lines, we import the dataset and generate a summary
+visualization. This initial step allows us to gain a better
+understanding of the data structure and the variables involved.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -226,21 +229,21 @@ generating a summary visualization.
 ##  $ Caffeine..mg.          : chr  "175" "260" "330" "410" ...
 \end{verbatim}
 
-\hypertarget{data-transformation}{%
-\subsection{Data Transformation}\label{data-transformation}}
+\subsection{Data Transformation}\label{data-transformation}
 
-Note that several variables in our dataset, namely Vitamin A, Vitamin C,
-Calcium and Iron, are represented as percentages. Consequently, the
-percentage symbol is included in our data. However, when conducting
+Note that several variables in our dataset, namely
+``Vitamin.A\ldots.DV.'', ``Vitamin.C\ldots.DV.'', ``Calcium\ldots.DV.''
+and ``Iron\ldots.DV.'', are represented as percentages. Consequently,
+the percentage symbol is included in our data. However, when conducting
 statistical analysis using R, the presence of non-numeric characters
 such as the percentage symbol can cause complications, interfering with
 the processing and analysis of the data. Therefore, we proceeded to
 remove it.
 
 Similarly, as R primarily operates on numeric and categorical data, we
-also convert the other variables into numeric format.
+also convert all the other numerical variables into numeric format.
 
-This preprocessing steps ensure a smooth and efficient analysis, making
+These preprocessing steps ensure a smooth and efficient analysis, making
 it easier to explore, visualize, and understand our data.
 
 \begin{Shaded}
@@ -264,34 +267,49 @@ it easier to explore, visualize, and understand our data.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{data-cleaning}{%
-\subsection{Data Cleaning}\label{data-cleaning}}
+\subsection{Data Cleaning}\label{data-cleaning}
 
 Another challenge we have to face is the presence of missing data.
 Indeed, in ``Caffeine..mg.'' column there are some NA values. This is a
 common issue in data analysis and needs to be addressed appropriately to
 ensure the validity of our statistical results.
 
+There are different approaches to deal with this issue.
+
 One way to handle this issue is removing the observations with NA
 values.
 
-A different approach is to fill in the NA values with the average of the
-observed values for that specific attribute. This method helps to
-preserve the overall data distribution while addressing the missing data
-points.
+A different approach is to fill in the NA values with the average or the
+median of the observed values for that specific attribute. This method
+helps to preserve the overall data distribution while addressing the
+missing data points.
+
+In our case, we decided to impute the NA values in the ``Caffeine..mg.''
+column with the median of the observed values for that attribute. This
+choice is suitable because we have observed that the data is skewed, and
+the median is a more robust measure of central tendency in the presence
+of outliers.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_cleaned }\OtherTok{\textless{}{-}}\NormalTok{ data[}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Caffeine..mg.),]}
+\NormalTok{data\_cleaned }\OtherTok{\textless{}{-}}\NormalTok{ data}
+\NormalTok{data\_cleaned}\SpecialCharTok{$}\NormalTok{Caffeine..mg.[}\FunctionTok{is.na}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Caffeine..mg.)] }\OtherTok{\textless{}{-}} \FunctionTok{median}\NormalTok{(}
+\NormalTok{  data\_cleaned}\SpecialCharTok{$}\NormalTok{Caffeine..mg., }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\FunctionTok{summary}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Caffeine..mg.)}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{rename-columns}{%
-\subsection{Rename Columns}\label{rename-columns}}
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00   70.00   75.00   88.14  130.00  410.00
+\end{verbatim}
 
-Taking in consideration our cleaned data, we rename the columns by
-removing dots and units of measure, in order to obtain a more readable
-dataset.
+\subsection{Rename Columns}\label{rename-columns}
+
+Lastly, taking in consideration our cleaned data, we rename the columns
+by removing dots and units of measure, in order to obtain a more
+readable dataset.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -307,16 +325,21 @@ dataset.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{correlation-analysis}{%
-\section{Correlation Analysis}\label{correlation-analysis}}
+\section{Correlation Analysis}\label{correlation-analysis}
 
-Once done with these initial preprocessing steps, we compute the
-correlation matrix of our data. This helps us in understanding the
-relationships between the variables of our dataset, showing a value
-close to \(1\) in position \(ij\) if variable \(i\) is strongly
-positively correlated to variable \(j\), close to \(-1\) if instead they
-are strongly negatively correlated and close to \(0\) if they don't have
-a big influence on each other.
+After completing these preliminary preprocessing steps, we calculate the
+correlation matrix for our dataset. This computation helps us in
+comprehending the interrelationships among the dataset's variables. In
+the correlation matrix, a value near to \(1\) at the \(ij\) position
+indicates a strong positive correlation between the \(i\)-th and
+\(j\)-th variables. Conversely, a value close to \(-1\) signifies a
+strong negative correlation. A value near \(0\) suggests that the two
+variables do not significantly influence each other.
+
+Observe that the first three columns of our data are categorical
+features, therefore for these we cannot compute Pearson's correlation
+coefficient. In the following code lines we remove them to compute and
+plot such matrix.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -349,13 +372,16 @@ a big influence on each other.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis-2} \end{center}
 
-Add some comments on the graph that we obtained.
+Moreover, we visualized the correlation matrix through a heatmap. The
+heatmap provides a visual representation of the correlation matrix,
+making it easier to identify patterns and relationships between the
+variables. The color gradient helps to distinguish between positive and
+negative correlations, with darker shades indicating stronger
+correlations.
 
-\hypertarget{data-visualization}{%
-\section{Data Visualization}\label{data-visualization}}
+\section{Data Visualization}\label{data-visualization}
 
-\hypertarget{histograms}{%
-\subsection{Histograms}\label{histograms}}
+\subsection{Histograms}\label{histograms}
 
 We will plot some histograms to visualize the data.
 
@@ -381,13 +407,19 @@ We will plot some histograms to visualize the data.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-3} \end{center}
 
-\hypertarget{pairplot}{%
-\subsection{Pairplot}\label{pairplot}}
+ADD COMMENTS ON THE GRAPH
+
+\subsection{Pairplot}\label{pairplot}
 
 We will plot a pairplot to visualize the relationship between the
+variables. The pairplot is a grid of scatterplots that shows the
+relationship between each pair of variables in the dataset. This
+visualization helps us to identify patterns and correlations between the
 variables.
 
-First of all we have to define the function for the pairplot.
+First of all we have to define the function for the pairplot. We will
+define a function for the histogram, the correlation and the smooth
+line.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -420,16 +452,9 @@ First of all we have to define the function for the pairplot.
 \end{Highlighting}
 \end{Shaded}
 
-Now we can split the data into 3 groups in order to have a better
-visualization.
-
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_num1 }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{]}
-\NormalTok{data\_num2 }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\DecValTok{6}\SpecialCharTok{:}\DecValTok{10}\NormalTok{]}
-\NormalTok{data\_num3 }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\DecValTok{11}\SpecialCharTok{:}\DecValTok{15}\NormalTok{]}
-
-\FunctionTok{pairs}\NormalTok{(data\_num1, }
+\FunctionTok{pairs}\NormalTok{(data\_num, }
       \AttributeTok{diag.panel =}\NormalTok{ panel.hist,}
       \AttributeTok{upper.panel =}\NormalTok{ panel.cor, }
       \AttributeTok{lower.panel =}\NormalTok{ panel.smooth,}
@@ -439,36 +464,15 @@ visualization.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/pairplot-1} \end{center}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{pairs}\NormalTok{(data\_num2, }
-      \AttributeTok{diag.panel =}\NormalTok{ panel.hist,}
-      \AttributeTok{upper.panel =}\NormalTok{ panel.cor,}
-      \AttributeTok{lower.panel =}\NormalTok{ panel.smooth,}
-      \AttributeTok{colour =} \StringTok{"\#00cd5c"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/pairplot-2} \end{center}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{pairs}\NormalTok{(data\_num3, }
-      \AttributeTok{diag.panel =}\NormalTok{ panel.hist,}
-      \AttributeTok{upper.panel =}\NormalTok{ panel.cor,}
-      \AttributeTok{lower.panel =}\NormalTok{ panel.smooth,}
-      \AttributeTok{colour =} \StringTok{"\#ff810f"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/pairplot-3} \end{center}
-
 ADD COMMENTS ON THE GRAPH
 
-\hypertarget{barplot}{%
-\subsection{Barplot}\label{barplot}}
+\subsection{Barplot}\label{barplot}
 
-We will plot a barplot of the data.
+We will plot a barplot of the data. The barplot is a graphical
+representation of the data that displays the frequency of each category
+in a categorical variable. This visualization helps us to understand the
+distribution of the data and identify the most common categories in the
+dataset.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -489,10 +493,92 @@ We will plot a barplot of the data.
 
 ADD COMMENTS ON THE GRAPH
 
-\hypertarget{boxplot}{%
-\subsection{Boxplot}\label{boxplot}}
+\subsubsection{Beverages Barplot}\label{beverages-barplot}
 
-We will plot a boxplot of the data.
+We create a barplot to visualize the distribution of the
+`Beverage\_category' variable and the `Beverage\_prep' variable in order
+to understand the most common beverages and preparation methods.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Beverage category}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Beverage\_category),}
+        \AttributeTok{main =} \StringTok{"Distribution of Beverage Categories"}\NormalTok{,}
+        \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{,}
+        \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{2}\NormalTok{, }
+        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/beverage_barplot-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Beverage preparation}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Beverage\_prep),}
+        \AttributeTok{main =} \StringTok{"Distribution of Beverage Preparation"}\NormalTok{,}
+        \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{,}
+        \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
+        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/beverage_barplot-2} \end{center}
+
+Now we want to compare the total calories for each categories of
+bevarage. First we aggrgate the data to obtain the total calories for
+each categories of bevarage and then we create a barplot to visualize
+the results.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{total\_calories\_by\_category }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(Calories }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Beverage\_category,}
+                                        \AttributeTok{data =}\NormalTok{ data\_cleaned, sum)}
+
+\FunctionTok{barplot}\NormalTok{(}\AttributeTok{height =}\NormalTok{ total\_calories\_by\_category}\SpecialCharTok{$}\NormalTok{Calories,}
+        \AttributeTok{names.arg =}\NormalTok{ total\_calories\_by\_category}\SpecialCharTok{$}\NormalTok{Beverage\_category,}
+        \AttributeTok{main =} \StringTok{"Total Calories by Beverage Category"}\NormalTok{,}
+        \AttributeTok{ylab =} \StringTok{"Total Calories"}\NormalTok{,}
+        \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
+        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/total_calories-1} \end{center}
+
+Now we want to compare the total sugars for each preparation of
+bevarage. First we aggrgate the data to obtain the total sugars for each
+preparation of bevarage and then we create a barplot to visualize the
+results.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{total\_sugar\_by\_prep }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(Total\_Carbohydrates }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Beverage\_prep,}
+                                 \AttributeTok{data =}\NormalTok{ data\_cleaned, sum)}
+
+\FunctionTok{barplot}\NormalTok{(}\AttributeTok{height =}\NormalTok{ total\_sugar\_by\_prep}\SpecialCharTok{$}\NormalTok{Total\_Carbohydrates,}
+        \AttributeTok{names.arg =}\NormalTok{ total\_sugar\_by\_prep}\SpecialCharTok{$}\NormalTok{Beverage\_prep,}
+        \AttributeTok{main =} \StringTok{"Total Sugars by Beverage Preparation"}\NormalTok{,}
+        \AttributeTok{ylab =} \StringTok{"Total Sugars (g)"}\NormalTok{,}
+        \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
+        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/total_sugars-1} \end{center}
+
+\subsection{Boxplot}\label{boxplot}
+
+We will plot a boxplot of the data. The boxplot is a graphical
+representation of the data that displays the distribution of the data,
+including the median, quartiles, and outliers. This visualization helps
+us to identify the spread and variability of the data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -511,15 +597,99 @@ We will plot a boxplot of the data.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-3} \end{center}
 
+\subsection{Scatterplot}\label{scatterplot}
+
+We will plot a scatterplot of the data. The scatterplot is a graphical
+representation of the data that displays the relationship between two
+variables. This visualization helps us to identify patterns and
+correlations between the variables.
+
+We create a scatterplot to compare the amounts of calories and fat for
+each categories of bevarage. We assign distinct colors to each beverage
+category and create a legend to identify each category.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Set the variable as factor}
+\NormalTok{data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category)}
+
+\CommentTok{\# Assign distinct colors to each beverage category}
+\NormalTok{colors }\OtherTok{\textless{}{-}} \FunctionTok{rainbow}\NormalTok{(}\FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category)))}
+\NormalTok{color\_map }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(colors, }\FunctionTok{levels}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category))}
+
+\CommentTok{\# Create a scatterplot to compare amounts of calories and fat }
+\CommentTok{\# for each categories of bevarage}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Calories, }
+\NormalTok{     data\_cleaned}\SpecialCharTok{$}\NormalTok{Total\_Fat\_g,}
+     \AttributeTok{col =}\NormalTok{ color\_map[data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category],}
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{,}
+     \AttributeTok{ylab =} \StringTok{"Total Fat (g)"}\NormalTok{,}
+     \AttributeTok{main =} \StringTok{"Calories vs Total Fat"}\NormalTok{)}
+
+\CommentTok{\# Legend}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{levels}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category), }
+       \AttributeTok{col =}\NormalTok{ colors, }\AttributeTok{cex =} \FloatTok{0.4}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison_1-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Comparision between total fat and trans fat ( che cazzo sono?)}
+
+\CommentTok{\# Numeric variable {-}\textgreater{} calculate density}
+\NormalTok{total\_fat\_density }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Total\_Fat)}
+\NormalTok{trans\_fat\_density }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Trans\_Fat)}
+
+\FunctionTok{plot}\NormalTok{(total\_fat\_density, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
+     \AttributeTok{main =} \StringTok{"Comparison of Total Fat and Trans Fat Distributions"}\NormalTok{, }
+     \AttributeTok{xlab =} \StringTok{"Fat Content (g)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{, }
+     \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(total\_fat\_density}\SpecialCharTok{$}\NormalTok{y, trans\_fat\_density}\SpecialCharTok{$}\NormalTok{y)),}
+     \AttributeTok{xlim =} \FunctionTok{range}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Total\_Fat, data\_cleaned}\SpecialCharTok{$}\NormalTok{Trans\_Fat), }
+     \AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{lty =} \DecValTok{1}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(trans\_fat\_density, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{lty =} \DecValTok{1}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Total Fat"}\NormalTok{, }\StringTok{"Trans Fat"}\NormalTok{),}
+       \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"\#4ea5ff"}\NormalTok{, }\StringTok{"\#ff810f"}\NormalTok{), }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{lty =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison_1-2} \end{center}
+
+Create scatterplot to look into relantionship between calories and other
+variables. We will plot the relationship between calories and sodium,
+protein, vitamin C and fiber.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{with}\NormalTok{(data\_cleaned, \{}
+  \FunctionTok{plot}\NormalTok{(Calories, Sodium , }\AttributeTok{main =} \StringTok{"Relation between Calories and Sodium"}\NormalTok{,}
+       \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Sodium (mg)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{1}\NormalTok{])}
+  \FunctionTok{plot}\NormalTok{(Calories, Protein , }\AttributeTok{main =} \StringTok{"Relation between Calories and Protein"}\NormalTok{,}
+       \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Protein (g)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{5}\NormalTok{])}
+  \FunctionTok{plot}\NormalTok{(Calories, Vitamin\_C , }\AttributeTok{main =} \StringTok{"Relation between Calories and Vitamin C"}\NormalTok{,}
+       \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Vitamin C (mg)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{10}\NormalTok{])}
+  \FunctionTok{plot}\NormalTok{(Calories, Cholesterol , }\AttributeTok{main =} \StringTok{"Relation between Calories and Fiber"}\NormalTok{,}
+       \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Fiber (g)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{15}\NormalTok{])}
+\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/scatterplot-1} \end{center}
+
+There's increase in every feature with increase in calories. Features
+like proteins and fiber rapidly increase, instead vitamin and
+cholesterol more flat growing. Confirmed by correlation coefficients
+
 ADD COMMENTS ON THE GRAPH
 
-\hypertarget{regression-analysis}{%
-\section{Regression Analysis}\label{regression-analysis}}
+\section{Regression Analysis}\label{regression-analysis}
 
-\hypertarget{linear-regression}{%
-\subsection{Linear Regression}\label{linear-regression}}
+\subsection{Linear Regression}\label{linear-regression}
 
-\hypertarget{logistic-regression}{%
-\subsection{Logistic Regression}\label{logistic-regression}}
+\subsection{Logistic Regression}\label{logistic-regression}
 
 \end{document}
