@@ -298,3 +298,141 @@ with(data_cleaned, {
 # instead vitamin and cholesterol more flat growing 
 
 # Confirmed by correlation coefficients 
+
+
+# Regression Analysis ----
+## Linear Regression ----
+
+# Linear regression model to predict the amount of calories
+# based on the amount of the other variables
+# We use the lm() function to fit a linear regression model
+# We use the summary() function to display the results
+# We use the plot() function to visualize the results
+
+# Fit the linear regression model
+
+# Set the calories as the dependent variable
+y <- data_num$Calories
+
+# Remove calories column in order to use the other variables 
+# as independent variables
+data_num <- data_num[, -1]
+
+lm_model <- lm(y ~ ., data = data_num)
+summary(lm_model)
+par(mfrow = c(2, 2))
+plot(lm_model)
+
+AIC(lm_model)
+BIC(lm_model)
+
+# The model has a low AIC and BIC values, the R-squared value is 0.99 so the model is a good fit
+# The model is significant, the p-value is less than 0.05
+
+### Cross-validation ----
+# Now we try with a different approach, 
+# we split the data into training and testing sets
+# We use the training set to fit the model 
+# and the testing set to evaluate the model
+
+# Split the data into training and testing sets
+set.seed(123)
+train_index <- sample(1:nrow(data_num), 0.8 * nrow(data_num))
+train_data <- data_num[train_index, ]
+test_data <- data_num[-train_index, ]
+
+# Fit the linear regression model using the training set
+y_train <- y[train_index]
+
+lm_model_train <- lm(y_train ~ ., data = train_data)
+summary(lm_model_train)
+
+AIC(lm_model_train)
+BIC(lm_model_train)
+
+# Make predictions using the testing set
+y_test <- y[-train_index]
+predictions_lm <- predict(lm_model_train, newdata = test_data)
+
+# Evaluate the model using the testing set
+
+# Calculate the mean squared error
+mse_lm<- mean((y_test - predictions_lm)^2)
+mse_lm
+
+# Calculate the root mean squared error
+rmse_lm <- sqrt(mse_lm)
+rmse_lm
+
+# Now we plot the residuals to check if the model is a good fit
+par(mfrow = c(1, 1))
+plot(lm_model_train, which = 1)
+
+# The residuals are randomly distributed around zero,
+# so the model is a good fit
+
+# now we compute the accuracy of the model and then we plot the results
+
+# Compute the accuracy of the model
+accuracy_lm <- 1 - (rmse_lm / mean(y_test))
+accuracy_lm
+
+# Plot the results
+plot(y_test, predictions_lm, main = "Actual vs Predicted Values",
+     xlab = "Actual Values", ylab = "Predicted Values",
+     col = "#4ea5ff", pch = 19)
+
+# The actual and predicted values are close to each other,
+# so the model is a good fit
+
+## Logistic Regression ----
+
+# Logistic regression model to predict the amount of calories
+# based on the amount of the other variables
+# We use the glm() function to fit a logistic regression model
+
+# Fit the logistic regression model
+
+glm_model <- glm(y ~ ., data = data_num, family = "gaussian") # Try to change the family
+summary(glm_model)
+par(mfrow = c(2, 2))
+plot(glm_model)
+
+AIC(glm_model)
+BIC(glm_model)
+
+# Comment on it.....
+
+### Cross-validation ----
+
+# Fit the logistic regression model using the training set
+glm_model_train <- glm(y_train ~ ., data = train_data, family = "gaussian")
+
+# Make predictions using the testing set
+predictions_glm <- predict(glm_model_train, newdata = test_data)
+
+# Evaluate the model using the testing set
+
+# Calculate the mean squared error
+mse_glm <- mean((y_test - predictions_glm)^2)
+mse_glm
+
+# Calculate the root mean squared error
+rmse_glm <- sqrt(mse_glm)
+rmse_glm
+
+# Now we plot the residuals to check if the model is a good fit
+par(mfrow = c(1, 1))
+plot(glm_model_train, which = 1)
+
+# now we compute the accuracy of the model and then we plot the results
+
+# Compute the accuracy of the model
+accuracy_glm <- 1 - (rmse_glm / mean(y_test))
+accuracy_glm
+
+# Plot the results
+plot(y_test, predictions_glm, main = "Actual vs Predicted Values",
+     xlab = "Actual Values", ylab = "Predicted Values",
+     col = "#4ea5ff", pch = 19)
+
