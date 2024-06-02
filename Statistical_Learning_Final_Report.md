@@ -1,7 +1,7 @@
 ---
 title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
-date: "2024-05-31"
+date: "2024-06-02"
 output:
   html_document:
     toc: true
@@ -35,6 +35,8 @@ I think that we have to analyze the dataset and perform some statistical analysi
 
 # Libraries
 
+In this section we report the libraries we will use in our study.
+
 
 ``` r
 library(corrplot)
@@ -50,6 +52,8 @@ This data provides a comprehensive guide to the nutritional content of the bever
 In the upcoming code lines, we import the dataset and generate a summary visualization. This initial step allows us to gain a better understanding of the data structure and the variables involved.
 
 **MAYBE WE CAN REMOVE THE SUMMARY AND THE STR FUNCTION BECAUSE THEY STEAL MORE THAN A PAGE FROM OUR FINAL REPORT AND SINCE WE HAVE TO STAY IN 25 PAGES WE HAVE TO BE CAREFUL.**
+
+I agree. Maybe just leave str? otherwise take all away
 
 
 ``` r
@@ -125,7 +129,7 @@ str(data)
 
 ## Data Transformation
 
-Note that several variables in our dataset, namely "Vitamin.A....DV.", "Vitamin.C....DV.", "Calcium....DV." and "Iron....DV.", are represented as percentages. Consequently, the percentage symbol is included in our data. However, when conducting statistical analysis using R, the presence of non-numeric characters such as the percentage symbol can cause complications, interfering with the processing and analysis of the data. Therefore, we proceeded to remove it.
+Note that several variables in our dataset, namely "Vitamin.A....DV.", "Vitamin.C....DV.", "Calcium....DV." and "Iron....DV.", are represented as percentages. Consequently, the percentage symbol is included in our data. However, when conducting statistical analysis using R, the presence of non-numeric characters such as the percentage symbol can cause complications, interfering with the processing and analysis of the data. Therefore, we proceed to remove it.
 
 Similarly, as R primarily operates on numeric and categorical data, we also convert all the other numerical variables into numeric format.
 
@@ -155,13 +159,10 @@ data$Caffeine..mg. <- as.numeric(data$Caffeine..mg.)
 
 Another challenge we have to face is the presence of missing data. Indeed, in "Caffeine..mg." column there are some NA values. This is a common issue in data analysis and needs to be addressed appropriately to ensure the validity of our statistical results.
 
-There are different approaches to deal with this issue.
+One way to deal with these unwanted NA values is to omit the samples containing them from our study. This guarantees that our analysis is conducted solely on complete and dependable data. 
+Alternatively, we can fill them in with the average or the median of the observed values for that specific attribute. This second method helps to preserve the overall data distribution while addressing the missing data points.
 
-One way to handle this issue is removing the observations with NA values.
-
-A different approach is to fill in the NA values with the average or the median of the observed values for that specific attribute. This method helps to preserve the overall data distribution while addressing the missing data points.
-
-In our case, we decided to impute the NA values in the "Caffeine..mg." column with the median of the observed values for that attribute. This choice is suitable because we have observed that the data is skewed, and the median is a more robust measure of central tendency in the presence of outliers.
+In our work, we opt for the latter approach, replacing NA values with the median. This choice is particularly suitable for our data, which is skewed and contains outliers. Indeed, the median, being a measure of central tendency that is not affected by extreme values, provides a more robust replacement in the presence of outliers.
 
 
 ``` r
@@ -198,7 +199,7 @@ colnames(data_cleaned) <- c("Beverage_category", "Beverage",
 
 After completing these preliminary preprocessing steps, we calculate the correlation matrix for our dataset. This computation helps us in comprehending the interrelationships among the dataset’s variables. In the correlation matrix, a value near to $1$ at the $ij$ position indicates a strong positive correlation between the $i$-th and $j$-th variables. Conversely, a value close to $-1$ signifies a strong negative correlation. A value near $0$ suggests that the two variables do not significantly influence each other.
 
-Observe that the first three columns of our data are categorical features, therefore for these we cannot compute Pearson's correlation coefficient. In the following code lines we remove them to compute and plot such matrix.
+Observe that the first three columns of our data are categorical features, thus for these we cannot compute Pearson's correlation coefficient. In the following code lines we remove them to compute and plot such matrix.
 
 
 ``` r
@@ -216,6 +217,8 @@ corrplot(correlation_matrix, method = "number", tl.col = "black",
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/correlation_analysis-1.png" style="display: block; margin: auto;" />
 
+Moreover, we visualized the correlation matrix through a heatmap. The heatmap provides a visual representation of the correlation matrix, making it easier to identify patterns and relationships between the variables. The color gradient helps to distinguish between positive and negative correlations, with darker shades indicating stronger correlations.
+
 
 ``` r
 # Heatmap of the correlation matrix
@@ -228,8 +231,6 @@ heatmap(cor(data_num),
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/correlation_analysis_heatmap-1.png" style="display: block; margin: auto;" />
-
-Moreover, we visualized the correlation matrix through a heatmap. The heatmap provides a visual representation of the correlation matrix, making it easier to identify patterns and relationships between the variables. The color gradient helps to distinguish between positive and negative correlations, with darker shades indicating stronger correlations.
 
 # Data Visualization
 
