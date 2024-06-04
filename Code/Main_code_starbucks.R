@@ -99,22 +99,22 @@ correlation_matrix <- cor(data_num)
 ## Plot the correlation matrix ----
 par(mfrow = c(1, 1))
 corrplot(correlation_matrix, method = "number", tl.col = "black", 
-         tl.srt = 45, addCoef.col = "black", number.cex = 0.7)
+         tl.srt = 45, addCoef.col = "black", number.cex = 0.5, tl.cex = 0.7)
 
 ## Heatmap of the correlation matrix ----
 heatmap(cor(data_num), 
         col = colorRampPalette(c("#005cff", "#fbfbfb", "#d90000"))(100), 
         symm = TRUE, 
-        margins = c(10, 10), 
-        cexRow = 1.4,
-        cexCol = 1.4)
+        margins = c(8, 8), 
+        cexRow = 0.8,
+        cexCol = 0.8)
 
 # Data Visualization ----
 
 ## Histograms ----
 
 # Histogram of the data with density distribution
-par(mfrow = c(5, 3))
+par(mfrow = c(5, 3), mar = c(2, 2, 2, 2))
 col <- c('#ff0000', '#f70028', '#ee0040', '#e50055', '#dc0069',
          '#d2007b', '#c7008d', '#bb009e', '#ae00ae', '#a000be',
          '#8f00cc', '#7d00da', '#6700e7', '#4900f3', '#0000ff')
@@ -165,10 +165,10 @@ pairs(data_num,
 
 ## Barplot ----
 # Barplot of the data grouped by categories
-par(mfrow = c(5, 3))
+par(mfrow = c(5, 3), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   barplot(table(data_num[, i]), main = colnames(data_num)[i],
-          xlab = colnames(data_num)[i], col = col[i])
+          xlab = colnames(data_num)[i], col = col[i], border = col[i])
 }
 
 ### Beverage ----
@@ -177,23 +177,22 @@ for (i in 1:ncol(data_num)) {
 
 # We create a barplot to visualize the distribution 
 # of the 'Beverage_category' variable
-par(mfrow = c(1, 1))
+par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
 barplot(table(data$Beverage_category),
         main = "Distribution of Beverage Categories",
         ylab = "Count",
         col = "#4ea5ff",
         las = 2, 
-        cex.names = 0.8)
+        cex.names = 0.6)
 
 # We create a barplot to visualize the distribution 
 # of the preparation of the bevarage
-par(mfrow = c(1, 1))
 barplot(table(data$Beverage_prep),
         main = "Distribution of Beverage Preparation",
         ylab = "Count",
         col = "#ff810f",
         las = 2,
-        cex.names = 0.8)
+        cex.names = 0.6)
 
 # "#00cd5c" green
 
@@ -204,7 +203,9 @@ barplot(table(data$Beverage_prep),
 
 # Then we create a barplot to visualize the results
 
-total_calories_by_category <- aggregate(Calories ~ Beverage_category, data = data_cleaned, sum)
+par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
+total_calories_by_category <- aggregate(Calories ~ Beverage_category,
+                                        data = data_cleaned, sum)
 
 barplot(height = total_calories_by_category$Calories,
         names.arg = total_calories_by_category$Beverage_category,
@@ -212,7 +213,7 @@ barplot(height = total_calories_by_category$Calories,
         ylab = "Total Calories",
         col = "#4ea5ff",
         las = 2,
-        cex.names = 0.8)
+        cex.names = 0.6)
 
 # Now we want to compare the total sugars for each preparation of bevarage
 
@@ -221,7 +222,9 @@ barplot(height = total_calories_by_category$Calories,
 
 # Then we create a barplot to visualize the results
 
-total_sugar_by_prep <- aggregate(Total_Carbohydrates ~ Beverage_prep, data = data_cleaned, sum)
+par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
+total_sugar_by_prep <- aggregate(Total_Carbohydrates ~ Beverage_prep,
+                                 data = data_cleaned, sum)
 
 barplot(height = total_sugar_by_prep$Total_Carbohydrates,
         names.arg = total_sugar_by_prep$Beverage_prep,
@@ -229,11 +232,11 @@ barplot(height = total_sugar_by_prep$Total_Carbohydrates,
         ylab = "Total Sugars (g)",
         col = "#ff810f",
         las = 2,
-        cex.names = 0.8)
+        cex.names = 0.6)
 
 ## Boxplot ----
 # Boxplot of the data
-par(mfrow = c(5, 3))
+par(mfrow = c(3, 5), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   boxplot(data_num[, i], main = colnames(data_num)[i],
           xlab = colnames(data_num)[i], col = col[i])
@@ -260,10 +263,8 @@ plot(data_cleaned$Calories,
      main = "Calories vs Total Fat")
 
 # Legend
-legend("topright", 
-       legend = levels(data_cleaned$Beverage_category), 
-       col = colors, 
-       pch = 19)
+legend("topleft", legend = levels(data_cleaned$Beverage_category), 
+       col = colors, cex = 0.4, pch = 19)
 
 # Comparision between total fat and trans fat ( che cazzo sono?)
 
@@ -272,24 +273,30 @@ total_fat_density <- density(data_cleaned$Total_Fat)
 trans_fat_density <- density(data_cleaned$Trans_Fat)
 
 # create a grafico sovrapposto 
-plot(total_fat_density, col = "#4ea5ff", main = "Comparison of Total Fat and Trans Fat Distributions", 
-     xlab = "Fat Content (g)", ylab = "Density", ylim = c(0, max(total_fat_density$y, trans_fat_density$y)),
+plot(total_fat_density, col = "#4ea5ff",
+     main = "Comparison of Total Fat and Trans Fat Distributions", 
+     xlab = "Fat Content (g)", ylab = "Density", 
+     ylim = c(0, max(total_fat_density$y, trans_fat_density$y)),
      xlim = range(data_cleaned$Total_Fat, data_cleaned$Trans_Fat), 
      lwd = 2, lty = 1)
 lines(trans_fat_density, col = "#ff810f", lwd = 2, lty = 1)
-legend("topright", legend = c("Total Fat", "Trans Fat"), col = c("#4ea5ff", "#ff810f"), lwd = 2, lty = 1)
-
+legend("topright", legend = c("Total Fat", "Trans Fat"),
+       col = c("#4ea5ff", "#ff810f"), lwd = 2, lty = 1)
 # Create scatterplot to look into relantionship between 
 # calories and other variables 
 
 str(data_cleaned)
 
-par(mfrow = c(2, 2))  # Imposta il layout dei grafici a griglia 2x2
+par(mfrow = c(2, 2), mar = c(4, 4, 2, 2))
 with(data_cleaned, {
-  plot(Calories, Sodium , main = "Relation between Calories and Sodium", xlab = "Calories", ylab = "Sodium (mg)", col = col[1])
-  plot(Calories, Protein , main = "Relation between Calories and Protein", xlab = "Calories", ylab = "Protein (g)", col = col[5])
-  plot(Calories, Vitamin_C , main = "Relation between Calories and Vitamin C", xlab = "Calories", ylab = "Vitamin C (mg)", col = col[10])
-  plot(Calories, Cholesterol , main = "Relation between Calories and Fiber", xlab = "Calories", ylab = "Fiber (g)", col = col[15])
+  plot(Calories, Sodium , main = "Relation between Calories and Sodium",
+       xlab = "Calories", ylab = "Sodium (mg)", col = col[1])
+  plot(Calories, Protein , main = "Relation between Calories and Protein",
+       xlab = "Calories", ylab = "Protein (g)", col = col[5])
+  plot(Calories, Vitamin_C , main = "Relation between Calories and Vitamin C",
+       xlab = "Calories", ylab = "Vitamin C (mg)", col = col[10])
+  plot(Calories, Cholesterol , main = "Relation between Calories and Fiber",
+       xlab = "Calories", ylab = "Fiber (g)", col = col[15])
 })
 
 # There's increase in every feature with increase in calories
