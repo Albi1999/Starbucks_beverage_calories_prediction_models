@@ -414,6 +414,9 @@ BIC(glm_model)
 
 # Fit the logistic regression model using the training set
 glm_model_train <- glm(y_train ~ ., data = train_data, family = "gaussian")
+summary(glm_model_train)
+AIC(glm_model_train)
+BIC(glm_model_train)
 
 # Make predictions using the testing set
 predictions_glm <- predict(glm_model_train, newdata = test_data)

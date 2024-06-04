@@ -108,7 +108,7 @@
 
 \title{Statistical Learning Final Report}
 \author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
-\date{2024-05-31}
+\date{2024-06-04}
 
 \begin{document}
 \maketitle
@@ -130,6 +130,8 @@ then we can visualize the data through histograms, pairplots, barplots
 and boxplots. Finally, we can perform a regression analysis.
 
 \section{Libraries}\label{libraries}
+
+In this section we report the libraries we will use in our study.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -153,6 +155,12 @@ total caloric content and the constituents of the beverage.
 In the upcoming code lines, we import the dataset and generate a summary
 visualization. This initial step allows us to gain a better
 understanding of the data structure and the variables involved.
+
+\textbf{MAYBE WE CAN REMOVE THE SUMMARY AND THE STR FUNCTION BECAUSE
+THEY STEAL MORE THAN A PAGE FROM OUR FINAL REPORT AND SINCE WE HAVE TO
+STAY IN 25 PAGES WE HAVE TO BE CAREFUL.}
+
+I agree. Maybe just leave str? otherwise take all away
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -201,34 +209,6 @@ understanding of the data structure and the variables involved.
 ## 
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{str}\NormalTok{(data)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 'data.frame':    242 obs. of  18 variables:
-##  $ Beverage_category      : chr  "Coffee" "Coffee" "Coffee" "Coffee" ...
-##  $ Beverage               : chr  "Brewed Coffee" "Brewed Coffee" "Brewed Coffee" "Brewed Coffee" ...
-##  $ Beverage_prep          : chr  "Short" "Tall" "Grande" "Venti" ...
-##  $ Calories               : int  3 4 5 5 70 100 70 100 150 110 ...
-##  $ Total.Fat..g.          : num  0.1 0.1 0.1 0.1 0.1 3.5 2.5 0.2 6 4.5 ...
-##  $ Trans.Fat..g.          : num  0 0 0 0 0.1 2 0.4 0.2 3 0.5 ...
-##  $ Saturated.Fat..g.      : num  0 0 0 0 0 0.1 0 0 0.2 0 ...
-##  $ Sodium..mg.            : int  0 0 0 0 5 15 0 5 25 0 ...
-##  $ Total.Carbohydrates..g.: int  5 10 10 10 75 85 65 120 135 105 ...
-##  $ Cholesterol..mg.       : int  0 0 0 0 10 10 6 15 15 10 ...
-##  $ Dietary.Fibre..g.      : int  0 0 0 0 0 0 1 0 0 1 ...
-##  $ Sugars..g.             : int  0 0 0 0 9 9 4 14 14 6 ...
-##  $ Protein..g.            : num  0.3 0.5 1 1 6 6 5 10 10 8 ...
-##  $ Vitamin.A....DV.       : chr  "0%" "0%" "0%" "0%" ...
-##  $ Vitamin.C....DV.       : chr  "0%" "0%" "0%" "0%" ...
-##  $ Calcium....DV.         : chr  "0%" "0%" "0%" "2%" ...
-##  $ Iron....DV.            : chr  "0%" "0%" "0%" "0%" ...
-##  $ Caffeine..mg.          : chr  "175" "260" "330" "410" ...
-\end{verbatim}
-
 \subsection{Data Transformation}\label{data-transformation}
 
 Note that several variables in our dataset, namely
@@ -237,8 +217,8 @@ and ``Iron\ldots.DV.'', are represented as percentages. Consequently,
 the percentage symbol is included in our data. However, when conducting
 statistical analysis using R, the presence of non-numeric characters
 such as the percentage symbol can cause complications, interfering with
-the processing and analysis of the data. Therefore, we proceeded to
-remove it.
+the processing and analysis of the data. Therefore, we proceed to remove
+it.
 
 Similarly, as R primarily operates on numeric and categorical data, we
 also convert all the other numerical variables into numeric format.
@@ -274,28 +254,38 @@ Indeed, in ``Caffeine..mg.'' column there are some NA values. This is a
 common issue in data analysis and needs to be addressed appropriately to
 ensure the validity of our statistical results.
 
-There are different approaches to deal with this issue.
+One way to deal with these unwanted NA values is to omit the samples
+containing them from our study. This guarantees that our analysis is
+conducted solely on complete and dependable data. Alternatively, we can
+fill them in with the average or the median of the observed values for
+that specific attribute. This second method helps to preserve the
+overall data distribution while addressing the missing data points.
 
-One way to handle this issue is removing the observations with NA
-values.
-
-A different approach is to fill in the NA values with the average or the
-median of the observed values for that specific attribute. This method
-helps to preserve the overall data distribution while addressing the
-missing data points.
-
-In our case, we decided to impute the NA values in the ``Caffeine..mg.''
-column with the median of the observed values for that attribute. This
-choice is suitable because we have observed that the data is skewed, and
-the median is a more robust measure of central tendency in the presence
-of outliers.
+In our work, we opt for the latter approach, replacing NA values with
+the median. This choice is particularly suitable for our data, which is
+skewed and contains outliers. Indeed, the median, being a measure of
+central tendency that is not affected by extreme values, provides a more
+robust replacement in the presence of outliers.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# Summary of the Caffeine column}
+\FunctionTok{summary}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Caffeine..mg.)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    0.00   50.00   75.00   89.52  142.50  410.00      23
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Replace NA values with the median}
 \NormalTok{data\_cleaned }\OtherTok{\textless{}{-}}\NormalTok{ data}
 \NormalTok{data\_cleaned}\SpecialCharTok{$}\NormalTok{Caffeine..mg.[}\FunctionTok{is.na}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Caffeine..mg.)] }\OtherTok{\textless{}{-}} \FunctionTok{median}\NormalTok{(}
 \NormalTok{  data\_cleaned}\SpecialCharTok{$}\NormalTok{Caffeine..mg., }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
-
+\CommentTok{\# Summary of the Caffeine column after cleaning}
 \FunctionTok{summary}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Caffeine..mg.)}
 \end{Highlighting}
 \end{Shaded}
@@ -337,7 +327,7 @@ strong negative correlation. A value near \(0\) suggests that the two
 variables do not significantly influence each other.
 
 Observe that the first three columns of our data are categorical
-features, therefore for these we cannot compute Pearson's correlation
+features, thus for these we cannot compute Pearson's correlation
 coefficient. In the following code lines we remove them to compute and
 plot such matrix.
 
@@ -358,6 +348,13 @@ plot such matrix.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis-1} \end{center}
 
+Moreover, we visualized the correlation matrix through a heatmap. The
+heatmap provides a visual representation of the correlation matrix,
+making it easier to identify patterns and relationships between the
+variables. The color gradient helps to distinguish between positive and
+negative correlations, with darker shades indicating stronger
+correlations.
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Heatmap of the correlation matrix}
@@ -371,13 +368,6 @@ plot such matrix.
 \end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis_heatmap-1} \end{center}
-
-Moreover, we visualized the correlation matrix through a heatmap. The
-heatmap provides a visual representation of the correlation matrix,
-making it easier to identify patterns and relationships between the
-variables. The color gradient helps to distinguish between positive and
-negative correlations, with darker shades indicating stronger
-correlations.
 
 \section{Data Visualization}\label{data-visualization}
 
@@ -417,36 +407,7 @@ First of all we have to define the function for the pairplot. We will
 define a function for the histogram, the correlation and the smooth
 line.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Histogram function}
-\NormalTok{panel.hist }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, colour, ...)}
-\NormalTok{\{}
-\NormalTok{  usr }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\StringTok{"usr"}\NormalTok{)}
-  \FunctionTok{on.exit}\NormalTok{(}\FunctionTok{par}\NormalTok{(usr))}
-  \FunctionTok{par}\NormalTok{(}\AttributeTok{usr =} \FunctionTok{c}\NormalTok{(usr[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{], }\DecValTok{0}\NormalTok{, }\FloatTok{1.5}\NormalTok{))}
-\NormalTok{  h }\OtherTok{\textless{}{-}} \FunctionTok{hist}\NormalTok{(x, }\AttributeTok{plot =} \ConstantTok{FALSE}\NormalTok{)}
-\NormalTok{  breaks }\OtherTok{\textless{}{-}}\NormalTok{ h}\SpecialCharTok{$}\NormalTok{breaks}
-\NormalTok{  nB }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(breaks)}
-\NormalTok{  y }\OtherTok{\textless{}{-}}\NormalTok{ h}\SpecialCharTok{$}\NormalTok{counts}
-\NormalTok{  y }\OtherTok{\textless{}{-}}\NormalTok{ y }\SpecialCharTok{/} \FunctionTok{max}\NormalTok{(y)}
-  \FunctionTok{rect}\NormalTok{(breaks[}\SpecialCharTok{{-}}\NormalTok{nB], }\DecValTok{0}\NormalTok{, breaks[}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{], y, }\AttributeTok{col =}\NormalTok{ colour, ...)}
-\NormalTok{\}}
-
-\CommentTok{\# Correlations function}
-\NormalTok{panel.cor }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, y, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{, }\AttributeTok{prefix =} \StringTok{""}\NormalTok{, cex.cor, ...)}
-\NormalTok{\{}
-\NormalTok{  usr }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\StringTok{"usr"}\NormalTok{)}
-  \FunctionTok{on.exit}\NormalTok{(}\FunctionTok{par}\NormalTok{(usr))}
-  \FunctionTok{par}\NormalTok{(}\AttributeTok{usr =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
-\NormalTok{  r }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(}\FunctionTok{cor}\NormalTok{(x, y))}
-\NormalTok{  txt }\OtherTok{\textless{}{-}} \FunctionTok{format}\NormalTok{(}\FunctionTok{c}\NormalTok{(r, }\FloatTok{0.123456789}\NormalTok{), }\AttributeTok{digits =}\NormalTok{ digits)[}\DecValTok{1}\NormalTok{]}
-\NormalTok{  txt }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(prefix, txt)}
-  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{missing}\NormalTok{(cex.cor)) cex.cor }\OtherTok{\textless{}{-}} \FloatTok{0.5}\SpecialCharTok{/}\FunctionTok{strwidth}\NormalTok{(txt)}
-  \FunctionTok{text}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, txt, }\AttributeTok{cex =}\NormalTok{ cex.cor }\SpecialCharTok{*}\NormalTok{ r)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
+Then we create the pairplot using the defined functions.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -679,6 +640,475 @@ ADD COMMENTS ON THE GRAPH
 
 \subsection{Linear Regression}\label{linear-regression}
 
+Linear regression model to predict the amount of calories based on the
+amount of the other variables We use the lm() function to fit a linear
+regression model
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fit the linear regression model}
+
+\CommentTok{\# Set the calories as the dependent variable}
+\NormalTok{y }\OtherTok{\textless{}{-}}\NormalTok{ data\_num}\SpecialCharTok{$}\NormalTok{Calories}
+
+\CommentTok{\# Remove calories column in order to use the other variables }
+\CommentTok{\# as independent variables}
+\NormalTok{data\_num }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+
+\NormalTok{lm\_model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ data\_num)}
+\FunctionTok{summary}\NormalTok{(lm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ ., data = data_num)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.0233  -3.3009  -0.3806   3.0039  21.9404 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)          0.252316   0.952833   0.265  0.79140    
+## Total_Fat           11.143733   0.532812  20.915  < 2e-16 ***
+## Trans_Fat           -2.477820   0.809270  -3.062  0.00247 ** 
+## Saturated_Fat       -9.816317  18.143619  -0.541  0.58901    
+## Sodium              -0.279257   0.167487  -1.667  0.09683 .  
+## Total_Carbohydrates  0.020972   0.007420   2.826  0.00513 ** 
+## Cholesterol          2.829543   0.340268   8.316 8.43e-15 ***
+## Dietary_Fibre        1.534913   0.942106   1.629  0.10465    
+## Sugars               1.131045   0.348234   3.248  0.00134 ** 
+## Protein              2.218895   0.510445   4.347 2.08e-05 ***
+## Vitamin_A            0.162307   0.083662   1.940  0.05361 .  
+## Vitamin_C            0.147669   0.047675   3.097  0.00220 ** 
+## Calcium              0.462193   0.142257   3.249  0.00133 ** 
+## Iron                -0.649101   0.070666  -9.185  < 2e-16 ***
+## Caffeine             0.013513   0.005826   2.319  0.02126 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.126 on 227 degrees of freedom
+## Multiple R-squared:  0.9977, Adjusted R-squared:  0.9975 
+## F-statistic:  6915 on 14 and 227 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(lm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/linear_regression-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{AIC}\NormalTok{(lm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1494.304
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{BIC}\NormalTok{(lm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1550.127
+\end{verbatim}
+
+The model has a low AIC and BIC values, the R-squared value is 0.99 so
+the model is a good fit for the data. The model is significant, the
+p-value is less than 0.05
+
 \subsection{Logistic Regression}\label{logistic-regression}
+
+Logistic regression model to predict the amount of calories based on the
+amount of the other variables We use the glm() function to fit a
+logistic regression model
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fit the logistic regression model}
+
+\NormalTok{glm\_model }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ data\_num, }\AttributeTok{family =} \StringTok{"gaussian"}\NormalTok{) }
+\CommentTok{\# Try to change the family}
+\FunctionTok{summary}\NormalTok{(glm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = y ~ ., family = "gaussian", data = data_num)
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)          0.252316   0.952833   0.265  0.79140    
+## Total_Fat           11.143733   0.532812  20.915  < 2e-16 ***
+## Trans_Fat           -2.477820   0.809270  -3.062  0.00247 ** 
+## Saturated_Fat       -9.816317  18.143619  -0.541  0.58901    
+## Sodium              -0.279257   0.167487  -1.667  0.09683 .  
+## Total_Carbohydrates  0.020972   0.007420   2.826  0.00513 ** 
+## Cholesterol          2.829543   0.340268   8.316 8.43e-15 ***
+## Dietary_Fibre        1.534913   0.942106   1.629  0.10465    
+## Sugars               1.131045   0.348234   3.248  0.00134 ** 
+## Protein              2.218895   0.510445   4.347 2.08e-05 ***
+## Vitamin_A            0.162307   0.083662   1.940  0.05361 .  
+## Vitamin_C            0.147669   0.047675   3.097  0.00220 ** 
+## Calcium              0.462193   0.142257   3.249  0.00133 ** 
+## Iron                -0.649101   0.070666  -9.185  < 2e-16 ***
+## Caffeine             0.013513   0.005826   2.319  0.02126 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for gaussian family taken to be 26.27685)
+## 
+##     Null deviance: 2549987.0  on 241  degrees of freedom
+## Residual deviance:    5964.8  on 227  degrees of freedom
+## AIC: 1494.3
+## 
+## Number of Fisher Scoring iterations: 2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(glm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/logistic_regression-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{AIC}\NormalTok{(glm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1494.304
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{BIC}\NormalTok{(glm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1550.127
+\end{verbatim}
+
+\subsection{Cross Validation}\label{cross-validation}
+
+Cross validation is a technique used to evaluate the performance of a
+model. It involves splitting the data into training and testing sets,
+fitting the model using the training set, and evaluating the model using
+the testing set. This process is repeated multiple times to ensure that
+the model is robust and generalizes well to new data.
+
+\subsubsection{Linear Regression}\label{linear-regression-1}
+
+We split the data into training and testing sets, fit the linear
+regression model using the training set.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Split the data into training and testing sets}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{train\_index }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(data\_num), }\FloatTok{0.8} \SpecialCharTok{*} \FunctionTok{nrow}\NormalTok{(data\_num))}
+\NormalTok{train\_data }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[train\_index, ]}
+\NormalTok{test\_data }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[}\SpecialCharTok{{-}}\NormalTok{train\_index, ]}
+
+\CommentTok{\# Fit the linear regression model using the training set}
+\NormalTok{y\_train }\OtherTok{\textless{}{-}}\NormalTok{ y[train\_index]}
+
+\NormalTok{lm\_model\_train }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_train }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ train\_data)}
+\FunctionTok{summary}\NormalTok{(lm\_model\_train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y_train ~ ., data = train_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -13.3660  -3.4895  -0.3014   3.2957  22.0511 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)          0.384009   1.086638   0.353 0.724213    
+## Total_Fat           11.010780   0.584930  18.824  < 2e-16 ***
+## Trans_Fat           -2.384286   0.926402  -2.574 0.010876 *  
+## Saturated_Fat       -6.394565  19.670475  -0.325 0.745499    
+## Sodium              -0.344189   0.189423  -1.817 0.070894 .  
+## Total_Carbohydrates  0.018919   0.008550   2.213 0.028182 *  
+## Cholesterol          2.688521   0.393449   6.833 1.27e-10 ***
+## Dietary_Fibre        1.334079   1.068310   1.249 0.213387    
+## Sugars               1.270177   0.402629   3.155 0.001886 ** 
+## Protein              2.288347   0.598184   3.825 0.000180 ***
+## Vitamin_A            0.153517   0.104811   1.465 0.144767    
+## Vitamin_C            0.192040   0.055413   3.466 0.000663 ***
+## Calcium              0.458855   0.163646   2.804 0.005609 ** 
+## Iron                -0.571726   0.080401  -7.111 2.70e-11 ***
+## Caffeine             0.016253   0.006917   2.350 0.019895 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.168 on 178 degrees of freedom
+## Multiple R-squared:  0.9975, Adjusted R-squared:  0.9973 
+## F-statistic:  5061 on 14 and 178 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{AIC}\NormalTok{(lm\_model\_train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1198.059
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{BIC}\NormalTok{(lm\_model\_train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1250.262
+\end{verbatim}
+
+\paragraph{Model Evaluation}\label{model-evaluation}
+
+We evaluate the model using the testing set. We make predictions using
+the testing set and calculate the mean squared error and the root mean
+squared error to assess the model's accuracy. We also plot the residuals
+to check if the model is a good fit.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Make predictions using the testing set}
+\NormalTok{y\_test }\OtherTok{\textless{}{-}}\NormalTok{ y[}\SpecialCharTok{{-}}\NormalTok{train\_index]}
+\NormalTok{predictions\_lm }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lm\_model\_train, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
+
+\CommentTok{\# Evaluate the model using the testing set}
+
+\CommentTok{\# Calculate the mean squared error}
+\NormalTok{mse\_lm}\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((y\_test }\SpecialCharTok{{-}}\NormalTok{ predictions\_lm)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{mse\_lm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 27.00986
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calculate the root mean squared error}
+\NormalTok{rmse\_lm }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(mse\_lm)}
+\NormalTok{rmse\_lm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.197101
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Now we plot the residuals to check if the model is a good fit}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(lm\_model\_train, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/model_evaluation_lm-1} \end{center}
+
+The residuals are randomly distributed around zero, so the model is a
+good fit
+
+Now we compute the accuracy of the model and then we plot the results
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compute the accuracy of the model}
+\NormalTok{accuracy\_lm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (rmse\_lm }\SpecialCharTok{/} \FunctionTok{mean}\NormalTok{(y\_test))}
+\NormalTok{accuracy\_lm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.972211
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Plot the results}
+\FunctionTok{plot}\NormalTok{(y\_test, predictions\_lm, }\AttributeTok{main =} \StringTok{"Actual vs Predicted Values"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Actual Values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Predicted Values"}\NormalTok{,}
+     \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/accuracy_lm-1} \end{center}
+
+The actual and predicted values are close to each other, so the model is
+a good fit
+
+\subsubsection{Logistic Regression}\label{logistic-regression-1}
+
+We split the data into training and testing sets, fit the logistic
+regression model using the training set.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Fit the logistic regression model using the training set}
+\NormalTok{glm\_model\_train }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y\_train }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ train\_data, }\AttributeTok{family =} \StringTok{"gaussian"}\NormalTok{)}
+\FunctionTok{summary}\NormalTok{(glm\_model\_train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = y_train ~ ., family = "gaussian", data = train_data)
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)          0.384009   1.086638   0.353 0.724213    
+## Total_Fat           11.010780   0.584930  18.824  < 2e-16 ***
+## Trans_Fat           -2.384286   0.926402  -2.574 0.010876 *  
+## Saturated_Fat       -6.394565  19.670475  -0.325 0.745499    
+## Sodium              -0.344189   0.189423  -1.817 0.070894 .  
+## Total_Carbohydrates  0.018919   0.008550   2.213 0.028182 *  
+## Cholesterol          2.688521   0.393449   6.833 1.27e-10 ***
+## Dietary_Fibre        1.334079   1.068310   1.249 0.213387    
+## Sugars               1.270177   0.402629   3.155 0.001886 ** 
+## Protein              2.288347   0.598184   3.825 0.000180 ***
+## Vitamin_A            0.153517   0.104811   1.465 0.144767    
+## Vitamin_C            0.192040   0.055413   3.466 0.000663 ***
+## Calcium              0.458855   0.163646   2.804 0.005609 ** 
+## Iron                -0.571726   0.080401  -7.111 2.70e-11 ***
+## Caffeine             0.016253   0.006917   2.350 0.019895 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for gaussian family taken to be 26.70325)
+## 
+##     Null deviance: 1896791.9  on 192  degrees of freedom
+## Residual deviance:    4753.2  on 178  degrees of freedom
+## AIC: 1198.1
+## 
+## Number of Fisher Scoring iterations: 2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{AIC}\NormalTok{(glm\_model\_train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1198.059
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{BIC}\NormalTok{(glm\_model\_train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1250.262
+\end{verbatim}
+
+\paragraph{Model Evaluation}\label{model-evaluation-1}
+
+We evaluate the model using the testing set. We make predictions using
+the testing set and calculate the mean squared error and the root mean
+squared error to assess the model's accuracy. We also plot the residuals
+to check if the model is a good fit.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Make predictions using the testing set}
+\NormalTok{predictions\_glm }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(glm\_model\_train, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
+
+\CommentTok{\# Evaluate the model using the testing set}
+
+\CommentTok{\# Calculate the mean squared error}
+\NormalTok{mse\_glm }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((y\_test }\SpecialCharTok{{-}}\NormalTok{ predictions\_glm)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{mse\_glm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 27.00986
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calculate the root mean squared error}
+\NormalTok{rmse\_glm }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(mse\_glm)}
+\NormalTok{rmse\_glm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.197101
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Now we plot the residuals to check if the model is a good fit}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(glm\_model\_train, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/model_evaluation_glm-1} \end{center}
+
+The residuals are randomly distributed around zero, so the model is a
+good fit
+
+Now we compute the accuracy of the model and then we plot the results
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compute the accuracy of the model}
+\NormalTok{accuracy\_glm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (rmse\_glm }\SpecialCharTok{/} \FunctionTok{mean}\NormalTok{(y\_test))}
+\NormalTok{accuracy\_glm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.972211
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Plot the results}
+\FunctionTok{plot}\NormalTok{(y\_test, predictions\_glm, }\AttributeTok{main =} \StringTok{"Actual vs Predicted Values"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Actual Values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Predicted Values"}\NormalTok{,}
+     \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/accuracy_glm-1} \end{center}
+
+The actual and predicted values are close to each other, so the model is
+a good fit
 
 \end{document}
