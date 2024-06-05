@@ -108,7 +108,7 @@
 
 \title{Statistical Learning Final Report}
 \author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
-\date{2024-06-04}
+\date{2024-06-05}
 
 \begin{document}
 \maketitle
@@ -129,17 +129,6 @@ analysis on it. We can start by calculating the correlation matrix and
 then we can visualize the data through histograms, pairplots, barplots
 and boxplots. Finally, we can perform a regression analysis.
 
-\section{Libraries}\label{libraries}
-
-In this section we report the libraries we will use in our study.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(corrplot)}
-\FunctionTok{library}\NormalTok{(knitr)}
-\end{Highlighting}
-\end{Shaded}
-
 \section{Data}\label{data}
 
 The dataset we will analyze in this project is \emph{Starbucks Beverage
@@ -156,58 +145,11 @@ In the upcoming code lines, we import the dataset and generate a summary
 visualization. This initial step allows us to gain a better
 understanding of the data structure and the variables involved.
 
-\textbf{MAYBE WE CAN REMOVE THE SUMMARY AND THE STR FUNCTION BECAUSE
-THEY STEAL MORE THAN A PAGE FROM OUR FINAL REPORT AND SINCE WE HAVE TO
-STAY IN 25 PAGES WE HAVE TO BE CAREFUL.}
-
-I agree. Maybe just leave str? otherwise take all away
-
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"Data/starbucks.csv"}\NormalTok{, }\AttributeTok{header =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{sep =} \StringTok{","}\NormalTok{)}
-
-\CommentTok{\# Overview of the data}
-\FunctionTok{summary}\NormalTok{(data)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-##  Beverage_category    Beverage         Beverage_prep         Calories    
-##  Length:242         Length:242         Length:242         Min.   :  0.0  
-##  Class :character   Class :character   Class :character   1st Qu.:120.0  
-##  Mode  :character   Mode  :character   Mode  :character   Median :185.0  
-##                                                           Mean   :193.9  
-##                                                           3rd Qu.:260.0  
-##                                                           Max.   :510.0  
-##  Total.Fat..g.    Trans.Fat..g.   Saturated.Fat..g.  Sodium..mg.    
-##  Min.   : 0.000   Min.   :0.000   Min.   :0.0000    Min.   : 0.000  
-##  1st Qu.: 0.200   1st Qu.:0.100   1st Qu.:0.0000    1st Qu.: 0.000  
-##  Median : 2.500   Median :0.500   Median :0.0000    Median : 5.000  
-##  Mean   : 2.905   Mean   :1.307   Mean   :0.0376    Mean   : 6.364  
-##  3rd Qu.: 4.500   3rd Qu.:2.000   3rd Qu.:0.1000    3rd Qu.:10.000  
-##  Max.   :15.000   Max.   :9.000   Max.   :0.3000    Max.   :40.000  
-##  Total.Carbohydrates..g. Cholesterol..mg. Dietary.Fibre..g.   Sugars..g.   
-##  Min.   :  0.0           Min.   : 0.00    Min.   :0.0000    Min.   : 0.00  
-##  1st Qu.: 70.0           1st Qu.:21.00    1st Qu.:0.0000    1st Qu.:18.00  
-##  Median :125.0           Median :34.00    Median :0.0000    Median :32.00  
-##  Mean   :128.9           Mean   :35.99    Mean   :0.8058    Mean   :32.96  
-##  3rd Qu.:170.0           3rd Qu.:50.75    3rd Qu.:1.0000    3rd Qu.:43.75  
-##  Max.   :340.0           Max.   :90.00    Max.   :8.0000    Max.   :84.00  
-##   Protein..g.     Vitamin.A....DV.   Vitamin.C....DV.   Calcium....DV.    
-##  Min.   : 0.000   Length:242         Length:242         Length:242        
-##  1st Qu.: 3.000   Class :character   Class :character   Class :character  
-##  Median : 6.000   Mode  :character   Mode  :character   Mode  :character  
-##  Mean   : 6.979                                                           
-##  3rd Qu.:10.000                                                           
-##  Max.   :20.000                                                           
-##  Iron....DV.        Caffeine..mg.     
-##  Length:242         Length:242        
-##  Class :character   Class :character  
-##  Mode  :character   Mode  :character  
-##                                       
-##                                       
-## 
-\end{verbatim}
 
 \subsection{Data Transformation}\label{data-transformation}
 
@@ -233,7 +175,6 @@ it easier to explore, visualize, and understand our data.
 \NormalTok{data}\SpecialCharTok{$}\NormalTok{Calcium....DV. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"\%"}\NormalTok{, }\StringTok{""}\NormalTok{, data}\SpecialCharTok{$}\NormalTok{Calcium....DV.))}
 \NormalTok{data}\SpecialCharTok{$}\NormalTok{Iron....DV. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"\%"}\NormalTok{, }\StringTok{""}\NormalTok{, data}\SpecialCharTok{$}\NormalTok{Iron....DV.))}
 \NormalTok{data}\SpecialCharTok{$}\NormalTok{Vitamin.A....DV. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"\%"}\NormalTok{, }\StringTok{""}\NormalTok{, data}\SpecialCharTok{$}\NormalTok{Vitamin.A....DV.))}
-
 \CommentTok{\# Set the other variables as numeric}
 \NormalTok{data}\SpecialCharTok{$}\NormalTok{Calories }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Calories)}
 \NormalTok{data}\SpecialCharTok{$}\NormalTok{Trans.Fat..g. }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Trans.Fat..g.)}
@@ -303,15 +244,12 @@ readable dataset.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{colnames}\NormalTok{(data\_cleaned) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Beverage\_category"}\NormalTok{, }\StringTok{"Beverage"}\NormalTok{,}
-                            \StringTok{"Beverage\_prep"}\NormalTok{, }\StringTok{"Calories"}\NormalTok{,}
-                            \StringTok{"Total\_Fat"}\NormalTok{, }\StringTok{"Trans\_Fat"}\NormalTok{,}
-                            \StringTok{"Saturated\_Fat"}\NormalTok{, }\StringTok{"Sodium"}\NormalTok{,}
-                            \StringTok{"Total\_Carbohydrates"}\NormalTok{, }\StringTok{"Cholesterol"}\NormalTok{,}
-                            \StringTok{"Dietary\_Fibre"}\NormalTok{, }\StringTok{"Sugars"}\NormalTok{,}
-                            \StringTok{"Protein"}\NormalTok{, }\StringTok{"Vitamin\_A"}\NormalTok{,}
-                            \StringTok{"Vitamin\_C"}\NormalTok{, }\StringTok{"Calcium"}\NormalTok{,}
-                            \StringTok{"Iron"}\NormalTok{, }\StringTok{"Caffeine"}\NormalTok{)}
+\FunctionTok{colnames}\NormalTok{(data\_cleaned) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Beverage\_category"}\NormalTok{, }\StringTok{"Beverage"}\NormalTok{, }\StringTok{"Beverage\_prep"}\NormalTok{,}
+                            \StringTok{"Calories"}\NormalTok{, }\StringTok{"Total\_Fat"}\NormalTok{, }\StringTok{"Trans\_Fat"}\NormalTok{,}
+                            \StringTok{"Saturated\_Fat"}\NormalTok{, }\StringTok{"Sodium"}\NormalTok{, }\StringTok{"Total\_Carbohydrates"}\NormalTok{,}
+                            \StringTok{"Cholesterol"}\NormalTok{, }\StringTok{"Dietary\_Fibre"}\NormalTok{, }\StringTok{"Sugars"}\NormalTok{,}
+                            \StringTok{"Protein"}\NormalTok{, }\StringTok{"Vitamin\_A"}\NormalTok{, }\StringTok{"Vitamin\_C"}\NormalTok{,}
+                            \StringTok{"Calcium"}\NormalTok{, }\StringTok{"Iron"}\NormalTok{, }\StringTok{"Caffeine"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -335,11 +273,7 @@ plot such matrix.
 \begin{Highlighting}[]
 \CommentTok{\# Remove first 3 columns for the correlation matrix since them are categorical}
 \NormalTok{data\_num }\OtherTok{\textless{}{-}}\NormalTok{ data\_cleaned[, }\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{)]}
-
-\CommentTok{\# Calculate the correlation matrix}
-
 \NormalTok{correlation\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(data\_num)}
-
 \CommentTok{\# Plot the correlation matrix using corrplot}
 \FunctionTok{corrplot}\NormalTok{(correlation\_matrix, }\AttributeTok{method =} \StringTok{"number"}\NormalTok{, }\AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }
          \AttributeTok{tl.srt =} \DecValTok{45}\NormalTok{, }\AttributeTok{addCoef.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{number.cex =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{tl.cex =} \FloatTok{0.7}\NormalTok{)}
@@ -360,14 +294,14 @@ correlations.
 \CommentTok{\# Heatmap of the correlation matrix}
 \FunctionTok{heatmap}\NormalTok{(}\FunctionTok{cor}\NormalTok{(data\_num), }
         \AttributeTok{col =} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"\#005cff"}\NormalTok{, }\StringTok{"\#fbfbfb"}\NormalTok{, }\StringTok{"\#d90000"}\NormalTok{))(}\DecValTok{100}\NormalTok{), }
-        \AttributeTok{symm =} \ConstantTok{TRUE}\NormalTok{, }
-        \AttributeTok{margins =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{8}\NormalTok{), }
-        \AttributeTok{cexRow =} \FloatTok{0.8}\NormalTok{,}
-        \AttributeTok{cexCol =} \FloatTok{0.8}\NormalTok{)}
+        \AttributeTok{symm =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{margins =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{8}\NormalTok{), }\AttributeTok{cexRow =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{cexCol =} \FloatTok{0.8}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis_heatmap-1} \end{center}
+
+\textbf{MAYBE WE CAN REMOVE THE HEATMAP AND KEEP ONLY THE CORRLOT SINCE
+IT STEAL A LOT OF SPACE FROM OUR REPORT}
 
 \section{Data Visualization}\label{data-visualization}
 
@@ -433,7 +367,6 @@ dataset.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Barplot of the data}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
   \FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data\_num[, i]), }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
@@ -454,14 +387,10 @@ to understand the most common beverages and preparation methods.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Beverage category}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Beverage\_category),}
         \AttributeTok{main =} \StringTok{"Distribution of Beverage Categories"}\NormalTok{,}
-        \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{,}
-        \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
-        \AttributeTok{las =} \DecValTok{2}\NormalTok{, }
-        \AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
+        \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{, }\AttributeTok{las =} \DecValTok{2}\NormalTok{, }\AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -469,13 +398,9 @@ to understand the most common beverages and preparation methods.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Beverage preparation}
 \FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Beverage\_prep),}
         \AttributeTok{main =} \StringTok{"Distribution of Beverage Preparation"}\NormalTok{,}
-        \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{,}
-        \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{,}
-        \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
-        \AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
+        \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{las =} \DecValTok{2}\NormalTok{, }\AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -488,17 +413,13 @@ the results.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \NormalTok{total\_calories\_by\_category }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(Calories }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Beverage\_category,}
                                         \AttributeTok{data =}\NormalTok{ data\_cleaned, sum)}
-
 \FunctionTok{barplot}\NormalTok{(}\AttributeTok{height =}\NormalTok{ total\_calories\_by\_category}\SpecialCharTok{$}\NormalTok{Calories,}
         \AttributeTok{names.arg =}\NormalTok{ total\_calories\_by\_category}\SpecialCharTok{$}\NormalTok{Beverage\_category,}
         \AttributeTok{main =} \StringTok{"Total Calories by Beverage Category"}\NormalTok{,}
-        \AttributeTok{ylab =} \StringTok{"Total Calories"}\NormalTok{,}
-        \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
-        \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
-        \AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
+        \AttributeTok{ylab =} \StringTok{"Total Calories"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{, }\AttributeTok{las =} \DecValTok{2}\NormalTok{, }\AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -511,17 +432,13 @@ results.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \NormalTok{total\_sugar\_by\_prep }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(Total\_Carbohydrates }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Beverage\_prep,}
                                  \AttributeTok{data =}\NormalTok{ data\_cleaned, sum)}
-
 \FunctionTok{barplot}\NormalTok{(}\AttributeTok{height =}\NormalTok{ total\_sugar\_by\_prep}\SpecialCharTok{$}\NormalTok{Total\_Carbohydrates,}
         \AttributeTok{names.arg =}\NormalTok{ total\_sugar\_by\_prep}\SpecialCharTok{$}\NormalTok{Beverage\_prep,}
         \AttributeTok{main =} \StringTok{"Total Sugars by Beverage Preparation"}\NormalTok{,}
-        \AttributeTok{ylab =} \StringTok{"Total Sugars (g)"}\NormalTok{,}
-        \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{,}
-        \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
-        \AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
+        \AttributeTok{ylab =} \StringTok{"Total Sugars (g)"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{las =} \DecValTok{2}\NormalTok{, }\AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -536,7 +453,6 @@ us to identify the spread and variability of the data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Boxplot of the data}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
 \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
   \FunctionTok{boxplot}\NormalTok{(data\_num[, i], }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
@@ -562,23 +478,14 @@ category and create a legend to identify each category.
 \begin{Highlighting}[]
 \CommentTok{\# Set the variable as factor}
 \NormalTok{data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category)}
-
-\CommentTok{\# Assign distinct colors to each beverage category}
 \NormalTok{colors }\OtherTok{\textless{}{-}} \FunctionTok{rainbow}\NormalTok{(}\FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category)))}
 \NormalTok{color\_map }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(colors, }\FunctionTok{levels}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category))}
-
-\CommentTok{\# Create a scatterplot to compare amounts of calories and fat }
-\CommentTok{\# for each categories of bevarage}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
 \FunctionTok{plot}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Calories, }
 \NormalTok{     data\_cleaned}\SpecialCharTok{$}\NormalTok{Total\_Fat\_g,}
      \AttributeTok{col =}\NormalTok{ color\_map[data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category],}
-     \AttributeTok{pch =} \DecValTok{19}\NormalTok{,}
-     \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{,}
-     \AttributeTok{ylab =} \StringTok{"Total Fat (g)"}\NormalTok{,}
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Total Fat (g)"}\NormalTok{,}
      \AttributeTok{main =} \StringTok{"Calories vs Total Fat"}\NormalTok{)}
-
-\CommentTok{\# Legend}
 \FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{levels}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category), }
        \AttributeTok{col =}\NormalTok{ colors, }\AttributeTok{cex =} \FloatTok{0.4}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
 \end{Highlighting}
@@ -588,12 +495,9 @@ category and create a legend to identify each category.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Comparision between total fat and trans fat ( che cazzo sono?)}
-
 \CommentTok{\# Numeric variable {-}\textgreater{} calculate density}
 \NormalTok{total\_fat\_density }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Total\_Fat)}
 \NormalTok{trans\_fat\_density }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Trans\_Fat)}
-
 \FunctionTok{plot}\NormalTok{(total\_fat\_density, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
      \AttributeTok{main =} \StringTok{"Comparison of Total Fat and Trans Fat Distributions"}\NormalTok{, }
      \AttributeTok{xlab =} \StringTok{"Fat Content (g)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{, }
@@ -646,15 +550,12 @@ regression model
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Fit the linear regression model}
-
 \CommentTok{\# Set the calories as the dependent variable}
 \NormalTok{y }\OtherTok{\textless{}{-}}\NormalTok{ data\_num}\SpecialCharTok{$}\NormalTok{Calories}
-
 \CommentTok{\# Remove calories column in order to use the other variables }
 \CommentTok{\# as independent variables}
 \NormalTok{data\_num }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
-
+\CommentTok{\# Linear regression model}
 \NormalTok{lm\_model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ data\_num)}
 \FunctionTok{summary}\NormalTok{(lm\_model)}
 \end{Highlighting}
@@ -735,8 +636,7 @@ logistic regression model
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Fit the logistic regression model}
-
+\CommentTok{\# Logistic regression model}
 \NormalTok{glm\_model }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ data\_num, }\AttributeTok{family =} \StringTok{"gaussian"}\NormalTok{) }
 \CommentTok{\# Try to change the family}
 \FunctionTok{summary}\NormalTok{(glm\_model)}
@@ -826,10 +726,8 @@ regression model using the training set.
 \NormalTok{train\_index }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(data\_num), }\FloatTok{0.8} \SpecialCharTok{*} \FunctionTok{nrow}\NormalTok{(data\_num))}
 \NormalTok{train\_data }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[train\_index, ]}
 \NormalTok{test\_data }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[}\SpecialCharTok{{-}}\NormalTok{train\_index, ]}
-
 \CommentTok{\# Fit the linear regression model using the training set}
 \NormalTok{y\_train }\OtherTok{\textless{}{-}}\NormalTok{ y[train\_index]}
-
 \NormalTok{lm\_model\_train }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_train }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ train\_data)}
 \FunctionTok{summary}\NormalTok{(lm\_model\_train)}
 \end{Highlighting}
@@ -901,9 +799,7 @@ to check if the model is a good fit.
 \CommentTok{\# Make predictions using the testing set}
 \NormalTok{y\_test }\OtherTok{\textless{}{-}}\NormalTok{ y[}\SpecialCharTok{{-}}\NormalTok{train\_index]}
 \NormalTok{predictions\_lm }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lm\_model\_train, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
-
 \CommentTok{\# Evaluate the model using the testing set}
-
 \CommentTok{\# Calculate the mean squared error}
 \NormalTok{mse\_lm}\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((y\_test }\SpecialCharTok{{-}}\NormalTok{ predictions\_lm)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
 \NormalTok{mse\_lm}
@@ -928,7 +824,7 @@ to check if the model is a good fit.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Now we plot the residuals to check if the model is a good fit}
+\CommentTok{\# Plot the residuals to check if the model is a good fit}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
 \FunctionTok{plot}\NormalTok{(lm\_model\_train, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
 \end{Highlighting}
@@ -943,7 +839,7 @@ Now we compute the accuracy of the model and then we plot the results
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Compute the accuracy of the model}
+\CommentTok{\# Accuracy of the model}
 \NormalTok{accuracy\_lm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (rmse\_lm }\SpecialCharTok{/} \FunctionTok{mean}\NormalTok{(y\_test))}
 \NormalTok{accuracy\_lm}
 \end{Highlighting}
@@ -955,7 +851,6 @@ Now we compute the accuracy of the model and then we plot the results
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Plot the results}
 \FunctionTok{plot}\NormalTok{(y\_test, predictions\_lm, }\AttributeTok{main =} \StringTok{"Actual vs Predicted Values"}\NormalTok{,}
      \AttributeTok{xlab =} \StringTok{"Actual Values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Predicted Values"}\NormalTok{,}
      \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
@@ -1045,9 +940,7 @@ to check if the model is a good fit.
 \begin{Highlighting}[]
 \CommentTok{\# Make predictions using the testing set}
 \NormalTok{predictions\_glm }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(glm\_model\_train, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
-
 \CommentTok{\# Evaluate the model using the testing set}
-
 \CommentTok{\# Calculate the mean squared error}
 \NormalTok{mse\_glm }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((y\_test }\SpecialCharTok{{-}}\NormalTok{ predictions\_glm)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
 \NormalTok{mse\_glm}
@@ -1072,7 +965,7 @@ to check if the model is a good fit.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Now we plot the residuals to check if the model is a good fit}
+\CommentTok{\# Plot the residuals to check if the model is a good fit}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
 \FunctionTok{plot}\NormalTok{(glm\_model\_train, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
 \end{Highlighting}
@@ -1087,7 +980,7 @@ Now we compute the accuracy of the model and then we plot the results
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Compute the accuracy of the model}
+\CommentTok{\# Accuracy of the model}
 \NormalTok{accuracy\_glm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (rmse\_glm }\SpecialCharTok{/} \FunctionTok{mean}\NormalTok{(y\_test))}
 \NormalTok{accuracy\_glm}
 \end{Highlighting}
@@ -1099,7 +992,6 @@ Now we compute the accuracy of the model and then we plot the results
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Plot the results}
 \FunctionTok{plot}\NormalTok{(y\_test, predictions\_glm, }\AttributeTok{main =} \StringTok{"Actual vs Predicted Values"}\NormalTok{,}
      \AttributeTok{xlab =} \StringTok{"Actual Values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Predicted Values"}\NormalTok{,}
      \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}

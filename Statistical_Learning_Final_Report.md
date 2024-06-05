@@ -1,7 +1,7 @@
 ---
 title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
-date: "2024-06-04"
+date: "2024-06-05"
 output:
   html_document:
     toc: true
@@ -33,16 +33,6 @@ I think that we have to analyze the dataset and perform some statistical analysi
 
 
 
-# Libraries
-
-In this section we report the libraries we will use in our study.
-
-
-``` r
-library(corrplot)
-library(knitr)
-```
-
 # Data
 
 The dataset we will analyze in this project is *Starbucks Beverage Components* from Kaggle, that you can find at the following link: <https://www.kaggle.com/datasets/henryshan/starbucks>.
@@ -51,54 +41,9 @@ This data provides a comprehensive guide to the nutritional content of the bever
 
 In the upcoming code lines, we import the dataset and generate a summary visualization. This initial step allows us to gain a better understanding of the data structure and the variables involved.
 
-**MAYBE WE CAN REMOVE THE SUMMARY AND THE STR FUNCTION BECAUSE THEY STEAL MORE THAN A PAGE FROM OUR FINAL REPORT AND SINCE WE HAVE TO STAY IN 25 PAGES WE HAVE TO BE CAREFUL.**
-
-I agree. Maybe just leave str? otherwise take all away
-
 
 ``` r
 data <- read.csv("Data/starbucks.csv", header = TRUE, sep = ",")
-
-# Overview of the data
-summary(data)
-```
-
-```
-##  Beverage_category    Beverage         Beverage_prep         Calories    
-##  Length:242         Length:242         Length:242         Min.   :  0.0  
-##  Class :character   Class :character   Class :character   1st Qu.:120.0  
-##  Mode  :character   Mode  :character   Mode  :character   Median :185.0  
-##                                                           Mean   :193.9  
-##                                                           3rd Qu.:260.0  
-##                                                           Max.   :510.0  
-##  Total.Fat..g.    Trans.Fat..g.   Saturated.Fat..g.  Sodium..mg.    
-##  Min.   : 0.000   Min.   :0.000   Min.   :0.0000    Min.   : 0.000  
-##  1st Qu.: 0.200   1st Qu.:0.100   1st Qu.:0.0000    1st Qu.: 0.000  
-##  Median : 2.500   Median :0.500   Median :0.0000    Median : 5.000  
-##  Mean   : 2.905   Mean   :1.307   Mean   :0.0376    Mean   : 6.364  
-##  3rd Qu.: 4.500   3rd Qu.:2.000   3rd Qu.:0.1000    3rd Qu.:10.000  
-##  Max.   :15.000   Max.   :9.000   Max.   :0.3000    Max.   :40.000  
-##  Total.Carbohydrates..g. Cholesterol..mg. Dietary.Fibre..g.   Sugars..g.   
-##  Min.   :  0.0           Min.   : 0.00    Min.   :0.0000    Min.   : 0.00  
-##  1st Qu.: 70.0           1st Qu.:21.00    1st Qu.:0.0000    1st Qu.:18.00  
-##  Median :125.0           Median :34.00    Median :0.0000    Median :32.00  
-##  Mean   :128.9           Mean   :35.99    Mean   :0.8058    Mean   :32.96  
-##  3rd Qu.:170.0           3rd Qu.:50.75    3rd Qu.:1.0000    3rd Qu.:43.75  
-##  Max.   :340.0           Max.   :90.00    Max.   :8.0000    Max.   :84.00  
-##   Protein..g.     Vitamin.A....DV.   Vitamin.C....DV.   Calcium....DV.    
-##  Min.   : 0.000   Length:242         Length:242         Length:242        
-##  1st Qu.: 3.000   Class :character   Class :character   Class :character  
-##  Median : 6.000   Mode  :character   Mode  :character   Mode  :character  
-##  Mean   : 6.979                                                           
-##  3rd Qu.:10.000                                                           
-##  Max.   :20.000                                                           
-##  Iron....DV.        Caffeine..mg.     
-##  Length:242         Length:242        
-##  Class :character   Class :character  
-##  Mode  :character   Mode  :character  
-##                                       
-##                                       
-## 
 ```
 
 ## Data Transformation
@@ -116,7 +61,6 @@ data$Vitamin.C....DV. <- as.numeric(gsub("%", "", data$Vitamin.C....DV.))
 data$Calcium....DV. <- as.numeric(gsub("%", "", data$Calcium....DV.))
 data$Iron....DV. <- as.numeric(gsub("%", "", data$Iron....DV.))
 data$Vitamin.A....DV. <- as.numeric(gsub("%", "", data$Vitamin.A....DV.))
-
 # Set the other variables as numeric
 data$Calories <- as.numeric(data$Calories)
 data$Trans.Fat..g. <- as.numeric(data$Trans.Fat..g.)
@@ -169,15 +113,12 @@ Lastly, taking in consideration our cleaned data, we rename the columns by remov
 
 
 ``` r
-colnames(data_cleaned) <- c("Beverage_category", "Beverage",
-                            "Beverage_prep", "Calories",
-                            "Total_Fat", "Trans_Fat",
-                            "Saturated_Fat", "Sodium",
-                            "Total_Carbohydrates", "Cholesterol",
-                            "Dietary_Fibre", "Sugars",
-                            "Protein", "Vitamin_A",
-                            "Vitamin_C", "Calcium",
-                            "Iron", "Caffeine")
+colnames(data_cleaned) <- c("Beverage_category", "Beverage", "Beverage_prep",
+                            "Calories", "Total_Fat", "Trans_Fat",
+                            "Saturated_Fat", "Sodium", "Total_Carbohydrates",
+                            "Cholesterol", "Dietary_Fibre", "Sugars",
+                            "Protein", "Vitamin_A", "Vitamin_C",
+                            "Calcium", "Iron", "Caffeine")
 ```
 
 # Correlation Analysis
@@ -190,11 +131,7 @@ Observe that the first three columns of our data are categorical features, thus 
 ``` r
 # Remove first 3 columns for the correlation matrix since them are categorical
 data_num <- data_cleaned[, -c(1:3)]
-
-# Calculate the correlation matrix
-
 correlation_matrix <- cor(data_num)
-
 # Plot the correlation matrix using corrplot
 corrplot(correlation_matrix, method = "number", tl.col = "black", 
          tl.srt = 45, addCoef.col = "black", number.cex = 0.5, tl.cex = 0.7)
@@ -209,13 +146,12 @@ Moreover, we visualized the correlation matrix through a heatmap. The heatmap pr
 # Heatmap of the correlation matrix
 heatmap(cor(data_num), 
         col = colorRampPalette(c("#005cff", "#fbfbfb", "#d90000"))(100), 
-        symm = TRUE, 
-        margins = c(8, 8), 
-        cexRow = 0.8,
-        cexCol = 0.8)
+        symm = TRUE, margins = c(8, 8), cexRow = 0.8, cexCol = 0.8)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/correlation_analysis_heatmap-1.png" style="display: block; margin: auto;" />
+
+**MAYBE WE CAN REMOVE THE HEATMAP AND KEEP ONLY THE CORRLOT SINCE IT STEAL A LOT OF SPACE FROM OUR REPORT**
 
 # Data Visualization
 
@@ -271,7 +207,6 @@ We will plot a barplot of the data. The barplot is a graphical representation of
 
 
 ``` r
-# Barplot of the data
 par(mfrow = c(5, 3), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   barplot(table(data_num[, i]), main = colnames(data_num)[i],
@@ -290,26 +225,18 @@ We create a barplot to visualize the distribution of the 'Beverage_category' var
 
 
 ``` r
-# Beverage category
 par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
 barplot(table(data$Beverage_category),
         main = "Distribution of Beverage Categories",
-        ylab = "Count",
-        col = "#4ea5ff",
-        las = 2, 
-        cex.names = 0.6)
+        ylab = "Count", col = "#4ea5ff", las = 2, cex.names = 0.6)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/beverage_barplot-1.png" style="display: block; margin: auto;" />
 
 ``` r
-# Beverage preparation
 barplot(table(data$Beverage_prep),
         main = "Distribution of Beverage Preparation",
-        ylab = "Count",
-        col = "#ff810f",
-        las = 2,
-        cex.names = 0.6)
+        ylab = "Count", col = "#ff810f", las = 2, cex.names = 0.6)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/beverage_barplot-2.png" style="display: block; margin: auto;" />
@@ -318,17 +245,13 @@ Now we want to compare the total calories for each categories of bevarage. First
 
 
 ``` r
-par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
+par(mfrow = c(1, 1), mar = c(8, 4, 2, 2))
 total_calories_by_category <- aggregate(Calories ~ Beverage_category,
                                         data = data_cleaned, sum)
-
 barplot(height = total_calories_by_category$Calories,
         names.arg = total_calories_by_category$Beverage_category,
         main = "Total Calories by Beverage Category",
-        ylab = "Total Calories",
-        col = "#4ea5ff",
-        las = 2,
-        cex.names = 0.6)
+        ylab = "Total Calories", col = "#4ea5ff", las = 2, cex.names = 0.6)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/total_calories-1.png" style="display: block; margin: auto;" />
@@ -337,17 +260,13 @@ Now we want to compare the total sugars for each preparation of bevarage. First 
 
 
 ``` r
-par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
+par(mfrow = c(1, 1), mar = c(8, 4, 2, 2))
 total_sugar_by_prep <- aggregate(Total_Carbohydrates ~ Beverage_prep,
                                  data = data_cleaned, sum)
-
 barplot(height = total_sugar_by_prep$Total_Carbohydrates,
         names.arg = total_sugar_by_prep$Beverage_prep,
         main = "Total Sugars by Beverage Preparation",
-        ylab = "Total Sugars (g)",
-        col = "#ff810f",
-        las = 2,
-        cex.names = 0.6)
+        ylab = "Total Sugars (g)", col = "#ff810f", las = 2, cex.names = 0.6)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/total_sugars-1.png" style="display: block; margin: auto;" />
@@ -358,7 +277,6 @@ We will plot a boxplot of the data. The boxplot is a graphical representation of
 
 
 ``` r
-# Boxplot of the data
 par(mfrow = c(3, 5), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   boxplot(data_num[, i], main = colnames(data_num)[i],
@@ -378,23 +296,14 @@ We create a scatterplot to compare the amounts of calories and fat for each cate
 ``` r
 # Set the variable as factor
 data_cleaned$Beverage_category <- as.factor(data_cleaned$Beverage_category)
-
-# Assign distinct colors to each beverage category
 colors <- rainbow(length(unique(data_cleaned$Beverage_category)))
 color_map <- setNames(colors, levels(data_cleaned$Beverage_category))
-
-# Create a scatterplot to compare amounts of calories and fat 
-# for each categories of bevarage
 par(mfrow = c(1, 1))
 plot(data_cleaned$Calories, 
      data_cleaned$Total_Fat_g,
      col = color_map[data_cleaned$Beverage_category],
-     pch = 19,
-     xlab = "Calories",
-     ylab = "Total Fat (g)",
+     pch = 19, xlab = "Calories", ylab = "Total Fat (g)",
      main = "Calories vs Total Fat")
-
-# Legend
 legend("topleft", legend = levels(data_cleaned$Beverage_category), 
        col = colors, cex = 0.4, pch = 19)
 ```
@@ -402,12 +311,9 @@ legend("topleft", legend = levels(data_cleaned$Beverage_category),
 <img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison-1.png" style="display: block; margin: auto;" />
 
 ``` r
-# Comparision between total fat and trans fat ( che cazzo sono?)
-
 # Numeric variable -> calculate density
 total_fat_density <- density(data_cleaned$Total_Fat)
 trans_fat_density <- density(data_cleaned$Trans_Fat)
-
 plot(total_fat_density, col = "#4ea5ff",
      main = "Comparison of Total Fat and Trans Fat Distributions", 
      xlab = "Fat Content (g)", ylab = "Density", 
@@ -453,15 +359,12 @@ We use the lm() function to fit a linear regression model
 
 
 ``` r
-# Fit the linear regression model
-
 # Set the calories as the dependent variable
 y <- data_num$Calories
-
 # Remove calories column in order to use the other variables 
 # as independent variables
 data_num <- data_num[, -1]
-
+# Linear regression model
 lm_model <- lm(y ~ ., data = data_num)
 summary(lm_model)
 ```
@@ -530,8 +433,7 @@ Logistic regression model to predict the amount of calories based on the amount 
 We use the glm() function to fit a logistic regression model
 
 ``` r
-# Fit the logistic regression model
-
+# Logistic regression model
 glm_model <- glm(y ~ ., data = data_num, family = "gaussian") 
 # Try to change the family
 summary(glm_model)
@@ -609,10 +511,8 @@ set.seed(123)
 train_index <- sample(1:nrow(data_num), 0.8 * nrow(data_num))
 train_data <- data_num[train_index, ]
 test_data <- data_num[-train_index, ]
-
 # Fit the linear regression model using the training set
 y_train <- y[train_index]
-
 lm_model_train <- lm(y_train ~ ., data = train_data)
 summary(lm_model_train)
 ```
@@ -676,9 +576,7 @@ We evaluate the model using the testing set. We make predictions using the testi
 # Make predictions using the testing set
 y_test <- y[-train_index]
 predictions_lm <- predict(lm_model_train, newdata = test_data)
-
 # Evaluate the model using the testing set
-
 # Calculate the mean squared error
 mse_lm<- mean((y_test - predictions_lm)^2)
 mse_lm
@@ -699,7 +597,7 @@ rmse_lm
 ```
 
 ``` r
-# Now we plot the residuals to check if the model is a good fit
+# Plot the residuals to check if the model is a good fit
 par(mfrow = c(1, 1))
 plot(lm_model_train, which = 1)
 ```
@@ -712,7 +610,7 @@ Now we compute the accuracy of the model and then we plot the results
 
 
 ``` r
-# Compute the accuracy of the model
+# Accuracy of the model
 accuracy_lm <- 1 - (rmse_lm / mean(y_test))
 accuracy_lm
 ```
@@ -722,7 +620,6 @@ accuracy_lm
 ```
 
 ``` r
-# Plot the results
 plot(y_test, predictions_lm, main = "Actual vs Predicted Values",
      xlab = "Actual Values", ylab = "Predicted Values",
      col = "#4ea5ff", pch = 19)
@@ -801,9 +698,7 @@ We evaluate the model using the testing set. We make predictions using the testi
 ``` r
 # Make predictions using the testing set
 predictions_glm <- predict(glm_model_train, newdata = test_data)
-
 # Evaluate the model using the testing set
-
 # Calculate the mean squared error
 mse_glm <- mean((y_test - predictions_glm)^2)
 mse_glm
@@ -824,7 +719,7 @@ rmse_glm
 ```
 
 ``` r
-# Now we plot the residuals to check if the model is a good fit
+# Plot the residuals to check if the model is a good fit
 par(mfrow = c(1, 1))
 plot(glm_model_train, which = 1)
 ```
@@ -837,7 +732,7 @@ Now we compute the accuracy of the model and then we plot the results
 
 
 ``` r
-# Compute the accuracy of the model
+# Accuracy of the model
 accuracy_glm <- 1 - (rmse_glm / mean(y_test))
 accuracy_glm
 ```
@@ -847,7 +742,6 @@ accuracy_glm
 ```
 
 ``` r
-# Plot the results
 plot(y_test, predictions_glm, main = "Actual vs Predicted Values",
      xlab = "Actual Values", ylab = "Predicted Values",
      col = "#ff810f", pch = 19)
