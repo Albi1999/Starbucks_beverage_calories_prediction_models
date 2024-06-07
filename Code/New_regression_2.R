@@ -170,7 +170,7 @@ shapiro.test(residuals(mod_log_tr_backward))
 par(mfrow = c(2, 2))
 plot(mod_log_tr_backward)
 
-plot(mod_logistic)
+plot(mod_log_tr)
 
 
 

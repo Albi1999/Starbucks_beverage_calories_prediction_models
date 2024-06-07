@@ -119,6 +119,8 @@ AIC(mod_log_tr)
 BIC(mod_log_tr)
 vif(mod_log_tr)
 
+par(mfrow = c(2, 2))
+plot(mod_log_tr)
 
 # THE BEST ONE IS:
 epsilon <- 1e-9
@@ -149,6 +151,9 @@ AIC(mod_min_max)
 BIC(mod_min_max)
 vif(mod_min_max)
 
+par(mfrow = c(2, 2))
+plot(mod_min_max)
+
 # VIENE MALE
 
 
@@ -166,7 +171,9 @@ summary(mod_robust)
 AIC(mod_robust)
 BIC(mod_robust)
 vif(mod_robust)
-    
+
+par(mfrow = c(2, 2))
+plot(mod_robust)
 # Mean scaling
 
 
@@ -181,4 +188,7 @@ AIC(mod_mean)
 BIC(mod_mean)
 vif(mod_mean)
 
+
+par(mfrow = c(2, 2))
+plot(mod_mean)
 
