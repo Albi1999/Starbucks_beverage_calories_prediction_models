@@ -1,4 +1,4 @@
-# NEW regression model
+# IN THIS CODE WE TRY DIFFERENT KIND OF SCALING TO FIT A REGRESSION MODEL
 
 # Load libraries ----
 library(corrplot)
@@ -121,6 +121,7 @@ vif(mod_log_tr)
 
 par(mfrow = c(2, 2))
 plot(mod_log_tr)
+
 
 # THE BEST ONE IS:
 epsilon <- 1e-9
