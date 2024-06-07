@@ -5,6 +5,7 @@
 
 # Load libraries ----
 library(corrplot)
+library(car)
 
 # Load data ----
 data <- read.csv("Data/starbucks.csv", header = TRUE, sep = ",")

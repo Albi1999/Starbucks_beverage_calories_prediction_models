@@ -63,7 +63,7 @@ cat("\nVariabili nel modello backward:\n")
 names(coefficients(calories_lm_backward))
 
 #the backward selection drops only the variable "Saturated_Fat"  since it's not  considered significant in explaining 
-#he amount of calories 
+#the amount of calories 
 #mantein all other variables
 
 #compared between models: same R^2 but the values of AIC and BIC are sligthly better in the backward model ---> better 
@@ -137,8 +137,7 @@ print(anova_results)
 
 # Calcolare il VIF per il modello backward
 
-install.packages("car")
-library(car) 
+library(car)
 vif_backward <- vif(calories_lm_backward)
 print(vif_backward)
 #Remind: 
@@ -164,4 +163,7 @@ AIC(calories_lm_st_back)
 #check VIF 
 vif_backward_st <- vif(calories_lm_st_back)
 print(vif_backward_st)
+
+
+
 
