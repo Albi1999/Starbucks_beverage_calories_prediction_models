@@ -1,4 +1,4 @@
-# NEW regression model
+# IN THIS CODE WE TRY A REGRESSION MODEL WITH THE DATA SCALED WITH A LOGARITHM TRANSFORMATION
 
 # Load libraries ----
 library(corrplot)
