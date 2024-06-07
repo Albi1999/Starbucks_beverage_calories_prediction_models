@@ -6,6 +6,7 @@
 # Load libraries ----
 library(corrplot)
 library(car)
+library(glmnet)
 
 # Load data ----
 data <- read.csv("Data/starbucks.csv", header = TRUE, sep = ",")
@@ -90,7 +91,7 @@ colnames(data_cleaned) <- c("Beverage_category", "Beverage",
 
 # Remove first 3 columns for the correlation matrix
 
-data_num <- data_cleaned[, -c(1:3)]
+data_num <- data_cleaned[, sapply(data_cleaned, is.numeric)]
 
 ## Correlation Matrix ----
 # Calculate the correlation matrix
@@ -322,9 +323,6 @@ with(data_cleaned, {
 # Set the calories as the dependent variable
 y <- data_num$Calories
 
-# Remove calories column in order to use the other variables 
-# as independent variables
-data_num <- data_num[, -1]
 
 lm_model <- lm(y ~ ., data = data_num)
 summary(lm_model)
@@ -337,61 +335,215 @@ BIC(lm_model)
 # The model has a low AIC and BIC values, the R-squared value is 0.99 so the model is a good fit
 # The model is significant, the p-value is less than 0.05
 
-### Cross-validation ----
-# Now we try with a different approach, 
-# we split the data into training and testing sets
-# We use the training set to fit the model 
-# and the testing set to evaluate the model
+vif(lm_model)
+# The VIF values are more than 10, so there is multicollinearity
+# To solve this problem, we try to normalize the data 
+# using the log transformation
 
-# Split the data into training and testing sets
-set.seed(123)
-train_index <- sample(1:nrow(data_num), 0.8 * nrow(data_num))
-train_data <- data_num[train_index, ]
-test_data <- data_num[-train_index, ]
+### Log Transformation ----
 
-# Fit the linear regression model using the training set
-y_train <- y[train_index]
+# We standardize the data using a logaritmic transformation
 
-lm_model_train <- lm(y_train ~ ., data = train_data)
-summary(lm_model_train)
+std_data_log <- scale(log(data_num + 1))
 
-AIC(lm_model_train)
-BIC(lm_model_train)
+# Set as dataframe
 
-# Make predictions using the testing set
-y_test <- y[-train_index]
-predictions_lm <- predict(lm_model_train, newdata = test_data)
+std_data_log_df <- as.data.frame(std_data_log)
 
-# Evaluate the model using the testing set
+# Fit the linear regression model using the standardized variables as predictors
 
-# Calculate the mean squared error
-mse_lm<- mean((y_test - predictions_lm)^2)
-mse_lm
+mod_log_tr <- lm(y ~ ., data = std_data_log_df)
 
-# Calculate the root mean squared error
-rmse_lm <- sqrt(mse_lm)
-rmse_lm
+summary(mod_log_tr)
 
-# Now we plot the residuals to check if the model is a good fit
+AIC(mod_log_tr)
+BIC(mod_log_tr)
+vif(mod_log_tr)
+
+par(mfrow = c(2, 2))
+plot(mod_log_tr)
+
+# The model has a low AIC and BIC values, the R-squared value is 0.99 so the model is a good fit
+
+# Backward selection
+
+mod_log_tr_backward <- step(mod_log_tr, direction = "backward")
+summary(mod_log_tr_backward)
+AIC(mod_log_tr_backward)
+BIC(mod_log_tr_backward)
+vif(mod_log_tr_backward)
+
+par(mfrow = c(2, 2))
+plot(mod_log_tr_backward)
+
+# We have still collinearity, so we try to use another model
+
+## Lasso Regression ----
+
+# We use the glmnet package to fit the lasso regression model
+# The glmnet package is used to fit generalized linear models via penalized maximum likelihood
+# The function cv.glmnet() is used to fit a lasso regression model with cross-validation
+
+# Fit the lasso regression model
+mod_lasso_log <- cv.glmnet(x = as.matrix(std_data_log_df[, -1]),
+                           y = y,
+                           alpha = 1, standardize = FALSE)
+
 par(mfrow = c(1, 1))
-plot(lm_model_train, which = 1)
+plot(mod_lasso_log)
+summary(mod_lasso_log)
+lasso_coef_log <- coef(mod_lasso_log, s = "lambda.min")
+lasso_coef_log
 
-# The residuals are randomly distributed around zero,
-# so the model is a good fit
+# Now we try with another transformation of the data
 
-# now we compute the accuracy of the model and then we plot the results
+# Standardize the data
+std_data <- as.data.frame(scale(data_num))
 
-# Compute the accuracy of the model
-accuracy_lm <- 1 - (rmse_lm / mean(y_test))
-accuracy_lm
+# Fit the lasso regression model
+mod_lasso <- cv.glmnet(x = as.matrix(std_data[, -1]),
+                       y = std_data$Calories,
+                       alpha = 1, standardize = FALSE)
 
-# Plot the results
-plot(y_test, predictions_lm, main = "Actual vs Predicted Values",
-     xlab = "Actual Values", ylab = "Predicted Values",
+# Plot the cross-validated mean squared error (MSE) as a function of the lambda values
+# The lambda value is the penalty term that is used to shrink the coefficients of the model
+# The lambda value that minimizes the MSE is selected as the optimal lambda value
+# The optimal lambda value is used to fit the final lasso regression model
+par(mfrow = c(1, 1))
+plot(mod_lasso)
+summary(mod_lasso)
+lasso_coef <- coef(mod_lasso, s = "lambda.min")
+lasso_coef
+
+# Calculate the R-squared value for the lasso regression model
+lasso_pred <- predict(mod_lasso, s = "lambda.min", newx = as.matrix(std_data[, -1]))
+lasso_r_squared <- cor(lasso_pred, std_data$Calories)^2
+lasso_r_squared
+
+# Calculate the MSE for the lasso regression model
+lasso_mse <- mean((lasso_pred - std_data$Calories)^2)
+lasso_mse
+
+# Calculate the R-squared value for the lasso regression model with log transformation
+lasso_pred_log <- predict(mod_lasso_log, s = "lambda.min", newx = as.matrix(std_data_log_df[, -1]))
+lasso_r_squared_log <- cor(lasso_pred_log, y)^2
+lasso_r_squared_log
+
+# Calculate the MSE for the lasso regression model with log transformation
+lasso_mse_log <- mean((lasso_pred_log - y)^2)
+lasso_mse_log
+
+# With the normal standardization is better than the log transformation
+
+## Ridge regression ----
+# The ridge regression model is fit using the glmnet package
+# The cv.glmnet() function is used to fit the ridge regression model with cross-validation
+# The alpha parameter is set to 0 to fit the ridge regression model
+# The standardize parameter is set to FALSE to use the standardized data
+# The optimal lambda value is selected based on the cross-validated mean squared error (MSE)
+# The optimal lambda value is used to fit the final ridge regression model
+# The coefficients of the ridge regression model are extracted and displayed
+# The coefficients of the ridge regression model are displayed in a plot
+
+# Fit the ridge regression model with the logarithmic transformation
+mod_ridge_log <- cv.glmnet(x = as.matrix(std_data_log_df[, -1]),
+                           y = std_data_log_df$Calories,
+                           alpha = 0, standardize = FALSE)
+
+plot(mod_ridge_log)
+summary(mod_ridge_log)
+ridge_coef_log <- coef(mod_ridge_log, s = "lambda.min")
+ridge_coef_log
+
+# Fit the ridge regression model with the standardization
+mod_ridge <- cv.glmnet(x = as.matrix(std_data[, -1]),
+                       y = std_data$Calories,
+                       alpha = 0, standardize = FALSE)
+
+# Plot the cross-validated mean squared error (MSE) as a function of the lambda values
+plot(mod_ridge)
+summary(mod_ridge)
+ridge_coef <- coef(mod_ridge, s = "lambda.min")
+ridge_coef
+
+## Model comparison ----
+# now we want to compare the model using the R-squared value
+# The R-squared value is a measure of how well the model fits the data
+# The R-squared value ranges from 0 to 1, with higher values indicating a better fit
+
+# Calculate the R-squared value for the lasso regression model
+
+lasso_pred <- predict(mod_lasso, s = "lambda.min", newx = as.matrix(std_data[, -1]))
+lasso_r_squared <- cor(lasso_pred, std_data$Calories)^2
+lasso_r_squared
+
+# Calculate the R-squared value for the ridge regression model
+
+ridge_pred <- predict(mod_ridge, s = "lambda.min", newx = as.matrix(std_data[, -1]))
+ridge_r_squared <- cor(ridge_pred, std_data$Calories)^2
+ridge_r_squared
+
+# Compute the MSE for the models 
+# The MSE is a measure of the average squared difference between the predicted and actual values
+# The MSE is used to evaluate the performance of the model, with lower values indicating better performance
+
+# Calculate the MSE for the lasso regression model
+
+lasso_mse <- mean((lasso_pred - std_data$Calories)^2)
+lasso_mse
+
+# Calculate the MSE for the ridge regression model
+
+ridge_mse <- mean((ridge_pred - std_data$Calories)^2)
+ridge_mse
+
+# We choose the model with the highest R-squared value and the lowest MSE
+# The model il the lasso because it has the lower value for R^2 and MSE.
+
+kable(data.frame(Model = c("Linear Regression", "Lasso Regression", "Ridge Regression"),
+                 AIC = c(AIC(lm_model), AIC(mod_lasso$glmnet.fit), AIC(mod_ridge$glmnet.fit)),
+                 BIC = c(BIC(lm_model), BIC(mod_lasso$glmnet.fit), BIC(mod_ridge$glmnet.fit)),
+                 VIF = c(vif(lm_model), vif(mod_lasso$glmnet.fit), vif(mod_ridge$glmnet.fit))))
+## Cross validation ----
+# Split the data in training and test set then check the accuracy of the model.
+# Split the data into training and test sets
+set.seed(123)
+train_index <- sample(1:nrow(std_data), 0.8 * nrow(std_data))
+train_data <- std_data[train_index, ]
+test_data <- std_data[-train_index, ]
+
+# Fit the lasso regression model on the training data
+mod_lasso_train <- cv.glmnet(x = as.matrix(train_data[, -1]),
+                             y = train_data$Calories,
+                             alpha = 1, standardize = FALSE)
+
+# Predict the calories on the test data using the lasso regression model
+
+lasso_pred_test <- predict(mod_lasso_train, s = "lambda.min", newx = as.matrix(test_data[, -1]))
+
+# Calculate the R-squared value for the lasso regression model on the test data
+
+lasso_r_squared_test <- cor(lasso_pred_test, test_data$Calories)^2
+lasso_r_squared_test
+
+# Calculate the MSE for the lasso regression model on the test data
+# The MSE is a measure of the average squared difference between the predicted and actual values
+
+lasso_mse_test <- mean((lasso_pred_test - test_data$Calories)^2)
+lasso_mse_test
+
+# Plot the predicted values against the actual values on the test data
+
+plot(test_data$Calories, lasso_pred_test, xlab = "Actual Calories",
+     ylab = "Predicted Calories", main = "Predicted vs Actual Calories",
      col = "#4ea5ff", pch = 19)
 
-# The actual and predicted values are close to each other,
-# so the model is a good fit
+
+# The plot shows the predicted values against the actual values on the test data
+# The points are close to the diagonal line, indicating that the model is making accurate predictions
+# The R-squared value and MSE are used to evaluate the performance of the model
+# The R-squared value is 0.99, indicating that the model explains 99% of the variance in the data
+
 
 ## Logistic Regression ----
 
@@ -410,40 +562,3 @@ AIC(glm_model)
 BIC(glm_model)
 
 # Comment on it.....
-
-### Cross-validation ----
-
-# Fit the logistic regression model using the training set
-glm_model_train <- glm(y_train ~ ., data = train_data, family = "gaussian")
-summary(glm_model_train)
-AIC(glm_model_train)
-BIC(glm_model_train)
-
-# Make predictions using the testing set
-predictions_glm <- predict(glm_model_train, newdata = test_data)
-
-# Evaluate the model using the testing set
-
-# Calculate the mean squared error
-mse_glm <- mean((y_test - predictions_glm)^2)
-mse_glm
-
-# Calculate the root mean squared error
-rmse_glm <- sqrt(mse_glm)
-rmse_glm
-
-# Now we plot the residuals to check if the model is a good fit
-par(mfrow = c(1, 1))
-plot(glm_model_train, which = 1)
-
-# now we compute the accuracy of the model and then we plot the results
-
-# Compute the accuracy of the model
-accuracy_glm <- 1 - (rmse_glm / mean(y_test))
-accuracy_glm
-
-# Plot the results
-plot(y_test, predictions_glm, main = "Actual vs Predicted Values",
-     xlab = "Actual Values", ylab = "Predicted Values",
-     col = "#4ea5ff", pch = 19)
-
