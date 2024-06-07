@@ -165,3 +165,5 @@ AIC(calories_lm_st_back)
 vif_backward_st <- vif(calories_lm_st_back)
 print(vif_backward_st)
 
+par(mfrow = c(2,2))
+plot(calories_lm_backward)
