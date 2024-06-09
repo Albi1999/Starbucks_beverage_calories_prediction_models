@@ -393,49 +393,47 @@ ADD COMMENTS ON THE GRAPH
 Linear regression model to predict the amount of calories based on the amount of the other variables
 We use the lm() function to fit a linear regression model
 
+### Simple Linear Regression
+Fit linear simple regression with just one variable on data_cleaned, looking at correlation plot we choose Sugars due to high correlation.
 
 
+This code will fit a simple linear regression model predicting "Calories" using "Sugars" as the predictor variable and provide a summary of the model.
+
+
+``` r
+lm_simple <- lm(Calories ~ Sugars, data = data_cleaned)
+kable(data.frame(AIC = AIC(lm_simple), BIC = BIC(lm_simple),
+                 R_squared = summary(lm_simple)$r.squared, 
+                 adj_R_squared = summary(lm_simple)$adj.r.squared), 
+      caption = "Model evaluation metrics for the simple linear regression model")
+```
+
+
+
+Table: Model evaluation metrics for the simple linear regression model
+
+|      AIC|      BIC| R_squared| adj_R_squared|
+|--------:|--------:|---------:|-------------:|
+| 2509.036| 2519.503| 0.8275094|     0.8267907|
+
+``` r
+par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
+plot(lm_simple)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/simple_linear_regression-1.png" style="display: block; margin: auto;" />
+The coefficient for "Sugars" ($4.7426$) indicates that, on average, for every one-unit increase in "Sugars", the predicted "Calories" increases by approximately $4.7426$ units.
+Both the intercept and the coefficient for "Sugars" are statistically significant ($p < 0.001$), indicating a strong linear relationship between "Sugars" and "Calories".
+The F-statistic is highly significant ($p < 2.2e-16$), indicating that the overall regression model is statistically significant in explaining the variance in "Calories".
+Model Fit:The adjusted R-squared value ($0.8268$) indicates that approximately $82.68%$ of the variance in "Calories" can be explained by the predictor variable "Sugars".
+Overall, this output suggests that the simple linear regression model provides a statistically significant relationship between "Sugars" and "Calories", with "Sugars" being a strong predictor of "Calories".
+However, the AIC and BIC values suggest that there might be other models that provide a better fit for the data.
+Summarizing the model is too simple so it doesn't capture the complexity of the data, so we try to fit a multiple linear regression model.
+
+### Multiple Linear Regression
 
 ``` r
 lm_model <- lm(y ~ ., data = data_num_)
-summary(lm_model)
-```
-
-```
-## 
-## Call:
-## lm(formula = y ~ ., data = data_num_)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -14.0233  -3.3009  -0.3806   3.0039  21.9404 
-## 
-## Coefficients:
-##                      Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)          0.252316   0.952833   0.265  0.79140    
-## Total_Fat           11.143733   0.532812  20.915  < 2e-16 ***
-## Trans_Fat           -2.477820   0.809270  -3.062  0.00247 ** 
-## Saturated_Fat       -9.816317  18.143619  -0.541  0.58901    
-## Sodium              -0.279257   0.167487  -1.667  0.09683 .  
-## Total_Carbohydrates  0.020972   0.007420   2.826  0.00513 ** 
-## Cholesterol          2.829543   0.340268   8.316 8.43e-15 ***
-## Dietary_Fibre        1.534913   0.942106   1.629  0.10465    
-## Sugars               1.131045   0.348234   3.248  0.00134 ** 
-## Protein              2.218895   0.510445   4.347 2.08e-05 ***
-## Vitamin_A            0.162307   0.083662   1.940  0.05361 .  
-## Vitamin_C            0.147669   0.047675   3.097  0.00220 ** 
-## Calcium              0.462193   0.142257   3.249  0.00133 ** 
-## Iron                -0.649101   0.070666  -9.185  < 2e-16 ***
-## Caffeine             0.013513   0.005826   2.319  0.02126 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 5.126 on 227 degrees of freedom
-## Multiple R-squared:  0.9977,	Adjusted R-squared:  0.9975 
-## F-statistic:  6915 on 14 and 227 DF,  p-value: < 2.2e-16
-```
-
-``` r
 par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
 plot(lm_model)
 ```
@@ -444,20 +442,184 @@ plot(lm_model)
 
 ``` r
 kable(data.frame(AIC = AIC(lm_model), BIC = BIC(lm_model),
-                 R_squared = summary(lm_model)$r.squared), 
-      caption = "Model evaluation metrics")
+                 R_squared = summary(lm_model)$r.squared, 
+                 adj_R_squared = summary(lm_model)$adj.r.squared),
+      caption = "Model evaluation metrics for the linear regression model")
 ```
 
 
 
-Table: Model evaluation metrics
+Table: Model evaluation metrics for the linear regression model
 
-|      AIC|      BIC| R_squared|
-|--------:|--------:|---------:|
-| 1494.304| 1550.127| 0.9976608|
+|      AIC|      BIC| R_squared| adj_R_squared|
+|--------:|--------:|---------:|-------------:|
+| 1494.304| 1550.127| 0.9976608|     0.9975166|
+The model has a low AIC and BIC values, the R-squared value is $0.997$ so the model is a good fit for the data.
+
+### Backward Elimination
+Now we apply the selection of the predictors with the backward elimination method.
+
+```
+## Start:  AIC=805.54
+## y ~ Total_Fat + Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
+##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_A + 
+##     Vitamin_C + Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Saturated_Fat        1       7.7  5972.5  803.85
+## <none>                              5964.8  805.54
+## - Dietary_Fibre        1      69.7  6034.6  806.35
+## - Sodium               1      73.0  6037.9  806.48
+## - Vitamin_A            1      98.9  6063.7  807.52
+## - Caffeine             1     141.4  6106.2  809.21
+## - Total_Carbohydrates  1     209.9  6174.8  811.91
+## - Trans_Fat            1     246.3  6211.2  813.33
+## - Vitamin_C            1     252.1  6216.9  813.56
+## - Sugars               1     277.2  6242.0  814.53
+## - Calcium              1     277.4  6242.2  814.54
+## - Protein              1     496.5  6461.4  822.89
+## - Cholesterol          1    1817.0  7781.9  867.89
+## - Iron                 1    2217.1  8181.9  880.02
+## - Total_Fat            1   11494.4 17459.3 1063.44
+## 
+## Step:  AIC=803.85
+## y ~ Total_Fat + Trans_Fat + Sodium + Total_Carbohydrates + Cholesterol + 
+##     Dietary_Fibre + Sugars + Protein + Vitamin_A + Vitamin_C + 
+##     Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## <none>                              5972.5  803.85
+## - Dietary_Fibre        1      66.4  6038.9  804.52
+## - Vitamin_A            1      97.3  6069.8  805.76
+## - Caffeine             1     148.3  6120.9  807.79
+## - Total_Carbohydrates  1     208.5  6181.0  810.15
+## - Trans_Fat            1     243.0  6215.6  811.50
+## - Vitamin_C            1     264.3  6236.8  812.33
+## - Sugars               1     269.6  6242.2  812.54
+## - Calcium              1     316.7  6289.3  814.35
+## - Protein              1     495.1  6467.6  821.12
+## - Sodium               1     519.0  6491.5  822.02
+## - Cholesterol          1    1930.5  7903.0  869.63
+## - Iron                 1    2231.7  8204.2  878.68
+## - Total_Fat            1   14183.1 20155.6 1096.20
+```
+
+```
+## 
+## Call:
+## lm(formula = y ~ Total_Fat + Trans_Fat + Sodium + Total_Carbohydrates + 
+##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_A + 
+##     Vitamin_C + Calcium + Iron + Caffeine, data = data_num_)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.0113  -3.4396  -0.3132   3.0241  21.8261 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)          0.197087   0.945878   0.208 0.835131    
+## Total_Fat           11.012071   0.473256  23.269  < 2e-16 ***
+## Trans_Fat           -2.344729   0.769780  -3.046 0.002592 ** 
+## Sodium              -0.358660   0.080576  -4.451 1.34e-05 ***
+## Total_Carbohydrates  0.020897   0.007407   2.821 0.005206 ** 
+## Cholesterol          2.864251   0.333647   8.585 1.43e-15 ***
+## Dietary_Fibre        1.491635   0.937246   1.592 0.112881    
+## Sugars               1.095752   0.341539   3.208 0.001527 ** 
+## Protein              2.215506   0.509614   4.347 2.08e-05 ***
+## Vitamin_A            0.160911   0.083492   1.927 0.055189 .  
+## Vitamin_C            0.150364   0.047341   3.176 0.001698 ** 
+## Calcium              0.480189   0.138098   3.477 0.000607 ***
+## Iron                -0.650683   0.070496  -9.230  < 2e-16 ***
+## Caffeine             0.013789   0.005795   2.380 0.018153 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.118 on 228 degrees of freedom
+## Multiple R-squared:  0.9977,	Adjusted R-squared:  0.9975 
+## F-statistic:  7471 on 13 and 228 DF,  p-value: < 2.2e-16
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/backward_elimination-1.png" style="display: block; margin: auto;" />
+
+Table: Model evaluation metrics for the linear regression model
+      
+ with backward elimination
+
+|      AIC|     BIC| R_squared| adj_R_squared|
+|--------:|-------:|---------:|-------------:|
+| 1492.616| 1544.95| 0.9976578|     0.9975243|
+The backward selection drops only the variable "Saturated_Fat"  since it's not  considered significant in explaining the amount of calories mantaining the other variables.
+
+Comarison between the models
+
 
 ``` r
-kable(data.frame(VIF = vif(lm_model)),
+kable(data.frame(Model = c("Simple Linear Regression", "Multiple Linear Regression",
+                           "Multiple Linear Regression with Backward Elimination"),
+                 AIC = c(AIC(lm_simple), AIC(lm_model), AIC(backward_model)),
+                 BIC = c(BIC(lm_simple), BIC(lm_model), BIC(backward_model)),
+                 R_squared = c(summary(lm_simple)$r.squared, 
+                               summary(lm_model)$r.squared, 
+                               summary(backward_model)$r.squared),
+                 adj_R_squared = c(summary(lm_simple)$adj.r.squared, 
+                                   summary(lm_model)$adj.r.squared, 
+                                   summary(backward_model)$adj.r.squared)),
+      caption = "Model comparison")
+```
+
+
+
+Table: Model comparison
+
+|Model                                                |      AIC|      BIC| R_squared| adj_R_squared|
+|:----------------------------------------------------|--------:|--------:|---------:|-------------:|
+|Simple Linear Regression                             | 2509.036| 2519.503| 0.8275094|     0.8267907|
+|Multiple Linear Regression                           | 1494.304| 1550.127| 0.9976608|     0.9975166|
+|Multiple Linear Regression with Backward Elimination | 1492.616| 1544.950| 0.9976578|     0.9975243|
+The multiple linear regression model with backward elimination has the lowest AIC and BIC values, the highest R-squared value, and the highest adjusted R-squared value, indicating that it is the best model for predicting the amount of calories based on the amount of the other variables.
+
+Coefficients:
+Both models have very similar coefficients for the variables that were retained. The removal of "Saturated_Fat" in the backward model did not significantly affect the estimates of the other coefficients.
+
+Significance of Variables:
+In the full model, "Saturated_Fat" had a high p-value ($0.589$), indicating it was not a significant variable.
+In the backward model, "Saturated_Fat" was removed, slightly improving the AIC while keeping all other variables significant.
+
+Overall Performance:
+Both models perform very similarly in terms of R-squared and residual standard error.
+The backward model is preferable because it has a slightly lower AIC, suggesting it is a more parsimonious model without sacrificing the quality of the fit.
+
+### Anova
+Anova comparison between the models
+
+``` r
+anova_results <- anova(lm_model, backward_model)
+anova_results
+```
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Res.Df"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["RSS"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Df"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Sum of Sq"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["F"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Pr(>F)"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"227","2":"5964.844","3":"NA","4":"NA","5":"NA","6":"NA","_rn_":"1"},{"1":"228","2":"5972.536","3":"-1","4":"-7.691705","5":"0.2927179","6":"0.5890146","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+
+Degrees of Freedom (Res.Df): The full model has $227$ degrees of freedom, while the backward model has $228$. This is because we removed one variable from the full model.
+
+Residual Sum of Squares (RSS): The full model has an RSS of $5964.83$, while the backward model has an RSS of $5972.55$. This indicates that the difference between the two models in terms of residual error is very small.
+
+Sum of Squares (Sum of Sq): The difference between the two models in terms of sum of squares is $-7.7235$, indicating that the removed variable ("Saturated_Fat") does not significantly contribute to explaining the variability in calories.
+
+F-statistic (F): The F value is $0.2937$ with a p-value of $0.588$. This high p-value indicates that there is no significant difference between the two models. In other words, the reduced model is not significantly worse than the full model.
+
+Conclusion:
+The ANOVA shows that the removal of the "Saturated_Fat" variable does not have a significant impact on the model. This confirms that the model obtained through backward selection is more parsimonious without compromising the quality of the fit. Therefore, the backward model is preferable to the full model.
+
+### Multicollinearity
+
+To check for multicollinearity, we calculate the Variance Inflation Factors (VIF) for the variables in the multiple linear regression model, it measures how much the variance of the estimated coefficients is increased due to multicollinearity.Usually a VIF value greater than $10$ indicates a problematic amount of multicollinearity.
+
+``` r
+kable(data.frame(VIF = vif(backward_model)),
       caption = "VIF values for the linear regression model")
 ```
 
@@ -467,31 +629,53 @@ Table: VIF values for the linear regression model
 
 |                    |        VIF|
 |:-------------------|----------:|
-|Total_Fat           |  22.572405|
-|Trans_Fat           |  16.160511|
-|Saturated_Fat       |  15.381749|
-|Sodium              |  19.162550|
-|Total_Carbohydrates |   3.420278|
-|Cholesterol         | 459.209279|
-|Dietary_Fibre       |  17.019469|
-|Sugars              | 432.962393|
-|Protein             |  56.714696|
-|Vitamin_A           |   4.209673|
-|Vitamin_C           |   4.335768|
-|Calcium             |  39.251753|
-|Iron                |   5.036421|
-|Caffeine            |   1.185411|
-The model has a low AIC and BIC values, the R-squared value is 0.997 so the model is a good fit for the data.
-However as we can see from the *Table 2* e have a problem with multicollinearity, the VIF values are high for some variables, so we have to act on the data to solve this problem
+|Total_Fat           |  17.863697|
+|Trans_Fat           |  14.667324|
+|Sodium              |   4.448925|
+|Total_Carbohydrates |   3.419094|
+|Cholesterol         | 442.886703|
+|Dietary_Fibre       |  16.896773|
+|Sugars              | 417.769822|
+|Protein             |  56.706156|
+|Vitamin_A           |   4.205667|
+|Vitamin_C           |   4.288442|
+|Calcium             |  37.105615|
+|Iron                |   5.027804|
+|Caffeine            |   1.176323|
+However as we can see from the *Table X* e have a problem with multicollinearity, the VIF values are high for some variables, so we have to act on the data to solve this problem
 
-We try to standardize the data using a logaritmic transformation
+The high values of the VIF could be due to:
+
+- High correlation between variables,means that variable contribuite in the same way to predict and explain calories
+
+- Same information
+
+- Data unbalanced 
+
+- Different Measurement Scales: If the variables in the model have significantly different measurement scales such as g and mg this could affect the VIF values. 
+
+- Non-linear Relationships: If the relationships between the variables are non-linear, this could also affect the VIF values.
+
+In this case, normalizing the variables might help reduce multicollinearity.
+
+### Standardize the data
+We have tried different kind of standardization to reduce the multicollinearity
+First at all we tried the scale by standard normalization 
+The negative value of the AIC ($-748.2623$) indicates that the standardized linear regression model provides a better compromise between data fit and model complexity compared to the reference model. 
+However, the VIF values are still high, indicating that multicollinearity is still present in the model.
+
+To reduce the problem of high VIF in linear regression, it is generally preferable to use the transformation that includes both log transformation and standardization of the data. This is because standardization helps to put all variables on the same scale, reducing the likelihood of multicollinearity.
+Log transformation: Reduces the variance of the variables, making the distribution more normal and reducing the impact of outliers.
+Standardization: Puts all variables on a common scale, with mean $0$ and standard deviation $1$, further reducing multicollinearity.
+
 
 ``` r
 std_data_log <- scale(log(data_num + 1)) # Standardize the data
 std_data_log_df <- as.data.frame(std_data_log) # Set as dataframe
 mod_log_tr <- lm(Calories ~ ., data = std_data_log_df)
 kable(data.frame(AIC = AIC(mod_log_tr), BIC = BIC(mod_log_tr),
-                 R_squared = summary(mod_log_tr)$r.squared), 
+                 R_squared = summary(mod_log_tr)$r.squared, 
+                 adj_R_squared = summary(mod_log_tr)$adj.r.squared), 
       caption = "Model evaluation metrics for the log transformed data")
 ```
 
@@ -499,9 +683,9 @@ kable(data.frame(AIC = AIC(mod_log_tr), BIC = BIC(mod_log_tr),
 
 Table: Model evaluation metrics for the log transformed data
 
-|       AIC|      BIC| R_squared|
-|---------:|--------:|---------:|
-| -53.42411| 2.398897| 0.9586932|
+|       AIC|      BIC| R_squared| adj_R_squared|
+|---------:|--------:|---------:|-------------:|
+| -53.42411| 2.398897| 0.9586932|     0.9561457|
 
 ``` r
 kable(data.frame(VIF = vif(mod_log_tr)),
@@ -534,9 +718,416 @@ par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
 plot(mod_log_tr)
 ```
 
-<img src="Statistical_Learning_Final_Report_files/figure-html/vif-1.png" style="display: block; margin: auto;" />
-The model has a low AIC and BIC values, the R-squared value is 0.95 so the model is a good fit for the data.
-However we have still collinearity, so we try to use another model.
+<img src="Statistical_Learning_Final_Report_files/figure-html/standardization-1.png" style="display: block; margin: auto;" />
+The model has a low AIC and BIC values, the R-squared value is $0.95$ so the model is a good fit for the data.
+However we have still collinearity, so we try to use backward elimination to check if this method will removes the variables that are not significant in the model.
+
+``` r
+backward_model_log <- step(mod_log_tr, direction = "backward")
+```
+
+```
+## Start:  AIC=-742.19
+## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
+##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_A + 
+##     Vitamin_C + Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Vitamin_A            1    0.0002  9.9552 -744.18
+## - Sodium               1    0.0037  9.9586 -744.10
+## - Caffeine             1    0.0108  9.9657 -743.93
+## - Calcium              1    0.0169  9.9718 -743.78
+## - Saturated_Fat        1    0.0189  9.9739 -743.73
+## - Vitamin_C            1    0.0420  9.9969 -743.17
+## - Iron                 1    0.0547 10.0096 -742.86
+## <none>                              9.9549 -742.19
+## - Total_Carbohydrates  1    0.1562 10.1111 -740.42
+## - Protein              1    0.2674 10.2223 -737.78
+## - Dietary_Fibre        1    0.2858 10.2407 -737.34
+## - Sugars               1    0.3671 10.3220 -735.43
+## - Trans_Fat            1    0.9397 10.8946 -722.36
+## - Total_Fat            1    1.6148 11.5697 -707.81
+## - Cholesterol          1    7.3885 17.3434 -609.85
+## 
+## Step:  AIC=-744.18
+## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
+##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_C + 
+##     Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Sodium               1    0.0035  9.9587 -746.10
+## - Caffeine             1    0.0106  9.9658 -745.93
+## - Calcium              1    0.0172  9.9724 -745.77
+## - Saturated_Fat        1    0.0194  9.9745 -745.71
+## - Vitamin_C            1    0.0425  9.9977 -745.15
+## - Iron                 1    0.0546 10.0097 -744.86
+## <none>                              9.9552 -744.18
+## - Total_Carbohydrates  1    0.1560 10.1112 -742.42
+## - Dietary_Fibre        1    0.2901 10.2453 -739.23
+## - Protein              1    0.3302 10.2854 -738.29
+## - Sugars               1    0.3911 10.3463 -736.86
+## - Trans_Fat            1    0.9469 10.9021 -724.20
+## - Total_Fat            1    1.6315 11.5867 -709.46
+## - Cholesterol          1    7.7956 17.7508 -606.23
+## 
+## Step:  AIC=-746.1
+## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Total_Carbohydrates + 
+##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_C + 
+##     Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Caffeine             1    0.0121  9.9707 -747.81
+## - Calcium              1    0.0159  9.9746 -747.71
+## - Saturated_Fat        1    0.0166  9.9753 -747.70
+## - Vitamin_C            1    0.0416 10.0002 -747.09
+## - Iron                 1    0.0518 10.0104 -746.84
+## <none>                              9.9587 -746.10
+## - Total_Carbohydrates  1    0.1627 10.1213 -744.18
+## - Dietary_Fibre        1    0.2867 10.2454 -741.23
+## - Protein              1    0.3523 10.3110 -739.69
+## - Sugars               1    0.4005 10.3592 -738.56
+## - Trans_Fat            1    1.1608 11.1195 -721.42
+## - Total_Fat            1    1.9717 11.9304 -704.38
+## - Cholesterol          1    7.8478 17.8065 -607.47
+## 
+## Step:  AIC=-747.81
+## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Total_Carbohydrates + 
+##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_C + 
+##     Calcium + Iron
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Saturated_Fat        1    0.0139  9.9847 -749.47
+## - Calcium              1    0.0170  9.9877 -749.39
+## - Iron                 1    0.0506 10.0214 -748.58
+## - Vitamin_C            1    0.0586 10.0293 -748.39
+## <none>                              9.9707 -747.81
+## - Total_Carbohydrates  1    0.1544 10.1251 -746.09
+## - Dietary_Fibre        1    0.2945 10.2653 -742.76
+## - Protein              1    0.3714 10.3422 -740.96
+## - Sugars               1    0.4081 10.3789 -740.10
+## - Trans_Fat            1    1.1509 11.1216 -723.37
+## - Total_Fat            1    1.9666 11.9374 -706.24
+## - Cholesterol          1    7.8592 17.8299 -609.15
+## 
+## Step:  AIC=-749.47
+## Calories ~ Total_Fat + Trans_Fat + Total_Carbohydrates + Cholesterol + 
+##     Dietary_Fibre + Sugars + Protein + Vitamin_C + Calcium + 
+##     Iron
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Calcium              1    0.0200 10.0047 -750.98
+## - Vitamin_C            1    0.0491 10.0338 -750.28
+## - Iron                 1    0.0632 10.0478 -749.94
+## <none>                              9.9847 -749.47
+## - Total_Carbohydrates  1    0.1593 10.1440 -747.64
+## - Dietary_Fibre        1    0.3385 10.3231 -743.40
+## - Protein              1    0.3826 10.3673 -742.37
+## - Sugars               1    0.4035 10.3882 -741.88
+## - Trans_Fat            1    1.1828 11.1675 -724.38
+## - Total_Fat            1    2.1313 12.1160 -704.65
+## - Cholesterol          1    7.8453 17.8300 -611.15
+## 
+## Step:  AIC=-750.98
+## Calories ~ Total_Fat + Trans_Fat + Total_Carbohydrates + Cholesterol + 
+##     Dietary_Fibre + Sugars + Protein + Vitamin_C + Iron
+## 
+##                       Df Sum of Sq    RSS     AIC
+## - Vitamin_C            1    0.0354 10.040 -752.13
+## <none>                             10.005 -750.98
+## - Iron                 1    0.0947 10.099 -750.71
+## - Total_Carbohydrates  1    0.1395 10.144 -749.63
+## - Dietary_Fibre        1    0.3687 10.373 -744.23
+## - Sugars               1    0.4520 10.457 -742.29
+## - Trans_Fat            1    1.5074 11.512 -719.02
+## - Protein              1    1.5699 11.575 -717.71
+## - Total_Fat            1    2.8305 12.835 -692.69
+## - Cholesterol          1    8.1349 18.140 -608.98
+## 
+## Step:  AIC=-752.13
+## Calories ~ Total_Fat + Trans_Fat + Total_Carbohydrates + Cholesterol + 
+##     Dietary_Fibre + Sugars + Protein + Iron
+## 
+##                       Df Sum of Sq    RSS     AIC
+## - Iron                 1    0.0659 10.106 -752.55
+## <none>                             10.040 -752.13
+## - Total_Carbohydrates  1    0.1934 10.233 -749.51
+## - Sugars               1    0.4577 10.498 -743.34
+## - Dietary_Fibre        1    0.6314 10.671 -739.37
+## - Trans_Fat            1    1.5040 11.544 -720.35
+## - Protein              1    1.5424 11.582 -719.55
+## - Total_Fat            1    2.8360 12.876 -693.92
+## - Cholesterol          1    8.0999 18.140 -610.98
+## 
+## Step:  AIC=-752.55
+## Calories ~ Total_Fat + Trans_Fat + Total_Carbohydrates + Cholesterol + 
+##     Dietary_Fibre + Sugars + Protein
+## 
+##                       Df Sum of Sq    RSS     AIC
+## <none>                             10.106 -752.55
+## - Total_Carbohydrates  1    0.1569 10.263 -750.82
+## - Sugars               1    0.4654 10.571 -743.65
+## - Trans_Fat            1    1.4382 11.544 -722.35
+## - Dietary_Fibre        1    1.7801 11.886 -715.29
+## - Protein              1    1.8258 11.932 -714.36
+## - Total_Fat            1    2.8708 12.977 -694.04
+## - Cholesterol          1    8.1106 18.216 -611.96
+```
+
+``` r
+kable(data.frame(AIC = AIC(backward_model_log), BIC = BIC(backward_model_log),
+                 R_squared = summary(backward_model_log)$r.squared, 
+                 adj_R_squared = summary(backward_model_log)$adj.r.squared), 
+      caption = "Model evaluation metrics for the log transformed data
+      \nwith backward elimination")
+```
+
+
+
+Table: Model evaluation metrics for the log transformed data
+      
+with backward elimination
+
+|       AIC|       BIC| R_squared| adj_R_squared|
+|---------:|---------:|---------:|-------------:|
+| -63.78109| -32.38065| 0.9580667|     0.9568123|
+
+``` r
+kable(data.frame(VIF = vif(backward_model_log)),
+      caption = "VIF values for the log transformed data with backward elimination")
+```
+
+
+
+Table: VIF values for the log transformed data with backward elimination
+
+|                    |       VIF|
+|:-------------------|---------:|
+|Total_Fat           |  5.823786|
+|Trans_Fat           |  5.161252|
+|Total_Carbohydrates |  3.390622|
+|Cholesterol         | 36.628698|
+|Dietary_Fibre       |  1.851534|
+|Sugars              | 33.948827|
+|Protein             |  2.976444|
+AIC slightly worst and the VIF values are still high, indicating that multicollinearity is still present in the model.
+So we try to remove manually the variables that has high VIF values.
+
+``` r
+mod_log_tr_updated <- lm(Calories ~ . - Cholesterol - Sugars,
+                         data = std_data_log_df)
+kable(data.frame(VIF = vif(mod_log_tr_updated)),
+      caption = "VIF values for the log transformed data with\n
+      manual removal of variables")
+```
+
+
+
+Table: VIF values for the log transformed data with
+
+      manual removal of variables
+
+|                    |       VIF|
+|:-------------------|---------:|
+|Total_Fat           | 11.902918|
+|Trans_Fat           | 10.114112|
+|Saturated_Fat       |  4.466975|
+|Sodium              |  5.782843|
+|Total_Carbohydrates |  3.375194|
+|Dietary_Fibre       |  7.080360|
+|Protein             | 26.902392|
+|Vitamin_A           | 12.396739|
+|Vitamin_C           |  1.985799|
+|Calcium             | 25.519022|
+|Iron                |  4.521552|
+|Caffeine            |  1.295121|
+
+``` r
+mod_log_tr_backward_2 <- step(mod_log_tr_updated, direction = "backward")
+```
+
+```
+## Start:  AIC=-220.91
+## Calories ~ (Total_Fat + Trans_Fat + Saturated_Fat + Sodium + 
+##     Total_Carbohydrates + Cholesterol + Dietary_Fibre + Sugars + 
+##     Protein + Vitamin_A + Vitamin_C + Calcium + Iron + Caffeine) - 
+##     Cholesterol - Sugars
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Dietary_Fibre        1    0.0121  87.251 -222.88
+## - Total_Fat            1    0.1126  87.351 -222.60
+## - Calcium              1    0.1806  87.419 -222.41
+## - Sodium               1    0.2021  87.441 -222.35
+## - Trans_Fat            1    0.5358  87.774 -221.43
+## - Iron                 1    0.5624  87.801 -221.36
+## - Saturated_Fat        1    0.5958  87.834 -221.26
+## - Caffeine             1    0.6473  87.886 -221.12
+## <none>                              87.239 -220.91
+## - Vitamin_A            1    1.0670  88.305 -219.97
+## - Protein              1    1.6336  88.872 -218.42
+## - Vitamin_C            1    6.4240  93.663 -205.72
+## - Total_Carbohydrates  1   27.0741 114.313 -157.50
+## 
+## Step:  AIC=-222.88
+## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
+##     Protein + Vitamin_A + Vitamin_C + Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Total_Fat            1    0.1006  87.351 -224.60
+## - Sodium               1    0.2120  87.463 -224.29
+## - Calcium              1    0.3197  87.570 -223.99
+## - Saturated_Fat        1    0.5841  87.835 -223.26
+## - Trans_Fat            1    0.5988  87.849 -223.22
+## - Caffeine             1    0.6376  87.888 -223.12
+## <none>                              87.251 -222.88
+## - Iron                 1    0.8319  88.083 -222.58
+## - Vitamin_A            1    1.1061  88.357 -221.83
+## - Protein              1    2.9198  90.170 -216.91
+## - Vitamin_C            1    6.6568  93.907 -207.08
+## - Total_Carbohydrates  1   27.2737 114.524 -159.05
+## 
+## Step:  AIC=-224.6
+## Calories ~ Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
+##     Protein + Vitamin_A + Vitamin_C + Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Sodium               1    0.1308  87.482 -226.24
+## - Saturated_Fat        1    0.4841  87.835 -225.26
+## - Calcium              1    0.5994  87.951 -224.94
+## - Caffeine             1    0.6821  88.033 -224.72
+## <none>                              87.351 -224.60
+## - Vitamin_A            1    1.0214  88.373 -223.78
+## - Iron                 1    1.1762  88.528 -223.36
+## - Trans_Fat            1    2.6009  89.952 -219.50
+## - Protein              1    2.9421  90.293 -218.58
+## - Vitamin_C            1    6.9456  94.297 -208.08
+## - Total_Carbohydrates  1   28.2259 115.577 -158.84
+## 
+## Step:  AIC=-226.24
+## Calories ~ Trans_Fat + Saturated_Fat + Total_Carbohydrates + 
+##     Protein + Vitamin_A + Vitamin_C + Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Saturated_Fat        1    0.3536  87.836 -227.26
+## - Calcium              1    0.4828  87.965 -226.90
+## <none>                              87.482 -226.24
+## - Caffeine             1    0.7305  88.213 -226.22
+## - Iron                 1    1.0837  88.566 -225.26
+## - Vitamin_A            1    1.3358  88.818 -224.57
+## - Protein              1    2.8413  90.323 -220.50
+## - Trans_Fat            1    2.9927  90.475 -220.10
+## - Vitamin_C            1    6.8307  94.313 -210.04
+## - Total_Carbohydrates  1   28.3018 115.784 -160.41
+## 
+## Step:  AIC=-227.26
+## Calories ~ Trans_Fat + Total_Carbohydrates + Protein + Vitamin_A + 
+##     Vitamin_C + Calcium + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Calcium              1    0.4405  88.276 -228.05
+## - Caffeine             1    0.6573  88.493 -227.46
+## <none>                              87.836 -227.26
+## - Vitamin_A            1    1.1556  88.991 -226.10
+## - Iron                 1    2.1821  90.018 -223.32
+## - Protein              1    2.5694  90.405 -222.28
+## - Trans_Fat            1    3.9060  91.742 -218.73
+## - Vitamin_C            1    6.5080  94.344 -211.96
+## - Total_Carbohydrates  1   28.8548 116.691 -160.52
+## 
+## Step:  AIC=-228.05
+## Calories ~ Trans_Fat + Total_Carbohydrates + Protein + Vitamin_A + 
+##     Vitamin_C + Iron + Caffeine
+## 
+##                       Df Sum of Sq     RSS     AIC
+## - Caffeine             1     0.672  88.949 -228.21
+## <none>                              88.276 -228.05
+## - Protein              1     2.152  90.428 -224.22
+## - Vitamin_A            1     2.169  90.445 -224.18
+## - Iron                 1     2.389  90.666 -223.59
+## - Trans_Fat            1     3.843  92.120 -219.74
+## - Vitamin_C            1     6.239  94.515 -213.52
+## - Total_Carbohydrates  1    34.846 123.122 -149.53
+## 
+## Step:  AIC=-228.21
+## Calories ~ Trans_Fat + Total_Carbohydrates + Protein + Vitamin_A + 
+##     Vitamin_C + Iron
+## 
+##                       Df Sum of Sq     RSS     AIC
+## <none>                              88.949 -228.21
+## - Vitamin_A            1     2.482  91.431 -223.55
+## - Iron                 1     2.499  91.447 -223.51
+## - Protein              1     2.836  91.784 -222.62
+## - Trans_Fat            1     3.430  92.379 -221.06
+## - Vitamin_C            1     9.634  98.583 -205.33
+## - Total_Carbohydrates  1    38.906 127.855 -142.41
+```
+
+``` r
+kable(data.frame(AIC = AIC(mod_log_tr_backward_2), BIC = BIC(mod_log_tr_backward_2),
+                 R_squared = summary(mod_log_tr_backward_2)$r.squared, 
+                 adj_R_squared = summary(mod_log_tr_backward_2)$adj.r.squared), 
+      caption = "Model evaluation metrics for the log transformed data with\n
+      backward elimination and manual removal of variables")
+```
+
+
+
+Table: Model evaluation metrics for the log transformed data with
+
+      backward elimination and manual removal of variables
+
+|      AIC|      BIC| R_squared| adj_R_squared|
+|--------:|--------:|---------:|-------------:|
+| 460.5536| 488.4651| 0.6309185|     0.6214952|
+
+``` r
+par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
+plot(mod_log_tr_backward_2)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/backward_elimination_log_2-1.png" style="display: block; margin: auto;" />
+
+``` r
+kable(data.frame(VIF = vif(mod_log_tr_backward_2)),
+      caption = "VIF values for the log transformed data with\nbackward 
+      elimination and manual removal of variables")
+```
+
+
+
+Table: VIF values for the log transformed data with
+backward 
+      elimination and manual removal of variables
+
+|                    |       VIF|
+|:-------------------|---------:|
+|Trans_Fat           |  1.491986|
+|Total_Carbohydrates |  2.649737|
+|Protein             | 10.478245|
+|Vitamin_A           |  8.772514|
+|Vitamin_C           |  1.241962|
+|Iron                |  1.304571|
+The VIF values are now below $10$, indicating that multicollinearity has been reduced in the model.
+The R-squared value is decreased but it is still good.
+
+Model Diagnostics: Non-normal residuals suggest that some assumptions of linear regression might be violated. Specifically, the assumption of normality of the residuals is not met, this can affect the validity of hypothesis tests on the coefficients and predictions.
+
+``` r
+shapiro.test((residuals(mod_log_tr_backward_2)))
+```
+
+```
+## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  (residuals(mod_log_tr_backward_2))
+## W = 0.82171, p-value = 5.816e-16
+```
+Given the p-value is significantly smaller than $0.05$, we reject the null hypothesis. This indicates that the residuals of the model mod_log_tr_backward_2 do not follow a normal distribution.
+In this case, W is quite a bit lower than $1$, suggesting the residuals deviate from normality.
+Sol Robust Methods: Use robust regression methods that do not assume normality of errors
+
+We have tried other trasformation like min-max scaling and robust scaling but not satisfactory due to VIF still to high. 
+Regularization: Using regularization methods such as ridge regression or lasso regression penalizes the coefficients of variables, helping to reduce multicollinearity.
 
 ## Lasso Regression
 
@@ -548,6 +1139,10 @@ First we standardize the data and then we fit the lasso regression model using t
 We use cross-validation to select the optimal lambda value for the model. 
 The lambda value that minimizes the mean squared error (MSE) is selected as the optimal lambda value. 
 The optimal lambda value is used to fit the final lasso regression model.
+
+Lasso regression tends to shrink the coefficients of less important variables towards zero, effectively performing variable selection. By eliminating irrelevant variables from the model, it reduces the number of predictors and thereby reduces multicollinearity.
+Lasso tends to produce sparse solutions, meaning it drives many coefficients to exactly zero. When variables are removed from the model, the multicollinearity among predictors decreases, leading to lower VIF values.
+It performs automatic features selection by shrinking some coefficients to zero. This feature selection process inherently removes redundant variables and reduces multicollinearity in the model.
 
 
 ``` r
@@ -587,7 +1182,7 @@ lasso_coef
 ```
 
 The lasso regression model selects the most important features in the data and penalizes the coefficients of the model. 
-The model has a low AIC and BIC values, the R-squared value is 0.99 so the model is a good fit for the data.
+The model has a low AIC and BIC values, the R-squared value is $0.99$ so the model is a good fit for the data.
 
 ## Ridge Regression
 
@@ -631,14 +1226,14 @@ ridge_coef
 ```
 
 The ridge regression model reduces the impact of collinearity in the data and penalizes the coefficients of the model. 
-The model has a low AIC and BIC values, the R-squared value is 0.99 so the model is a good fit for the data.
+The model has a low AIC and BIC values, the R-squared value is $0.99$ so the model is a good fit for the data.
 
 ## Model Comparison
 
 We compare the linear regression, lasso regression, and ridge regression models to select the best model for predicting the amount of calories based on the amount of the other variables. 
 We evaluate the models using the R-squared value, and the Mean Squared Error (MSE) for each model.
 
-The R-squared value is a measure of how well the model fits the data, it ranges from 0 to 1, with higher values indicating a better fit
+The R-squared value is a measure of how well the model fits the data, it ranges from $0$ to $1$, with higher values indicating a better fit
 
 
 ``` r
@@ -760,8 +1355,8 @@ Table: Model evaluation metrics on the test data
 |:----------|---------:|---------:|---------:|
 |lambda.min | 0.9979473| 0.0026283| 0.9979454|
 
-As we can see from *Table 7* the R-squared value is 0.997, indicating that the model explains 99% of the variance in the data and the MSE is 0.002628338, indicating that the model has a low error rate.
-The accuracy of the model is 0.9979473, indicating that the model is able to predict the amount of calories with high accuracy.
+As we can see from *Table X* the R-squared value is $0.997$, indicating that the model explains $99%$ of the variance in the data and the MSE is $0.002628338$, indicating that the model has a low error rate.
+The accuracy of the model is $0.9979473$, indicating that the model is able to predict the amount of calories with high accuracy.
 The plot shows the predicted values against the actual values on the test data
 The points are close to the diagonal line, indicating that the model is making accurate predictions.
 
