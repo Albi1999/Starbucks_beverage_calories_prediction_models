@@ -16,27 +16,6 @@
 
 numerical_vars <- data_cleaned[, sapply(data_cleaned, is.numeric)]
 
-#before starting to fit the regression model we want to standardize our numeric variable because they have very different scales.
-#and the data's distrubition is unbalenced 
-
-standardized_data <- scale(numerical_vars)
-
-# Visualizza i primi 5 record dei dati standardizzati
-head(standardized_data)
-
-#turn into dataframe in order to use into regression
-numerical_vars_df <- as.data.frame(standardized_data)
-
-# Fit del modello di regressione utilizzando le variabili standardizzate come predittori
-calories_lm_st <- lm(Calories ~ ., data = numerical_vars_df)
-
-# Stampare il summary del modello
-summary(calories_lm_st)
-AIC(calories_lm_st) #negativo 
-
-#Il valore negativo di AIC (-748.2623) indica che il modello di regressione lineare standardizzato fornisce un miglior
-#compromesso tra adattamento ai dati e complessità del modello rispetto al modello di riferimento.
-
 #fit the regression model using amount of calories as target variable and all other numeric as predictors 
 #full model using standardized varriables
 calories_lm <- lm(Calories ~ ., data = numerical_vars)
@@ -152,9 +131,26 @@ print(vif_backward)
 #Different Measurement Scales: If the variables in the model have significantly different measurement scales such as g and mg this could affect the VIF values. 
 #In this case, normalizing the variables might help reduce multicollinearity.
 
+#before starting to fit the regression model we want to standardize our numeric variable because they have very different scales.
+#and the data's distrubition is unbalenced 
+
+standardized_data <- scale(numerical_vars)
+
+# Visualizza i primi 5 record dei dati standardizzati
+head(standardized_data)
+
+#turn into dataframe in order to use into regression
+numerical_vars_df <- as.data.frame(standardized_data)
+
+# Fit del modello di regressione utilizzando le variabili standardizzate come predittori
 calories_lm_st <- lm(Calories ~ ., data = numerical_vars_df)
+
+# Stampare il summary del modello
 summary(calories_lm_st)
-AIC(calories_lm_st)
+AIC(calories_lm_st) #negativo 
+
+#Il valore negativo di AIC (-748.2623) indica che il modello di regressione lineare standardizzato fornisce un miglior
+#compromesso tra adattamento ai dati e complessità del modello rispetto al modello di riferimento
 
 #selection
 calories_lm_st_back <- step(calories_lm_st, direction = "backward")
