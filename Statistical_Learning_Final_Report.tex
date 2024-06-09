@@ -77,6 +77,16 @@
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -108,7 +118,7 @@
 
 \title{Statistical Learning Final Report}
 \author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
-\date{2024-06-05}
+\date{2024-06-09}
 
 \begin{document}
 \maketitle
@@ -272,7 +282,7 @@ plot such matrix.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Remove first 3 columns for the correlation matrix since them are categorical}
-\NormalTok{data\_num }\OtherTok{\textless{}{-}}\NormalTok{ data\_cleaned[, }\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{)]}
+\NormalTok{data\_num }\OtherTok{\textless{}{-}}\NormalTok{ data\_cleaned[, }\FunctionTok{sapply}\NormalTok{(data\_cleaned, is.numeric)]}
 \NormalTok{correlation\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(data\_num)}
 \CommentTok{\# Plot the correlation matrix using corrplot}
 \FunctionTok{corrplot}\NormalTok{(correlation\_matrix, }\AttributeTok{method =} \StringTok{"number"}\NormalTok{, }\AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }
@@ -282,32 +292,23 @@ plot such matrix.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis-1} \end{center}
 
-Moreover, we visualized the correlation matrix through a heatmap. The
-heatmap provides a visual representation of the correlation matrix,
-making it easier to identify patterns and relationships between the
-variables. The color gradient helps to distinguish between positive and
-negative correlations, with darker shades indicating stronger
-correlations.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Heatmap of the correlation matrix}
-\FunctionTok{heatmap}\NormalTok{(}\FunctionTok{cor}\NormalTok{(data\_num), }
-        \AttributeTok{col =} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"\#005cff"}\NormalTok{, }\StringTok{"\#fbfbfb"}\NormalTok{, }\StringTok{"\#d90000"}\NormalTok{))(}\DecValTok{100}\NormalTok{), }
-        \AttributeTok{symm =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{margins =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{8}\NormalTok{), }\AttributeTok{cexRow =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{cexCol =} \FloatTok{0.8}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis_heatmap-1} \end{center}
-
-\textbf{MAYBE WE CAN REMOVE THE HEATMAP AND KEEP ONLY THE CORRLOT SINCE
-IT STEAL A LOT OF SPACE FROM OUR REPORT}
-
 \section{Data Visualization}\label{data-visualization}
+
+Data visualization is a powerful tool that allows us to uncover
+patterns, correlations and outliers in our data. It provides visual
+information on the dataset in our analysis, representing large amounts
+of data in a clear and comprehensive way and underlining the
+relationships among them. This enables us to recognize patterns quickly.
+
+So, let us transform our raw data into graphical representations, to
+gain a more comprehensive understanding of the information at hand.
 
 \subsection{Histograms}\label{histograms}
 
-We will plot some histograms to visualize the data.
+Histograms serve as a graphical interpretation of data distribution. In
+a histogram, each bar corresponds to the counted frequency within each
+bin or interval. We introduce these plots to see if our data is normally
+distributed, skewed, or has outlier values.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -327,9 +328,14 @@ We will plot some histograms to visualize the data.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-1} \end{center}
 
-ADD COMMENTS ON THE GRAPH
+By looking at the graphs, we can notice that the variables ``Calories'',
+``Total\_Carbohydrates'', ``Cholesterol'', and ``Sugars'' exhibit
+distributions that are nearly normal. Conversely, the distributions of
+the remaining variables display a noticeable skewness towards the left.
 
 \subsection{Pairplot}\label{pairplot}
+
+\textbf{io questi li toglierei. tanto spazio}
 
 We will plot a pairplot to visualize the relationship between the
 variables. The pairplot is a grid of scatterplots that shows the
@@ -359,11 +365,12 @@ ADD COMMENTS ON THE GRAPH
 
 \subsection{Barplot}\label{barplot}
 
-We will plot a barplot of the data. The barplot is a graphical
-representation of the data that displays the frequency of each category
-in a categorical variable. This visualization helps us to understand the
-distribution of the data and identify the most common categories in the
-dataset.
+We will now plot the bar plots for our dataset. The primary use of bar
+plots is to make comparisons between the amounts of different
+categories. Indeed, each bar corresponds to a category and the height of
+the bar represents the frequency or proportion of that category. These
+graphs are commonly used for categorical data, or numerical data that
+has been binned into categories.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -377,13 +384,28 @@ dataset.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/barplot-1} \end{center}
 
-ADD COMMENTS ON THE GRAPH
+We can deduce some useful information by looking at these plots.
+
+For example, we can notice that variables such as ``Saturated\_Fat'',
+``Dietary\_Fibre'', ``Vitamin\_C'', and ``Iron'' are typically either
+absent or present in small quantities in the beverages. In particular,
+the frequency of these variables rapidly diminishes as their levels
+increase. On the other hand, the variables ``Calories'', ``Total\_Fat'',
+``Trans\_Fat'', and ``Total\_Carbohydrates'' show a wide range of values
+across different beverage types, going from high levels in some
+beverages to minimal amounts in others.
+
+We can further observe that the distribution of ``Vitamin\_A'' appears
+to be more evenly spread among the different levels in various
+beverages, while instead ``Caffeine'' plot is interesting as it exhibits
+three distinct peaks in frequency.
 
 \subsubsection{Beverages Barplot}\label{beverages-barplot}
 
-We create a barplot to visualize the distribution of the
-`Beverage\_category' variable and the `Beverage\_prep' variable in order
-to understand the most common beverages and preparation methods.
+As previously anticipated, bar plots also allows us to see the
+distribution of categorical variables like ``Beverage\_category'' and
+``Beverage\_prep''. In this way we can identify the most frequently
+occurring beverages and their preparation methods.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -406,10 +428,10 @@ to understand the most common beverages and preparation methods.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/beverage_barplot-2} \end{center}
 
-Now we want to compare the total calories for each categories of
-bevarage. First we aggrgate the data to obtain the total calories for
-each categories of bevarage and then we create a barplot to visualize
-the results.
+At this point, we aim to compare the total calorie content among
+different beverage categories. To do so, we first aggregate the data to
+obtain the total calories for each beverage category. Secondly, we
+construct a bar plot to visually represent the results.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -425,10 +447,9 @@ the results.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/total_calories-1} \end{center}
 
-Now we want to compare the total sugars for each preparation of
-bevarage. First we aggrgate the data to obtain the total sugars for each
-preparation of bevarage and then we create a barplot to visualize the
-results.
+Similarly, we compare the total sugars for each beverage preparation,
+gathering data to obtain the total sugars for each preparation of
+beverage and successively creating a bar plot.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -550,13 +571,7 @@ regression model
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Set the calories as the dependent variable}
-\NormalTok{y }\OtherTok{\textless{}{-}}\NormalTok{ data\_num}\SpecialCharTok{$}\NormalTok{Calories}
-\CommentTok{\# Remove calories column in order to use the other variables }
-\CommentTok{\# as independent variables}
-\NormalTok{data\_num }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
-\CommentTok{\# Linear regression model}
-\NormalTok{lm\_model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ data\_num)}
+\NormalTok{lm\_model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ data\_num\_)}
 \FunctionTok{summary}\NormalTok{(lm\_model)}
 \end{Highlighting}
 \end{Shaded}
@@ -564,7 +579,7 @@ regression model
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = y ~ ., data = data_num)
+## lm(formula = y ~ ., data = data_num_)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
@@ -606,105 +621,340 @@ regression model
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{AIC}\NormalTok{(lm\_model)}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{AIC =} \FunctionTok{AIC}\NormalTok{(lm\_model), }\AttributeTok{BIC =} \FunctionTok{BIC}\NormalTok{(lm\_model),}
+                 \AttributeTok{R\_squared =} \FunctionTok{summary}\NormalTok{(lm\_model)}\SpecialCharTok{$}\NormalTok{r.squared), }
+      \AttributeTok{caption =} \StringTok{"Model evaluation metrics"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## [1] 1494.304
-\end{verbatim}
+\begin{longtable}[]{@{}rrr@{}}
+\caption{Model evaluation metrics}\tabularnewline
+\toprule\noalign{}
+AIC & BIC & R\_squared \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+AIC & BIC & R\_squared \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1494.304 & 1550.127 & 0.9976608 \\
+\end{longtable}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{BIC}\NormalTok{(lm\_model)}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{VIF =} \FunctionTok{vif}\NormalTok{(lm\_model)),}
+      \AttributeTok{caption =} \StringTok{"VIF values for the linear regression model"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## [1] 1550.127
-\end{verbatim}
+\begin{longtable}[]{@{}lr@{}}
+\caption{VIF values for the linear regression model}\tabularnewline
+\toprule\noalign{}
+& VIF \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& VIF \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Total\_Fat & 22.572405 \\
+Trans\_Fat & 16.160511 \\
+Saturated\_Fat & 15.381749 \\
+Sodium & 19.162550 \\
+Total\_Carbohydrates & 3.420278 \\
+Cholesterol & 459.209279 \\
+Dietary\_Fibre & 17.019469 \\
+Sugars & 432.962393 \\
+Protein & 56.714696 \\
+Vitamin\_A & 4.209673 \\
+Vitamin\_C & 4.335768 \\
+Calcium & 39.251753 \\
+Iron & 5.036421 \\
+Caffeine & 1.185411 \\
+\end{longtable}
 
-The model has a low AIC and BIC values, the R-squared value is 0.99 so
-the model is a good fit for the data. The model is significant, the
-p-value is less than 0.05
+The model has a low AIC and BIC values, the R-squared value is 0.997 so
+the model is a good fit for the data. However as we can see from the
+\emph{Table 2} e have a problem with multicollinearity, the VIF values
+are high for some variables, so we have to act on the data to solve this
+problem
 
-\subsection{Logistic Regression}\label{logistic-regression}
-
-Logistic regression model to predict the amount of calories based on the
-amount of the other variables We use the glm() function to fit a
-logistic regression model
+We try to standardize the data using a logaritmic transformation
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Logistic regression model}
-\NormalTok{glm\_model }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ data\_num, }\AttributeTok{family =} \StringTok{"gaussian"}\NormalTok{) }
-\CommentTok{\# Try to change the family}
-\FunctionTok{summary}\NormalTok{(glm\_model)}
+\NormalTok{std\_data\_log }\OtherTok{\textless{}{-}} \FunctionTok{scale}\NormalTok{(}\FunctionTok{log}\NormalTok{(data\_num }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)) }\CommentTok{\# Standardize the data}
+\NormalTok{std\_data\_log\_df }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(std\_data\_log) }\CommentTok{\# Set as dataframe}
+\NormalTok{mod\_log\_tr }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Calories }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ std\_data\_log\_df)}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{AIC =} \FunctionTok{AIC}\NormalTok{(mod\_log\_tr), }\AttributeTok{BIC =} \FunctionTok{BIC}\NormalTok{(mod\_log\_tr),}
+                 \AttributeTok{R\_squared =} \FunctionTok{summary}\NormalTok{(mod\_log\_tr)}\SpecialCharTok{$}\NormalTok{r.squared), }
+      \AttributeTok{caption =} \StringTok{"Model evaluation metrics for the log transformed data"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## 
-## Call:
-## glm(formula = y ~ ., family = "gaussian", data = data_num)
-## 
-## Coefficients:
-##                      Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)          0.252316   0.952833   0.265  0.79140    
-## Total_Fat           11.143733   0.532812  20.915  < 2e-16 ***
-## Trans_Fat           -2.477820   0.809270  -3.062  0.00247 ** 
-## Saturated_Fat       -9.816317  18.143619  -0.541  0.58901    
-## Sodium              -0.279257   0.167487  -1.667  0.09683 .  
-## Total_Carbohydrates  0.020972   0.007420   2.826  0.00513 ** 
-## Cholesterol          2.829543   0.340268   8.316 8.43e-15 ***
-## Dietary_Fibre        1.534913   0.942106   1.629  0.10465    
-## Sugars               1.131045   0.348234   3.248  0.00134 ** 
-## Protein              2.218895   0.510445   4.347 2.08e-05 ***
-## Vitamin_A            0.162307   0.083662   1.940  0.05361 .  
-## Vitamin_C            0.147669   0.047675   3.097  0.00220 ** 
-## Calcium              0.462193   0.142257   3.249  0.00133 ** 
-## Iron                -0.649101   0.070666  -9.185  < 2e-16 ***
-## Caffeine             0.013513   0.005826   2.319  0.02126 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for gaussian family taken to be 26.27685)
-## 
-##     Null deviance: 2549987.0  on 241  degrees of freedom
-## Residual deviance:    5964.8  on 227  degrees of freedom
-## AIC: 1494.3
-## 
-## Number of Fisher Scoring iterations: 2
-\end{verbatim}
+\begin{longtable}[]{@{}rrr@{}}
+\caption{Model evaluation metrics for the log transformed
+data}\tabularnewline
+\toprule\noalign{}
+AIC & BIC & R\_squared \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+AIC & BIC & R\_squared \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+-53.42411 & 2.398897 & 0.9586932 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{VIF =} \FunctionTok{vif}\NormalTok{(mod\_log\_tr)),}
+      \AttributeTok{caption =} \StringTok{"VIF values for the log transformed data"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{VIF values for the log transformed data}\tabularnewline
+\toprule\noalign{}
+& VIF \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& VIF \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Total\_Fat & 12.049669 \\
+Trans\_Fat & 10.577306 \\
+Saturated\_Fat & 4.528080 \\
+Sodium & 5.817088 \\
+Total\_Carbohydrates & 4.363628 \\
+Cholesterol & 39.988684 \\
+Dietary\_Fibre & 7.115085 \\
+Sugars & 38.415586 \\
+Protein & 31.007121 \\
+Vitamin\_A & 13.647581 \\
+Vitamin\_C & 2.196674 \\
+Calcium & 25.873742 \\
+Iron & 4.582594 \\
+Caffeine & 1.310005 \\
+\end{longtable}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(glm\_model)}
+\FunctionTok{plot}\NormalTok{(mod\_log\_tr)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/logistic_regression-1} \end{center}
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/vif-1} \end{center}
+
+The model has a low AIC and BIC values, the R-squared value is 0.95 so
+the model is a good fit for the data. However we have still
+collinearity, so we try to use another model.
+
+\subsection{Lasso Regression}\label{lasso-regression}
+
+We use the glmnet package to fit a lasso regression model. Lasso
+regression is a type of linear regression that uses L1 regularization to
+penalize the coefficients of the model. This helps to prevent
+overfitting and select the most important features in the data.
+
+First we standardize the data and then we fit the lasso regression model
+using the cv.glmnet() function. We use cross-validation to select the
+optimal lambda value for the model. The lambda value that minimizes the
+mean squared error (MSE) is selected as the optimal lambda value. The
+optimal lambda value is used to fit the final lasso regression model.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{AIC}\NormalTok{(glm\_model)}
+\NormalTok{std\_data }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{scale}\NormalTok{(data\_num)) }\CommentTok{\# Standardize the data}
+\NormalTok{mod\_lasso }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]),}
+                       \AttributeTok{y =}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories,}
+                       \AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{standardize =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(mod\_lasso)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/lasso_regression-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lasso\_coef }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(mod\_lasso, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{)}
+\NormalTok{lasso\_coef}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 1494.304
+## 15 x 1 sparse Matrix of class "dgCMatrix"
+##                                s1
+## (Intercept)          1.569504e-17
+## Total_Fat            2.813714e-01
+## Trans_Fat           -1.213127e-02
+## Saturated_Fat        .           
+## Sodium              -2.136716e-02
+## Total_Carbohydrates  1.879088e-02
+## Cholesterol          6.957617e-01
+## Dietary_Fibre        2.340655e-02
+## Sugars               9.354308e-02
+## Protein              5.873156e-02
+## Vitamin_A            1.006149e-02
+## Vitamin_C            2.526001e-02
+## Calcium              1.080519e-01
+## Iron                -6.555492e-02
+## Caffeine             6.612001e-03
 \end{verbatim}
+
+The lasso regression model selects the most important features in the
+data and penalizes the coefficients of the model. The model has a low
+AIC and BIC values, the R-squared value is 0.99 so the model is a good
+fit for the data.
+
+\subsection{Ridge Regression}\label{ridge-regression}
+
+We use the glmnet package to fit a ridge regression model. Ridge
+regression is a type of linear regression that uses L2 regularization to
+penalize the coefficients of the model. This helps to prevent
+overfitting and reduce the impact of collinearity in the data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{BIC}\NormalTok{(glm\_model)}
+\NormalTok{mod\_ridge }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]),}
+                       \AttributeTok{y =}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories,}
+                       \AttributeTok{alpha =} \DecValTok{0}\NormalTok{, }\AttributeTok{standardize =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mod\_ridge)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/ridge_regression-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ridge\_coef }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(mod\_ridge, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{)}
+\NormalTok{ridge\_coef}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 1550.127
+## 15 x 1 sparse Matrix of class "dgCMatrix"
+##                                s1
+## (Intercept)          2.767416e-17
+## Total_Fat            1.790461e-01
+## Trans_Fat            5.621285e-02
+## Saturated_Fat        9.206930e-03
+## Sodium              -1.003136e-02
+## Total_Carbohydrates  6.670660e-02
+## Cholesterol          3.488854e-01
+## Dietary_Fibre        5.575676e-02
+## Sugars               3.437989e-01
+## Protein              6.986559e-02
+## Vitamin_A            5.069011e-03
+## Vitamin_C            3.983592e-02
+## Calcium              1.076895e-01
+## Iron                -1.329709e-02
+## Caffeine             1.007714e-04
 \end{verbatim}
+
+The ridge regression model reduces the impact of collinearity in the
+data and penalizes the coefficients of the model. The model has a low
+AIC and BIC values, the R-squared value is 0.99 so the model is a good
+fit for the data.
+
+\subsection{Model Comparison}\label{model-comparison}
+
+We compare the linear regression, lasso regression, and ridge regression
+models to select the best model for predicting the amount of calories
+based on the amount of the other variables. We evaluate the models using
+the R-squared value, and the Mean Squared Error (MSE) for each model.
+
+The R-squared value is a measure of how well the model fits the data, it
+ranges from 0 to 1, with higher values indicating a better fit
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lasso\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(mod\_lasso, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{, }
+                      \AttributeTok{newx =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
+\NormalTok{lasso\_r\_squared }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(lasso\_pred, std\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{ridge\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(mod\_ridge, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{, }
+                      \AttributeTok{newx =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
+\NormalTok{ridge\_r\_squared }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(ridge\_pred, std\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}
+
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Linear Regression"}\NormalTok{, }\StringTok{"Lasso Regression"}\NormalTok{,}
+                           \StringTok{"Ridge Regression"}\NormalTok{),}
+                 \AttributeTok{R\_squared =} \FunctionTok{c}\NormalTok{(}\FunctionTok{summary}\NormalTok{(lm\_model)}\SpecialCharTok{$}\NormalTok{r.squared,}
+\NormalTok{                               lasso\_r\_squared, ridge\_r\_squared)), }
+      \AttributeTok{caption =} \StringTok{"R{-}squared values for the models"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{R-squared values for the models}\tabularnewline
+\toprule\noalign{}
+Model & R\_squared \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Model & R\_squared \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Linear Regression & 0.9976608 \\
+Lasso Regression & 0.9975756 \\
+Ridge Regression & 0.9941815 \\
+\end{longtable}
+
+\subsection{Model Evaluation}\label{model-evaluation}
+
+We evaluate the performance of the linear regression, lasso regression,
+and ridge regression models using the mean squared error (MSE). The MSE
+is a measure of the average squared difference between the predicted and
+actual values. Lower values of the MSE indicate better performance of
+the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{linear\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lm\_model, }\AttributeTok{newdata =}\NormalTok{ data\_num)}
+\NormalTok{linear\_mse }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((linear\_pred }\SpecialCharTok{{-}}\NormalTok{ data\_num}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{lasso\_mse }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((lasso\_pred }\SpecialCharTok{{-}}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{ridge\_mse }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((ridge\_pred }\SpecialCharTok{{-}}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Linear Regression"}\NormalTok{,}
+                           \StringTok{"Lasso Regression"}\NormalTok{, }\StringTok{"Ridge Regression"}\NormalTok{),}
+                 \AttributeTok{MSE =} \FunctionTok{c}\NormalTok{(linear\_mse, lasso\_mse, ridge\_mse)), }
+      \AttributeTok{caption =} \StringTok{"MSE values for the models"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{MSE values for the models}\tabularnewline
+\toprule\noalign{}
+Model & MSE \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Model & MSE \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Linear Regression & 24.6481166 \\
+Lasso Regression & 0.0024158 \\
+Ridge Regression & 0.0066477 \\
+\end{longtable}
+
+We choose the model with the highest R-squared value and the lowest MSE
+as the best model for predicting the amount of calories based on the
+amount of the other variables. The best model is the lasso because it
+has the lowest value for R\^{}2 and MSE and it is the most robust model.
 
 \subsection{Cross Validation}\label{cross-validation}
 
@@ -714,293 +964,84 @@ fitting the model using the training set, and evaluating the model using
 the testing set. This process is repeated multiple times to ensure that
 the model is robust and generalizes well to new data.
 
-\subsubsection{Linear Regression}\label{linear-regression-1}
-
-We split the data into training and testing sets, fit the linear
+We split the data into training and testing sets, fit the lasso
 regression model using the training set.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Split the data into training and testing sets}
 \FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
-\NormalTok{train\_index }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(data\_num), }\FloatTok{0.8} \SpecialCharTok{*} \FunctionTok{nrow}\NormalTok{(data\_num))}
-\NormalTok{train\_data }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[train\_index, ]}
-\NormalTok{test\_data }\OtherTok{\textless{}{-}}\NormalTok{ data\_num[}\SpecialCharTok{{-}}\NormalTok{train\_index, ]}
-\CommentTok{\# Fit the linear regression model using the training set}
-\NormalTok{y\_train }\OtherTok{\textless{}{-}}\NormalTok{ y[train\_index]}
-\NormalTok{lm\_model\_train }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_train }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ train\_data)}
-\FunctionTok{summary}\NormalTok{(lm\_model\_train)}
+\NormalTok{train\_index }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(std\_data), }\FloatTok{0.8} \SpecialCharTok{*} \FunctionTok{nrow}\NormalTok{(std\_data))}
+\NormalTok{train\_data }\OtherTok{\textless{}{-}}\NormalTok{ std\_data[train\_index, ]}
+\NormalTok{test\_data }\OtherTok{\textless{}{-}}\NormalTok{ std\_data[}\SpecialCharTok{{-}}\NormalTok{train\_index, ]}
+\CommentTok{\# Fit the lasso regression model on the training data}
+\NormalTok{mod\_lasso\_train }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.matrix}\NormalTok{(train\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]),}
+                             \AttributeTok{y =}\NormalTok{ train\_data}\SpecialCharTok{$}\NormalTok{Calories,}
+                             \AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{standardize =} \ConstantTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-## 
-## Call:
-## lm(formula = y_train ~ ., data = train_data)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -13.3660  -3.4895  -0.3014   3.2957  22.0511 
-## 
-## Coefficients:
-##                      Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)          0.384009   1.086638   0.353 0.724213    
-## Total_Fat           11.010780   0.584930  18.824  < 2e-16 ***
-## Trans_Fat           -2.384286   0.926402  -2.574 0.010876 *  
-## Saturated_Fat       -6.394565  19.670475  -0.325 0.745499    
-## Sodium              -0.344189   0.189423  -1.817 0.070894 .  
-## Total_Carbohydrates  0.018919   0.008550   2.213 0.028182 *  
-## Cholesterol          2.688521   0.393449   6.833 1.27e-10 ***
-## Dietary_Fibre        1.334079   1.068310   1.249 0.213387    
-## Sugars               1.270177   0.402629   3.155 0.001886 ** 
-## Protein              2.288347   0.598184   3.825 0.000180 ***
-## Vitamin_A            0.153517   0.104811   1.465 0.144767    
-## Vitamin_C            0.192040   0.055413   3.466 0.000663 ***
-## Calcium              0.458855   0.163646   2.804 0.005609 ** 
-## Iron                -0.571726   0.080401  -7.111 2.70e-11 ***
-## Caffeine             0.016253   0.006917   2.350 0.019895 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 5.168 on 178 degrees of freedom
-## Multiple R-squared:  0.9975, Adjusted R-squared:  0.9973 
-## F-statistic:  5061 on 14 and 178 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{AIC}\NormalTok{(lm\_model\_train)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 1198.059
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{BIC}\NormalTok{(lm\_model\_train)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 1250.262
-\end{verbatim}
-
-\paragraph{Model Evaluation}\label{model-evaluation}
 
 We evaluate the model using the testing set. We make predictions using
 the testing set and calculate the mean squared error and the root mean
-squared error to assess the model's accuracy. We also plot the residuals
-to check if the model is a good fit.
+squared error to assess the model's accuracy.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Make predictions using the testing set}
-\NormalTok{y\_test }\OtherTok{\textless{}{-}}\NormalTok{ y[}\SpecialCharTok{{-}}\NormalTok{train\_index]}
-\NormalTok{predictions\_lm }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lm\_model\_train, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
-\CommentTok{\# Evaluate the model using the testing set}
-\CommentTok{\# Calculate the mean squared error}
-\NormalTok{mse\_lm}\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((y\_test }\SpecialCharTok{{-}}\NormalTok{ predictions\_lm)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
-\NormalTok{mse\_lm}
+\NormalTok{lasso\_pred\_test }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(mod\_lasso\_train, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{,}
+                           \AttributeTok{newx =} \FunctionTok{as.matrix}\NormalTok{(test\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
+\CommentTok{\# R{-}squared value of the lasso regression model on the test data}
+\NormalTok{lasso\_r\_squared\_test }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(lasso\_pred\_test, test\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}
+\CommentTok{\# MSE of the lasso regression model on the test data}
+\NormalTok{lasso\_mse\_test }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((lasso\_pred\_test }\SpecialCharTok{{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## [1] 27.00986
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Calculate the root mean squared error}
-\NormalTok{rmse\_lm }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(mse\_lm)}
-\NormalTok{rmse\_lm}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 5.197101
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Plot the residuals to check if the model is a good fit}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(lm\_model\_train, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/model_evaluation_lm-1} \end{center}
-
-The residuals are randomly distributed around zero, so the model is a
-good fit
-
-Now we compute the accuracy of the model and then we plot the results
+The R-squared value and MSE are used to evaluate the performance of the
+model on the test data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Accuracy of the model}
-\NormalTok{accuracy\_lm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (rmse\_lm }\SpecialCharTok{/} \FunctionTok{mean}\NormalTok{(y\_test))}
-\NormalTok{accuracy\_lm}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.972211
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{plot}\NormalTok{(y\_test, predictions\_lm, }\AttributeTok{main =} \StringTok{"Actual vs Predicted Values"}\NormalTok{,}
-     \AttributeTok{xlab =} \StringTok{"Actual Values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Predicted Values"}\NormalTok{,}
+\NormalTok{accuracy\_lm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (lasso\_mse\_test }\SpecialCharTok{/} \FunctionTok{var}\NormalTok{(test\_data}\SpecialCharTok{$}\NormalTok{Calories))}
+\CommentTok{\# Plot the predicted values against the actual values on the test data}
+\FunctionTok{plot}\NormalTok{(test\_data}\SpecialCharTok{$}\NormalTok{Calories, lasso\_pred\_test, }\AttributeTok{xlab =} \StringTok{"Actual Calories"}\NormalTok{,}
+     \AttributeTok{ylab =} \StringTok{"Predicted Calories"}\NormalTok{, }\AttributeTok{main =} \StringTok{"Predicted vs Actual Calories"}\NormalTok{,}
      \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/accuracy_lm-1} \end{center}
 
-The actual and predicted values are close to each other, so the model is
-a good fit
-
-\subsubsection{Logistic Regression}\label{logistic-regression-1}
-
-We split the data into training and testing sets, fit the logistic
-regression model using the training set.
-
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Fit the logistic regression model using the training set}
-\NormalTok{glm\_model\_train }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y\_train }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ train\_data, }\AttributeTok{family =} \StringTok{"gaussian"}\NormalTok{)}
-\FunctionTok{summary}\NormalTok{(glm\_model\_train)}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Accuracy =}\NormalTok{ accuracy\_lm, }\AttributeTok{MSE =}\NormalTok{ lasso\_mse\_test, }
+                 \AttributeTok{R\_squared =}\NormalTok{ lasso\_r\_squared\_test),}
+      \AttributeTok{caption =} \StringTok{"Model evaluation metrics on the test data"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## 
-## Call:
-## glm(formula = y_train ~ ., family = "gaussian", data = train_data)
-## 
-## Coefficients:
-##                      Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)          0.384009   1.086638   0.353 0.724213    
-## Total_Fat           11.010780   0.584930  18.824  < 2e-16 ***
-## Trans_Fat           -2.384286   0.926402  -2.574 0.010876 *  
-## Saturated_Fat       -6.394565  19.670475  -0.325 0.745499    
-## Sodium              -0.344189   0.189423  -1.817 0.070894 .  
-## Total_Carbohydrates  0.018919   0.008550   2.213 0.028182 *  
-## Cholesterol          2.688521   0.393449   6.833 1.27e-10 ***
-## Dietary_Fibre        1.334079   1.068310   1.249 0.213387    
-## Sugars               1.270177   0.402629   3.155 0.001886 ** 
-## Protein              2.288347   0.598184   3.825 0.000180 ***
-## Vitamin_A            0.153517   0.104811   1.465 0.144767    
-## Vitamin_C            0.192040   0.055413   3.466 0.000663 ***
-## Calcium              0.458855   0.163646   2.804 0.005609 ** 
-## Iron                -0.571726   0.080401  -7.111 2.70e-11 ***
-## Caffeine             0.016253   0.006917   2.350 0.019895 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for gaussian family taken to be 26.70325)
-## 
-##     Null deviance: 1896791.9  on 192  degrees of freedom
-## Residual deviance:    4753.2  on 178  degrees of freedom
-## AIC: 1198.1
-## 
-## Number of Fisher Scoring iterations: 2
-\end{verbatim}
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Model evaluation metrics on the test data}\tabularnewline
+\toprule\noalign{}
+& Accuracy & MSE & R\_squared \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& Accuracy & MSE & R\_squared \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+lambda.min & 0.9979473 & 0.0026283 & 0.9979454 \\
+\end{longtable}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{AIC}\NormalTok{(glm\_model\_train)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 1198.059
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{BIC}\NormalTok{(glm\_model\_train)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 1250.262
-\end{verbatim}
-
-\paragraph{Model Evaluation}\label{model-evaluation-1}
-
-We evaluate the model using the testing set. We make predictions using
-the testing set and calculate the mean squared error and the root mean
-squared error to assess the model's accuracy. We also plot the residuals
-to check if the model is a good fit.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Make predictions using the testing set}
-\NormalTok{predictions\_glm }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(glm\_model\_train, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
-\CommentTok{\# Evaluate the model using the testing set}
-\CommentTok{\# Calculate the mean squared error}
-\NormalTok{mse\_glm }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((y\_test }\SpecialCharTok{{-}}\NormalTok{ predictions\_glm)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
-\NormalTok{mse\_glm}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 27.00986
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Calculate the root mean squared error}
-\NormalTok{rmse\_glm }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(mse\_glm)}
-\NormalTok{rmse\_glm}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 5.197101
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Plot the residuals to check if the model is a good fit}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(glm\_model\_train, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/model_evaluation_glm-1} \end{center}
-
-The residuals are randomly distributed around zero, so the model is a
-good fit
-
-Now we compute the accuracy of the model and then we plot the results
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Accuracy of the model}
-\NormalTok{accuracy\_glm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (rmse\_glm }\SpecialCharTok{/} \FunctionTok{mean}\NormalTok{(y\_test))}
-\NormalTok{accuracy\_glm}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 0.972211
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{plot}\NormalTok{(y\_test, predictions\_glm, }\AttributeTok{main =} \StringTok{"Actual vs Predicted Values"}\NormalTok{,}
-     \AttributeTok{xlab =} \StringTok{"Actual Values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Predicted Values"}\NormalTok{,}
-     \AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/accuracy_glm-1} \end{center}
-
-The actual and predicted values are close to each other, so the model is
-a good fit
+As we can see from \emph{Table 7} the R-squared value is 0.997,
+indicating that the model explains 99\% of the variance in the data and
+the MSE is 0.002628338, indicating that the model has a low error rate.
+The accuracy of the model is 0.9979473, indicating that the model is
+able to predict the amount of calories with high accuracy. The plot
+shows the predicted values against the actual values on the test data
+The points are close to the diagonal line, indicating that the model is
+making accurate predictions.
 
 \end{document}
