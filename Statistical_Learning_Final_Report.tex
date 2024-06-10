@@ -118,7 +118,7 @@
 
 \title{Statistical Learning Final Report}
 \author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
-\date{2024-06-09}
+\date{2024-06-10}
 
 \begin{document}
 \maketitle
@@ -209,7 +209,6 @@ robust replacement in the presence of outliers.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Summary of the Caffeine column}
 \FunctionTok{summary}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Caffeine..mg.)}
 \end{Highlighting}
 \end{Shaded}
@@ -255,17 +254,6 @@ features, thus for these we cannot compute Pearson's correlation
 coefficient. In the following code lines we remove them to compute and
 plot such matrix.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Remove first 3 columns for the correlation matrix since them are categorical}
-\NormalTok{data\_num }\OtherTok{\textless{}{-}}\NormalTok{ data\_cleaned[, }\FunctionTok{sapply}\NormalTok{(data\_cleaned, is.numeric)]}
-\NormalTok{correlation\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(data\_num)}
-\CommentTok{\# Plot the correlation matrix using corrplot}
-\FunctionTok{corrplot}\NormalTok{(correlation\_matrix, }\AttributeTok{method =} \StringTok{"number"}\NormalTok{, }\AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }
-         \AttributeTok{tl.srt =} \DecValTok{45}\NormalTok{, }\AttributeTok{addCoef.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{number.cex =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{tl.cex =} \FloatTok{0.7}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis-1} \end{center}
 
 \section{Data Visualization}\label{data-visualization}
@@ -285,19 +273,6 @@ Histograms serve as a graphical interpretation of data distribution. In
 a histogram, each bar corresponds to the counted frequency within each
 bin or interval. We introduce these plots to see if our data is normally
 distributed, skewed, or has outlier values.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Histogram of the data with density distribution}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
-  \FunctionTok{hist}\NormalTok{(data\_num[, i], }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
-       \AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(data\_num)[i], }\AttributeTok{col =}\NormalTok{ col[i], }\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{)}
-\NormalTok{  dens }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data\_num[, i], }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{, }\AttributeTok{adjust=}\FloatTok{1.25}\NormalTok{)}
-  \FunctionTok{lines}\NormalTok{(dens, }\AttributeTok{col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/histograms-1} \end{center}
 
@@ -322,16 +297,6 @@ line.
 
 Then we create the pairplot using the defined functions.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{pairs}\NormalTok{(data\_num, }
-      \AttributeTok{diag.panel =}\NormalTok{ panel.hist,}
-      \AttributeTok{upper.panel =}\NormalTok{ panel.cor, }
-      \AttributeTok{lower.panel =}\NormalTok{ panel.smooth,}
-      \AttributeTok{colour =} \StringTok{"\#4ea5ff"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/pairplot-1} \end{center}
 
 ADD COMMENTS ON THE GRAPH
@@ -344,16 +309,6 @@ categories. Indeed, each bar corresponds to a category and the height of
 the bar represents the frequency or proportion of that category. These
 graphs are commonly used for categorical data, or numerical data that
 has been binned into categories.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{3}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
-  \FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data\_num[, i]), }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
-          \AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(data\_num)[i], }\AttributeTok{col =}\NormalTok{ col[i], }\AttributeTok{border =}\NormalTok{ col[i])}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/barplot-1} \end{center}
 
@@ -380,24 +335,7 @@ distribution of categorical variables like ``Beverage\_category'' and
 ``Beverage\_prep''. In this way we can identify the most frequently
 occurring beverages and their preparation methods.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Beverage\_category),}
-        \AttributeTok{main =} \StringTok{"Distribution of Beverage Categories"}\NormalTok{,}
-        \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{, }\AttributeTok{las =} \DecValTok{2}\NormalTok{, }\AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/beverage_barplot-1} \end{center}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{barplot}\NormalTok{(}\FunctionTok{table}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Beverage\_prep),}
-        \AttributeTok{main =} \StringTok{"Distribution of Beverage Preparation"}\NormalTok{,}
-        \AttributeTok{ylab =} \StringTok{"Count"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{las =} \DecValTok{2}\NormalTok{, }\AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/beverage_barplot-2} \end{center}
 
@@ -406,35 +344,11 @@ different beverage categories. To do so, we first aggregate the data to
 obtain the total calories for each beverage category. Secondly, we
 construct a bar plot to visually represent the results.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\NormalTok{total\_calories\_by\_category }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(Calories }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Beverage\_category,}
-                                        \AttributeTok{data =}\NormalTok{ data\_cleaned, sum)}
-\FunctionTok{barplot}\NormalTok{(}\AttributeTok{height =}\NormalTok{ total\_calories\_by\_category}\SpecialCharTok{$}\NormalTok{Calories,}
-        \AttributeTok{names.arg =}\NormalTok{ total\_calories\_by\_category}\SpecialCharTok{$}\NormalTok{Beverage\_category,}
-        \AttributeTok{main =} \StringTok{"Total Calories by Beverage Category"}\NormalTok{,}
-        \AttributeTok{ylab =} \StringTok{"Total Calories"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{, }\AttributeTok{las =} \DecValTok{2}\NormalTok{, }\AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/total_calories-1} \end{center}
 
 Similarly, we compare the total sugars for each beverage preparation,
 gathering data to obtain the total sugars for each preparation of
 beverage and successively creating a bar plot.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\NormalTok{total\_sugar\_by\_prep }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(Total\_Carbohydrates }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Beverage\_prep,}
-                                 \AttributeTok{data =}\NormalTok{ data\_cleaned, sum)}
-\FunctionTok{barplot}\NormalTok{(}\AttributeTok{height =}\NormalTok{ total\_sugar\_by\_prep}\SpecialCharTok{$}\NormalTok{Total\_Carbohydrates,}
-        \AttributeTok{names.arg =}\NormalTok{ total\_sugar\_by\_prep}\SpecialCharTok{$}\NormalTok{Beverage\_prep,}
-        \AttributeTok{main =} \StringTok{"Total Sugars by Beverage Preparation"}\NormalTok{,}
-        \AttributeTok{ylab =} \StringTok{"Total Sugars (g)"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{las =} \DecValTok{2}\NormalTok{, }\AttributeTok{cex.names =} \FloatTok{0.6}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/total_sugars-1} \end{center}
 
@@ -444,16 +358,6 @@ We will plot a boxplot of the data. The boxplot is a graphical
 representation of the data that displays the distribution of the data,
 including the median, quartiles, and outliers. This visualization helps
 us to identify the spread and variability of the data.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(data\_num)) \{}
-  \FunctionTok{boxplot}\NormalTok{(data\_num[, i], }\AttributeTok{main =} \FunctionTok{colnames}\NormalTok{(data\_num)[i],}
-          \AttributeTok{xlab =} \FunctionTok{colnames}\NormalTok{(data\_num)[i], }\AttributeTok{col =}\NormalTok{ col[i])}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-1} \end{center}
 
@@ -468,66 +372,17 @@ We create a scatterplot to compare the amounts of calories and fat for
 each categories of bevarage. We assign distinct colors to each beverage
 category and create a legend to identify each category.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Set the variable as factor}
-\NormalTok{data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category)}
-\NormalTok{colors }\OtherTok{\textless{}{-}} \FunctionTok{rainbow}\NormalTok{(}\FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category)))}
-\NormalTok{color\_map }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(colors, }\FunctionTok{levels}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category))}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Calories, }
-\NormalTok{     data\_cleaned}\SpecialCharTok{$}\NormalTok{Total\_Fat\_g,}
-     \AttributeTok{col =}\NormalTok{ color\_map[data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category],}
-     \AttributeTok{pch =} \DecValTok{19}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Total Fat (g)"}\NormalTok{,}
-     \AttributeTok{main =} \StringTok{"Calories vs Total Fat"}\NormalTok{)}
-\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{levels}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Beverage\_category), }
-       \AttributeTok{col =}\NormalTok{ colors, }\AttributeTok{cex =} \FloatTok{0.4}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison-1} \end{center}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Numeric variable {-}\textgreater{} calculate density}
-\NormalTok{total\_fat\_density }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Total\_Fat)}
-\NormalTok{trans\_fat\_density }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Trans\_Fat)}
-\FunctionTok{plot}\NormalTok{(total\_fat\_density, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
-     \AttributeTok{main =} \StringTok{"Comparison of Total Fat and Trans Fat Distributions"}\NormalTok{, }
-     \AttributeTok{xlab =} \StringTok{"Fat Content (g)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{, }
-     \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(total\_fat\_density}\SpecialCharTok{$}\NormalTok{y, trans\_fat\_density}\SpecialCharTok{$}\NormalTok{y)),}
-     \AttributeTok{xlim =} \FunctionTok{range}\NormalTok{(data\_cleaned}\SpecialCharTok{$}\NormalTok{Total\_Fat, data\_cleaned}\SpecialCharTok{$}\NormalTok{Trans\_Fat), }
-     \AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{lty =} \DecValTok{1}\NormalTok{)}
-\FunctionTok{lines}\NormalTok{(trans\_fat\_density, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{lty =} \DecValTok{1}\NormalTok{)}
-\FunctionTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Total Fat"}\NormalTok{, }\StringTok{"Trans Fat"}\NormalTok{),}
-       \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"\#4ea5ff"}\NormalTok{, }\StringTok{"\#ff810f"}\NormalTok{), }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{lty =} \DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison-2} \end{center}
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison_-1} \end{center}
 
 Create scatterplot to look into relantionship between calories and other
 variables. We will plot the relationship between calories and sodium,
 protein, vitamin C and fiber.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\FunctionTok{with}\NormalTok{(data\_cleaned, \{}
-  \FunctionTok{plot}\NormalTok{(Calories, Sodium , }\AttributeTok{main =} \StringTok{"Relation between Calories and Sodium"}\NormalTok{,}
-       \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Sodium (mg)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{1}\NormalTok{])}
-  \FunctionTok{plot}\NormalTok{(Calories, Protein , }\AttributeTok{main =} \StringTok{"Relation between Calories and Protein"}\NormalTok{,}
-       \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Protein (g)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{5}\NormalTok{])}
-  \FunctionTok{plot}\NormalTok{(Calories, Vitamin\_C , }\AttributeTok{main =} \StringTok{"Relation between Calories and Vitamin C"}\NormalTok{,}
-       \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Vitamin C (mg)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{10}\NormalTok{])}
-  \FunctionTok{plot}\NormalTok{(Calories, Cholesterol , }\AttributeTok{main =} \StringTok{"Relation between Calories and Fiber"}\NormalTok{,}
-       \AttributeTok{xlab =} \StringTok{"Calories"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Fiber (g)"}\NormalTok{, }\AttributeTok{col =}\NormalTok{ col[}\DecValTok{15}\NormalTok{])}
-\NormalTok{\})}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/scatterplot-1} \end{center}
 
+\textbf{TO CHANGE THIS SINCE I CHANGED ONE OF THE CATEGORIES WITH SUGAR}
 There's increase in every feature with increase in calories. Features
 like proteins and fiber rapidly increase, instead vitamin and
 cholesterol more flat growing. Confirmed by correlation coefficients
@@ -652,87 +507,24 @@ so the model is a good fit for the data.
 Now we apply the selection of the predictors with the backward
 elimination method.
 
-\begin{verbatim}
-## Start:  AIC=805.54
-## y ~ Total_Fat + Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
-##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_A + 
-##     Vitamin_C + Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Saturated_Fat        1       7.7  5972.5  803.85
-## <none>                              5964.8  805.54
-## - Dietary_Fibre        1      69.7  6034.6  806.35
-## - Sodium               1      73.0  6037.9  806.48
-## - Vitamin_A            1      98.9  6063.7  807.52
-## - Caffeine             1     141.4  6106.2  809.21
-## - Total_Carbohydrates  1     209.9  6174.8  811.91
-## - Trans_Fat            1     246.3  6211.2  813.33
-## - Vitamin_C            1     252.1  6216.9  813.56
-## - Sugars               1     277.2  6242.0  814.53
-## - Calcium              1     277.4  6242.2  814.54
-## - Protein              1     496.5  6461.4  822.89
-## - Cholesterol          1    1817.0  7781.9  867.89
-## - Iron                 1    2217.1  8181.9  880.02
-## - Total_Fat            1   11494.4 17459.3 1063.44
-## 
-## Step:  AIC=803.85
-## y ~ Total_Fat + Trans_Fat + Sodium + Total_Carbohydrates + Cholesterol + 
-##     Dietary_Fibre + Sugars + Protein + Vitamin_A + Vitamin_C + 
-##     Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## <none>                              5972.5  803.85
-## - Dietary_Fibre        1      66.4  6038.9  804.52
-## - Vitamin_A            1      97.3  6069.8  805.76
-## - Caffeine             1     148.3  6120.9  807.79
-## - Total_Carbohydrates  1     208.5  6181.0  810.15
-## - Trans_Fat            1     243.0  6215.6  811.50
-## - Vitamin_C            1     264.3  6236.8  812.33
-## - Sugars               1     269.6  6242.2  812.54
-## - Calcium              1     316.7  6289.3  814.35
-## - Protein              1     495.1  6467.6  821.12
-## - Sodium               1     519.0  6491.5  822.02
-## - Cholesterol          1    1930.5  7903.0  869.63
-## - Iron                 1    2231.7  8204.2  878.68
-## - Total_Fat            1   14183.1 20155.6 1096.20
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## Call:
-## lm(formula = y ~ Total_Fat + Trans_Fat + Sodium + Total_Carbohydrates + 
-##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_A + 
-##     Vitamin_C + Calcium + Iron + Caffeine, data = data_num_)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -14.0113  -3.4396  -0.3132   3.0241  21.8261 
-## 
-## Coefficients:
-##                      Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)          0.197087   0.945878   0.208 0.835131    
-## Total_Fat           11.012071   0.473256  23.269  < 2e-16 ***
-## Trans_Fat           -2.344729   0.769780  -3.046 0.002592 ** 
-## Sodium              -0.358660   0.080576  -4.451 1.34e-05 ***
-## Total_Carbohydrates  0.020897   0.007407   2.821 0.005206 ** 
-## Cholesterol          2.864251   0.333647   8.585 1.43e-15 ***
-## Dietary_Fibre        1.491635   0.937246   1.592 0.112881    
-## Sugars               1.095752   0.341539   3.208 0.001527 ** 
-## Protein              2.215506   0.509614   4.347 2.08e-05 ***
-## Vitamin_A            0.160911   0.083492   1.927 0.055189 .  
-## Vitamin_C            0.150364   0.047341   3.176 0.001698 ** 
-## Calcium              0.480189   0.138098   3.477 0.000607 ***
-## Iron                -0.650683   0.070496  -9.230  < 2e-16 ***
-## Caffeine             0.013789   0.005795   2.380 0.018153 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 5.118 on 228 degrees of freedom
-## Multiple R-squared:  0.9977, Adjusted R-squared:  0.9975 
-## F-statistic:  7471 on 13 and 228 DF,  p-value: < 2.2e-16
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(backward\_model)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/backward_elimination-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{AIC =} \FunctionTok{AIC}\NormalTok{(backward\_model), }\AttributeTok{BIC =} \FunctionTok{BIC}\NormalTok{(backward\_model),}
+                 \AttributeTok{R\_squared =} \FunctionTok{summary}\NormalTok{(backward\_model)}\SpecialCharTok{$}\NormalTok{r.squared, }
+                 \AttributeTok{adj\_R\_squared =} \FunctionTok{summary}\NormalTok{(backward\_model)}\SpecialCharTok{$}\NormalTok{adj.r.squared),}
+      \AttributeTok{caption =} \StringTok{"Model evaluation metrics for the linear regression model }
+\StringTok{      with backward elimination"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{longtable}[]{@{}rrrr@{}}
 \caption{Model evaluation metrics for the linear regression model with
@@ -755,22 +547,6 @@ it's not considered significant in explaining the amount of calories
 mantaining the other variables.
 
 Comarison between the models
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Simple Linear Regression"}\NormalTok{, }\StringTok{"Multiple Linear Regression"}\NormalTok{,}
-                           \StringTok{"Multiple Linear Regression with Backward Elimination"}\NormalTok{),}
-                 \AttributeTok{AIC =} \FunctionTok{c}\NormalTok{(}\FunctionTok{AIC}\NormalTok{(lm\_simple), }\FunctionTok{AIC}\NormalTok{(lm\_model), }\FunctionTok{AIC}\NormalTok{(backward\_model)),}
-                 \AttributeTok{BIC =} \FunctionTok{c}\NormalTok{(}\FunctionTok{BIC}\NormalTok{(lm\_simple), }\FunctionTok{BIC}\NormalTok{(lm\_model), }\FunctionTok{BIC}\NormalTok{(backward\_model)),}
-                 \AttributeTok{R\_squared =} \FunctionTok{c}\NormalTok{(}\FunctionTok{summary}\NormalTok{(lm\_simple)}\SpecialCharTok{$}\NormalTok{r.squared, }
-                               \FunctionTok{summary}\NormalTok{(lm\_model)}\SpecialCharTok{$}\NormalTok{r.squared, }
-                               \FunctionTok{summary}\NormalTok{(backward\_model)}\SpecialCharTok{$}\NormalTok{r.squared),}
-                 \AttributeTok{adj\_R\_squared =} \FunctionTok{c}\NormalTok{(}\FunctionTok{summary}\NormalTok{(lm\_simple)}\SpecialCharTok{$}\NormalTok{adj.r.squared, }
-                                   \FunctionTok{summary}\NormalTok{(lm\_model)}\SpecialCharTok{$}\NormalTok{adj.r.squared, }
-                                   \FunctionTok{summary}\NormalTok{(backward\_model)}\SpecialCharTok{$}\NormalTok{adj.r.squared)),}
-      \AttributeTok{caption =} \StringTok{"Model comparison"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.5579}}
@@ -895,13 +671,6 @@ Factors (VIF) for the variables in the multiple linear regression model,
 it measures how much the variance of the estimated coefficients is
 increased due to multicollinearity.Usually a VIF value greater than
 \(10\) indicates a problematic amount of multicollinearity.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{VIF =} \FunctionTok{vif}\NormalTok{(backward\_model)),}
-      \AttributeTok{caption =} \StringTok{"VIF values for the linear regression model"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{longtable}[]{@{}lr@{}}
 \caption{VIF values for the linear regression model}\tabularnewline
@@ -1055,159 +824,6 @@ method will removes the variables that are not significant in the model.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{backward\_model\_log }\OtherTok{\textless{}{-}} \FunctionTok{step}\NormalTok{(mod\_log\_tr, }\AttributeTok{direction =} \StringTok{"backward"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Start:  AIC=-742.19
-## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
-##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_A + 
-##     Vitamin_C + Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Vitamin_A            1    0.0002  9.9552 -744.18
-## - Sodium               1    0.0037  9.9586 -744.10
-## - Caffeine             1    0.0108  9.9657 -743.93
-## - Calcium              1    0.0169  9.9718 -743.78
-## - Saturated_Fat        1    0.0189  9.9739 -743.73
-## - Vitamin_C            1    0.0420  9.9969 -743.17
-## - Iron                 1    0.0547 10.0096 -742.86
-## <none>                              9.9549 -742.19
-## - Total_Carbohydrates  1    0.1562 10.1111 -740.42
-## - Protein              1    0.2674 10.2223 -737.78
-## - Dietary_Fibre        1    0.2858 10.2407 -737.34
-## - Sugars               1    0.3671 10.3220 -735.43
-## - Trans_Fat            1    0.9397 10.8946 -722.36
-## - Total_Fat            1    1.6148 11.5697 -707.81
-## - Cholesterol          1    7.3885 17.3434 -609.85
-## 
-## Step:  AIC=-744.18
-## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
-##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_C + 
-##     Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Sodium               1    0.0035  9.9587 -746.10
-## - Caffeine             1    0.0106  9.9658 -745.93
-## - Calcium              1    0.0172  9.9724 -745.77
-## - Saturated_Fat        1    0.0194  9.9745 -745.71
-## - Vitamin_C            1    0.0425  9.9977 -745.15
-## - Iron                 1    0.0546 10.0097 -744.86
-## <none>                              9.9552 -744.18
-## - Total_Carbohydrates  1    0.1560 10.1112 -742.42
-## - Dietary_Fibre        1    0.2901 10.2453 -739.23
-## - Protein              1    0.3302 10.2854 -738.29
-## - Sugars               1    0.3911 10.3463 -736.86
-## - Trans_Fat            1    0.9469 10.9021 -724.20
-## - Total_Fat            1    1.6315 11.5867 -709.46
-## - Cholesterol          1    7.7956 17.7508 -606.23
-## 
-## Step:  AIC=-746.1
-## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Total_Carbohydrates + 
-##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_C + 
-##     Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Caffeine             1    0.0121  9.9707 -747.81
-## - Calcium              1    0.0159  9.9746 -747.71
-## - Saturated_Fat        1    0.0166  9.9753 -747.70
-## - Vitamin_C            1    0.0416 10.0002 -747.09
-## - Iron                 1    0.0518 10.0104 -746.84
-## <none>                              9.9587 -746.10
-## - Total_Carbohydrates  1    0.1627 10.1213 -744.18
-## - Dietary_Fibre        1    0.2867 10.2454 -741.23
-## - Protein              1    0.3523 10.3110 -739.69
-## - Sugars               1    0.4005 10.3592 -738.56
-## - Trans_Fat            1    1.1608 11.1195 -721.42
-## - Total_Fat            1    1.9717 11.9304 -704.38
-## - Cholesterol          1    7.8478 17.8065 -607.47
-## 
-## Step:  AIC=-747.81
-## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Total_Carbohydrates + 
-##     Cholesterol + Dietary_Fibre + Sugars + Protein + Vitamin_C + 
-##     Calcium + Iron
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Saturated_Fat        1    0.0139  9.9847 -749.47
-## - Calcium              1    0.0170  9.9877 -749.39
-## - Iron                 1    0.0506 10.0214 -748.58
-## - Vitamin_C            1    0.0586 10.0293 -748.39
-## <none>                              9.9707 -747.81
-## - Total_Carbohydrates  1    0.1544 10.1251 -746.09
-## - Dietary_Fibre        1    0.2945 10.2653 -742.76
-## - Protein              1    0.3714 10.3422 -740.96
-## - Sugars               1    0.4081 10.3789 -740.10
-## - Trans_Fat            1    1.1509 11.1216 -723.37
-## - Total_Fat            1    1.9666 11.9374 -706.24
-## - Cholesterol          1    7.8592 17.8299 -609.15
-## 
-## Step:  AIC=-749.47
-## Calories ~ Total_Fat + Trans_Fat + Total_Carbohydrates + Cholesterol + 
-##     Dietary_Fibre + Sugars + Protein + Vitamin_C + Calcium + 
-##     Iron
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Calcium              1    0.0200 10.0047 -750.98
-## - Vitamin_C            1    0.0491 10.0338 -750.28
-## - Iron                 1    0.0632 10.0478 -749.94
-## <none>                              9.9847 -749.47
-## - Total_Carbohydrates  1    0.1593 10.1440 -747.64
-## - Dietary_Fibre        1    0.3385 10.3231 -743.40
-## - Protein              1    0.3826 10.3673 -742.37
-## - Sugars               1    0.4035 10.3882 -741.88
-## - Trans_Fat            1    1.1828 11.1675 -724.38
-## - Total_Fat            1    2.1313 12.1160 -704.65
-## - Cholesterol          1    7.8453 17.8300 -611.15
-## 
-## Step:  AIC=-750.98
-## Calories ~ Total_Fat + Trans_Fat + Total_Carbohydrates + Cholesterol + 
-##     Dietary_Fibre + Sugars + Protein + Vitamin_C + Iron
-## 
-##                       Df Sum of Sq    RSS     AIC
-## - Vitamin_C            1    0.0354 10.040 -752.13
-## <none>                             10.005 -750.98
-## - Iron                 1    0.0947 10.099 -750.71
-## - Total_Carbohydrates  1    0.1395 10.144 -749.63
-## - Dietary_Fibre        1    0.3687 10.373 -744.23
-## - Sugars               1    0.4520 10.457 -742.29
-## - Trans_Fat            1    1.5074 11.512 -719.02
-## - Protein              1    1.5699 11.575 -717.71
-## - Total_Fat            1    2.8305 12.835 -692.69
-## - Cholesterol          1    8.1349 18.140 -608.98
-## 
-## Step:  AIC=-752.13
-## Calories ~ Total_Fat + Trans_Fat + Total_Carbohydrates + Cholesterol + 
-##     Dietary_Fibre + Sugars + Protein + Iron
-## 
-##                       Df Sum of Sq    RSS     AIC
-## - Iron                 1    0.0659 10.106 -752.55
-## <none>                             10.040 -752.13
-## - Total_Carbohydrates  1    0.1934 10.233 -749.51
-## - Sugars               1    0.4577 10.498 -743.34
-## - Dietary_Fibre        1    0.6314 10.671 -739.37
-## - Trans_Fat            1    1.5040 11.544 -720.35
-## - Protein              1    1.5424 11.582 -719.55
-## - Total_Fat            1    2.8360 12.876 -693.92
-## - Cholesterol          1    8.0999 18.140 -610.98
-## 
-## Step:  AIC=-752.55
-## Calories ~ Total_Fat + Trans_Fat + Total_Carbohydrates + Cholesterol + 
-##     Dietary_Fibre + Sugars + Protein
-## 
-##                       Df Sum of Sq    RSS     AIC
-## <none>                             10.106 -752.55
-## - Total_Carbohydrates  1    0.1569 10.263 -750.82
-## - Sugars               1    0.4654 10.571 -743.65
-## - Trans_Fat            1    1.4382 11.544 -722.35
-## - Dietary_Fibre        1    1.7801 11.886 -715.29
-## - Protein              1    1.8258 11.932 -714.36
-## - Total_Fat            1    2.8708 12.977 -694.04
-## - Cholesterol          1    8.1106 18.216 -611.96
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{AIC =} \FunctionTok{AIC}\NormalTok{(backward\_model\_log), }\AttributeTok{BIC =} \FunctionTok{BIC}\NormalTok{(backward\_model\_log),}
                  \AttributeTok{R\_squared =} \FunctionTok{summary}\NormalTok{(backward\_model\_log)}\SpecialCharTok{$}\NormalTok{r.squared, }
                  \AttributeTok{adj\_R\_squared =} \FunctionTok{summary}\NormalTok{(backward\_model\_log)}\SpecialCharTok{$}\NormalTok{adj.r.squared), }
@@ -1270,18 +886,18 @@ manually the variables that has high VIF values.
 \NormalTok{mod\_log\_tr\_updated }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Calories }\SpecialCharTok{\textasciitilde{}}\NormalTok{ . }\SpecialCharTok{{-}}\NormalTok{ Cholesterol }\SpecialCharTok{{-}}\NormalTok{ Sugars,}
                          \AttributeTok{data =}\NormalTok{ std\_data\_log\_df)}
 \FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{VIF =} \FunctionTok{vif}\NormalTok{(mod\_log\_tr\_updated)),}
-      \AttributeTok{caption =} \StringTok{"VIF values for the log transformed data with}\SpecialCharTok{\textbackslash{}n}
+      \AttributeTok{caption =} \StringTok{"VIF values for the log transformed data with }
 \StringTok{      manual removal of variables"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-Table: VIF values for the log transformed data with
-
-\begin{verbatim}
-  manual removal of variables
-\end{verbatim}
-
 \begin{longtable}[]{@{}lr@{}}
+\caption{VIF values for the log transformed data with manual removal of
+variables}\tabularnewline
+\toprule\noalign{}
+& VIF \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 & VIF \\
 \midrule\noalign{}
@@ -1301,128 +917,6 @@ Calcium & 25.519022 \\
 Iron & 4.521552 \\
 Caffeine & 1.295121 \\
 \end{longtable}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{mod\_log\_tr\_backward\_2 }\OtherTok{\textless{}{-}} \FunctionTok{step}\NormalTok{(mod\_log\_tr\_updated, }\AttributeTok{direction =} \StringTok{"backward"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Start:  AIC=-220.91
-## Calories ~ (Total_Fat + Trans_Fat + Saturated_Fat + Sodium + 
-##     Total_Carbohydrates + Cholesterol + Dietary_Fibre + Sugars + 
-##     Protein + Vitamin_A + Vitamin_C + Calcium + Iron + Caffeine) - 
-##     Cholesterol - Sugars
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Dietary_Fibre        1    0.0121  87.251 -222.88
-## - Total_Fat            1    0.1126  87.351 -222.60
-## - Calcium              1    0.1806  87.419 -222.41
-## - Sodium               1    0.2021  87.441 -222.35
-## - Trans_Fat            1    0.5358  87.774 -221.43
-## - Iron                 1    0.5624  87.801 -221.36
-## - Saturated_Fat        1    0.5958  87.834 -221.26
-## - Caffeine             1    0.6473  87.886 -221.12
-## <none>                              87.239 -220.91
-## - Vitamin_A            1    1.0670  88.305 -219.97
-## - Protein              1    1.6336  88.872 -218.42
-## - Vitamin_C            1    6.4240  93.663 -205.72
-## - Total_Carbohydrates  1   27.0741 114.313 -157.50
-## 
-## Step:  AIC=-222.88
-## Calories ~ Total_Fat + Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
-##     Protein + Vitamin_A + Vitamin_C + Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Total_Fat            1    0.1006  87.351 -224.60
-## - Sodium               1    0.2120  87.463 -224.29
-## - Calcium              1    0.3197  87.570 -223.99
-## - Saturated_Fat        1    0.5841  87.835 -223.26
-## - Trans_Fat            1    0.5988  87.849 -223.22
-## - Caffeine             1    0.6376  87.888 -223.12
-## <none>                              87.251 -222.88
-## - Iron                 1    0.8319  88.083 -222.58
-## - Vitamin_A            1    1.1061  88.357 -221.83
-## - Protein              1    2.9198  90.170 -216.91
-## - Vitamin_C            1    6.6568  93.907 -207.08
-## - Total_Carbohydrates  1   27.2737 114.524 -159.05
-## 
-## Step:  AIC=-224.6
-## Calories ~ Trans_Fat + Saturated_Fat + Sodium + Total_Carbohydrates + 
-##     Protein + Vitamin_A + Vitamin_C + Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Sodium               1    0.1308  87.482 -226.24
-## - Saturated_Fat        1    0.4841  87.835 -225.26
-## - Calcium              1    0.5994  87.951 -224.94
-## - Caffeine             1    0.6821  88.033 -224.72
-## <none>                              87.351 -224.60
-## - Vitamin_A            1    1.0214  88.373 -223.78
-## - Iron                 1    1.1762  88.528 -223.36
-## - Trans_Fat            1    2.6009  89.952 -219.50
-## - Protein              1    2.9421  90.293 -218.58
-## - Vitamin_C            1    6.9456  94.297 -208.08
-## - Total_Carbohydrates  1   28.2259 115.577 -158.84
-## 
-## Step:  AIC=-226.24
-## Calories ~ Trans_Fat + Saturated_Fat + Total_Carbohydrates + 
-##     Protein + Vitamin_A + Vitamin_C + Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Saturated_Fat        1    0.3536  87.836 -227.26
-## - Calcium              1    0.4828  87.965 -226.90
-## <none>                              87.482 -226.24
-## - Caffeine             1    0.7305  88.213 -226.22
-## - Iron                 1    1.0837  88.566 -225.26
-## - Vitamin_A            1    1.3358  88.818 -224.57
-## - Protein              1    2.8413  90.323 -220.50
-## - Trans_Fat            1    2.9927  90.475 -220.10
-## - Vitamin_C            1    6.8307  94.313 -210.04
-## - Total_Carbohydrates  1   28.3018 115.784 -160.41
-## 
-## Step:  AIC=-227.26
-## Calories ~ Trans_Fat + Total_Carbohydrates + Protein + Vitamin_A + 
-##     Vitamin_C + Calcium + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Calcium              1    0.4405  88.276 -228.05
-## - Caffeine             1    0.6573  88.493 -227.46
-## <none>                              87.836 -227.26
-## - Vitamin_A            1    1.1556  88.991 -226.10
-## - Iron                 1    2.1821  90.018 -223.32
-## - Protein              1    2.5694  90.405 -222.28
-## - Trans_Fat            1    3.9060  91.742 -218.73
-## - Vitamin_C            1    6.5080  94.344 -211.96
-## - Total_Carbohydrates  1   28.8548 116.691 -160.52
-## 
-## Step:  AIC=-228.05
-## Calories ~ Trans_Fat + Total_Carbohydrates + Protein + Vitamin_A + 
-##     Vitamin_C + Iron + Caffeine
-## 
-##                       Df Sum of Sq     RSS     AIC
-## - Caffeine             1     0.672  88.949 -228.21
-## <none>                              88.276 -228.05
-## - Protein              1     2.152  90.428 -224.22
-## - Vitamin_A            1     2.169  90.445 -224.18
-## - Iron                 1     2.389  90.666 -223.59
-## - Trans_Fat            1     3.843  92.120 -219.74
-## - Vitamin_C            1     6.239  94.515 -213.52
-## - Total_Carbohydrates  1    34.846 123.122 -149.53
-## 
-## Step:  AIC=-228.21
-## Calories ~ Trans_Fat + Total_Carbohydrates + Protein + Vitamin_A + 
-##     Vitamin_C + Iron
-## 
-##                       Df Sum of Sq     RSS     AIC
-## <none>                              88.949 -228.21
-## - Vitamin_A            1     2.482  91.431 -223.55
-## - Iron                 1     2.499  91.447 -223.51
-## - Protein              1     2.836  91.784 -222.62
-## - Trans_Fat            1     3.430  92.379 -221.06
-## - Vitamin_C            1     9.634  98.583 -205.33
-## - Total_Carbohydrates  1    38.906 127.855 -142.41
-\end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1552,10 +1046,9 @@ and reduces multicollinearity in the model.
 \begin{Highlighting}[]
 \NormalTok{std\_data }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{scale}\NormalTok{(data\_num)) }\CommentTok{\# Standardize the data}
 \NormalTok{mod\_lasso }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]),}
-                       \AttributeTok{y =}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories,}
-                       \AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{standardize =} \ConstantTok{FALSE}\NormalTok{)}
+                       \AttributeTok{y =}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories, }\AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{standardize =} \ConstantTok{FALSE}\NormalTok{)}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(mod\_lasso)}
+\FunctionTok{plot}\NormalTok{(mod\_lasso, }\AttributeTok{xvar =} \StringTok{"lambda"}\NormalTok{, }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1576,9 +1069,8 @@ overfitting and reduce the impact of collinearity in the data.
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{mod\_ridge }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]),}
-                       \AttributeTok{y =}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories,}
-                       \AttributeTok{alpha =} \DecValTok{0}\NormalTok{, }\AttributeTok{standardize =} \ConstantTok{FALSE}\NormalTok{)}
-\FunctionTok{plot}\NormalTok{(mod\_ridge)}
+                       \AttributeTok{y =}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories, }\AttributeTok{alpha =} \DecValTok{0}\NormalTok{, }\AttributeTok{standardize =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mod\_ridge, }\AttributeTok{xvar =} \StringTok{"lambda"}\NormalTok{, }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1601,15 +1093,11 @@ ranges from \(0\) to \(1\), with higher values indicating a better fit
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{lasso\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(mod\_lasso, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{, }
-                      \AttributeTok{newx =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
+\NormalTok{lasso\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(mod\_lasso, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{, }\AttributeTok{newx =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
 \NormalTok{lasso\_r\_squared }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(lasso\_pred, std\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}
-\NormalTok{ridge\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(mod\_ridge, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{, }
-                      \AttributeTok{newx =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
+\NormalTok{ridge\_pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(mod\_ridge, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{,  }\AttributeTok{newx =} \FunctionTok{as.matrix}\NormalTok{(std\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
 \NormalTok{ridge\_r\_squared }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(ridge\_pred, std\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}
-
-\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Linear Regression"}\NormalTok{, }\StringTok{"Lasso Regression"}\NormalTok{,}
-                           \StringTok{"Ridge Regression"}\NormalTok{),}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Linear Regression"}\NormalTok{, }\StringTok{"Lasso Regression"}\NormalTok{,}\StringTok{"Ridge Regression"}\NormalTok{),}
                  \AttributeTok{R\_squared =} \FunctionTok{c}\NormalTok{(}\FunctionTok{summary}\NormalTok{(lm\_model)}\SpecialCharTok{$}\NormalTok{r.squared,}
 \NormalTok{                               lasso\_r\_squared, ridge\_r\_squared)), }
       \AttributeTok{caption =} \StringTok{"R{-}squared values for the models"}\NormalTok{)}
@@ -1647,9 +1135,7 @@ the model.
 \NormalTok{linear\_mse }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((linear\_pred }\SpecialCharTok{{-}}\NormalTok{ data\_num}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
 \NormalTok{lasso\_mse }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((lasso\_pred }\SpecialCharTok{{-}}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
 \NormalTok{ridge\_mse }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((ridge\_pred }\SpecialCharTok{{-}}\NormalTok{ std\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
-
-\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Linear Regression"}\NormalTok{,}
-                           \StringTok{"Lasso Regression"}\NormalTok{, }\StringTok{"Ridge Regression"}\NormalTok{),}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Linear Regression"}\NormalTok{, }\StringTok{"Lasso Regression"}\NormalTok{, }\StringTok{"Ridge Regression"}\NormalTok{),}
                  \AttributeTok{MSE =} \FunctionTok{c}\NormalTok{(linear\_mse, lasso\_mse, ridge\_mse)), }
       \AttributeTok{caption =} \StringTok{"MSE values for the models"}\NormalTok{)}
 \end{Highlighting}
@@ -1690,13 +1176,10 @@ regression model using the training set.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
 \NormalTok{train\_index }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(std\_data), }\FloatTok{0.8} \SpecialCharTok{*} \FunctionTok{nrow}\NormalTok{(std\_data))}
 \NormalTok{train\_data }\OtherTok{\textless{}{-}}\NormalTok{ std\_data[train\_index, ]}
 \NormalTok{test\_data }\OtherTok{\textless{}{-}}\NormalTok{ std\_data[}\SpecialCharTok{{-}}\NormalTok{train\_index, ]}
-\CommentTok{\# Fit the lasso regression model on the training data}
-\NormalTok{mod\_lasso\_train }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.matrix}\NormalTok{(train\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]),}
-                             \AttributeTok{y =}\NormalTok{ train\_data}\SpecialCharTok{$}\NormalTok{Calories,}
+\NormalTok{mod\_lasso\_train }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.matrix}\NormalTok{(train\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]), }\AttributeTok{y =}\NormalTok{ train\_data}\SpecialCharTok{$}\NormalTok{Calories,}
                              \AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{standardize =} \ConstantTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -1709,9 +1192,7 @@ squared error to assess the model's accuracy.
 \begin{Highlighting}[]
 \NormalTok{lasso\_pred\_test }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(mod\_lasso\_train, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{,}
                            \AttributeTok{newx =} \FunctionTok{as.matrix}\NormalTok{(test\_data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
-\CommentTok{\# R{-}squared value of the lasso regression model on the test data}
 \NormalTok{lasso\_r\_squared\_test }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(lasso\_pred\_test, test\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}
-\CommentTok{\# MSE of the lasso regression model on the test data}
 \NormalTok{lasso\_mse\_test }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{((lasso\_pred\_test }\SpecialCharTok{{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{Calories)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -1721,12 +1202,10 @@ model on the test data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Accuracy of the model}
 \NormalTok{accuracy\_lm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (lasso\_mse\_test }\SpecialCharTok{/} \FunctionTok{var}\NormalTok{(test\_data}\SpecialCharTok{$}\NormalTok{Calories))}
-\CommentTok{\# Plot the predicted values against the actual values on the test data}
-\FunctionTok{plot}\NormalTok{(test\_data}\SpecialCharTok{$}\NormalTok{Calories, lasso\_pred\_test, }\AttributeTok{xlab =} \StringTok{"Actual Calories"}\NormalTok{,}
-     \AttributeTok{ylab =} \StringTok{"Predicted Calories"}\NormalTok{, }\AttributeTok{main =} \StringTok{"Predicted vs Actual Calories"}\NormalTok{,}
-     \AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(test\_data}\SpecialCharTok{$}\NormalTok{Calories, lasso\_pred\_test, }\AttributeTok{xlab =} \StringTok{"Actual Calories"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
+     \AttributeTok{ylab =} \StringTok{"Predicted Calories"}\NormalTok{, }\AttributeTok{main =} \StringTok{"Predicted vs Actual Calories"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
 \FunctionTok{abline}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -1753,7 +1232,7 @@ model on the test data.
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-lambda.min & 0.9979473 & 0.0026283 & 0.9979454 \\
+lambda.min & 0.9973488 & 0.0027738 & 0.9973759 \\
 \end{longtable}
 
 As we can see from \emph{Table X} the R-squared value is \(0.997\),

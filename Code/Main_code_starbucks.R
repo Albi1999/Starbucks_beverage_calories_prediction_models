@@ -500,10 +500,6 @@ ridge_mse
 # We choose the model with the highest R-squared value and the lowest MSE
 # The model il the lasso because it has the lower value for R^2 and MSE.
 
-kable(data.frame(Model = c("Linear Regression", "Lasso Regression", "Ridge Regression"),
-                 AIC = c(AIC(lm_model), AIC(mod_lasso$glmnet.fit), AIC(mod_ridge$glmnet.fit)),
-                 BIC = c(BIC(lm_model), BIC(mod_lasso$glmnet.fit), BIC(mod_ridge$glmnet.fit)),
-                 VIF = c(vif(lm_model), vif(mod_lasso$glmnet.fit), vif(mod_ridge$glmnet.fit))))
 ## Cross validation ----
 # Split the data in training and test set then check the accuracy of the model.
 # Split the data into training and test sets
@@ -562,3 +558,5 @@ AIC(glm_model)
 BIC(glm_model)
 
 # Comment on it.....
+
+

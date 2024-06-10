@@ -3,12 +3,6 @@ title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    toc: true
-    number_sections: true
-    fig_caption: true
-    keep_tex: true
-    toc_depth: 3
   html_document:
     toc: true
     number_sections: true
@@ -19,6 +13,12 @@ output:
     fig_caption: true
     keep_md: true
     df_print: paged
+  pdf_document:
+    toc: true
+    number_sections: true
+    fig_caption: true
+    keep_tex: true
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
@@ -45,6 +45,10 @@ library(corrplot)
 library(knitr)
 library(car)
 library(glmnet)
+set.seed(123)
+col <- c('#ff0000', '#f70028', '#ee0040', '#e50055', '#dc0069',
+         '#d2007b', '#c7008d', '#bb009e', '#ae00ae', '#a000be',
+         '#8f00cc', '#7d00da', '#6700e7', '#4900f3', '#0000ff')
 ```
 
 # Data
@@ -93,11 +97,6 @@ data$Total.Carbohydrates..g. <- as.numeric(data$Total.Carbohydrates..g.)
 data$Dietary.Fibre..g. <- as.numeric(data$Dietary.Fibre..g.)
 data$Sugars..g. <- as.numeric(data$Sugars..g.)
 data$Caffeine..mg. <- as.numeric(data$Caffeine..mg.)
-
-col <- c('#ff0000', '#f70028', '#ee0040', '#e50055', '#dc0069',
-         '#d2007b', '#c7008d', '#bb009e', '#ae00ae', '#a000be',
-         '#8f00cc', '#7d00da', '#6700e7', '#4900f3', '#0000ff')
-
 ```
 ## Data Cleaning
 
@@ -114,7 +113,6 @@ This choice is particularly suitable for our data, which is skewed and contains 
 Indeed, the median, being a measure of central tendency that is not affected by extreme values, provides a more robust replacement in the presence of outliers.
 
 ```{r data_cleaning}
-# Summary of the Caffeine column
 summary(data$Caffeine..mg.)
 # Replace NA values with the median
 data_cleaned <- data
@@ -146,11 +144,9 @@ A value near $0$ suggests that the two variables do not significantly influence 
 Observe that the first three columns of our data are categorical features, thus for these we cannot compute Pearson's correlation coefficient. 
 In the following code lines we remove them to compute and plot such matrix.
 
-```{r correlation_analysis}
-# Remove first 3 columns for the correlation matrix since them are categorical
+```{r correlation_analysis, echo=FALSE}
 data_num <- data_cleaned[, sapply(data_cleaned, is.numeric)]
 correlation_matrix <- cor(data_num)
-# Plot the correlation matrix using corrplot
 corrplot(correlation_matrix, method = "number", tl.col = "black", 
          tl.srt = 45, addCoef.col = "black", number.cex = 0.5, tl.cex = 0.7)
 ```
@@ -169,8 +165,7 @@ Histograms serve as a graphical interpretation of data distribution.
 In a histogram, each bar corresponds to the counted frequency within each bin or interval.
 We introduce these plots to see if our data is normally distributed, skewed, or has outlier values.
 
-```{r histograms, fig.height=6, fig.width=7}
-# Histogram of the data with density distribution
+```{r histograms, fig.height=6, fig.width=7, echo=FALSE}
 par(mfrow = c(5, 3), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   hist(data_num[, i], main = colnames(data_num)[i],
@@ -225,12 +220,9 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 
 Then we create the pairplot using the defined functions.
 
-```{r pairplot, fig.height=12, fig.width=12}
-pairs(data_num, 
-      diag.panel = panel.hist,
-      upper.panel = panel.cor, 
-      lower.panel = panel.smooth,
-      colour = "#4ea5ff")
+```{r pairplot, fig.height=12, fig.width=12, echo=FALSE}
+pairs(data_num, diag.panel = panel.hist, upper.panel = panel.cor, 
+      lower.panel = panel.smooth, colour = "#4ea5ff")
 ```
 
 ADD COMMENTS ON THE GRAPH
@@ -242,7 +234,7 @@ The primary use of bar plots is to make comparisons between the amounts of diffe
 Indeed, each bar corresponds to a category and the height of the bar represents the frequency or proportion of that category.
 These graphs are commonly used for categorical data, or numerical data that has been binned into categories.
 
-```{r barplot, fig.height=6, fig.width=7}
+```{r barplot, fig.height=6, fig.width=7, echo=FALSE}
 par(mfrow = c(5, 3), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   barplot(table(data_num[, i]), main = colnames(data_num)[i],
@@ -263,7 +255,7 @@ We can further observe that the distribution of "Vitamin_A" appears to be more e
 As previously anticipated, bar plots also allows us to see the distribution of categorical variables like "Beverage_category" and "Beverage_prep".
 In this way we can identify the most frequently occurring beverages and their preparation methods.
 
-```{r beverage_barplot, fig.height=4, fig.width=6}
+```{r beverage_barplot, fig.height=4, fig.width=6, echo=FALSE}
 par(mfrow = c(1, 1), mar = c(8, 2, 2, 2))
 barplot(table(data$Beverage_category),
         main = "Distribution of Beverage Categories",
@@ -277,7 +269,7 @@ At this point, we aim to compare the total calorie content among different bever
 To do so, we first aggregate the data to obtain the total calories for each beverage category.
 Secondly, we construct a bar plot to visually represent the results.
 
-```{r total_calories, fig.height=4, fig.width=7}
+```{r total_calories, fig.height=4, fig.width=7, echo=FALSE}
 par(mfrow = c(1, 1), mar = c(8, 4, 2, 2))
 total_calories_by_category <- aggregate(Calories ~ Beverage_category,
                                         data = data_cleaned, sum)
@@ -289,7 +281,7 @@ barplot(height = total_calories_by_category$Calories,
 
 Similarly, we compare the total sugars for each beverage preparation, gathering data to obtain the total sugars for each preparation of beverage and successively creating a bar plot.
 
-```{r total_sugars, fig.height=4, fig.width=7}
+```{r total_sugars, fig.height=4, fig.width=7, echo=FALSE}
 par(mfrow = c(1, 1), mar = c(8, 4, 2, 2))
 total_sugar_by_prep <- aggregate(Total_Carbohydrates ~ Beverage_prep,
                                  data = data_cleaned, sum)
@@ -305,7 +297,7 @@ We will plot a boxplot of the data.
 The boxplot is a graphical representation of the data that displays the distribution of the data, including the median, quartiles, and outliers. 
 This visualization helps us to identify the spread and variability of the data.
 
-```{r boxplot, fig.height=5, fig.width=7}
+```{r boxplot, fig.height=5, fig.width=7, echo=FALSE}
 par(mfrow = c(3, 5), mar = c(2, 2, 2, 2))
 for (i in 1:ncol(data_num)) {
   boxplot(data_num[, i], main = colnames(data_num)[i],
@@ -322,28 +314,28 @@ This visualization helps us to identify patterns and correlations between the va
 We create a scatterplot to compare the amounts of calories and fat for each categories of bevarage. 
 We assign distinct colors to each beverage category and create a legend to identify each category.
 
-```{r fat_comparison, fig.height=4.5, fig.width=6}
-# Set the variable as factor
+```{r fat_comparison, fig.height=4.5, fig.width=6, echo=FALSE}
 data_cleaned$Beverage_category <- as.factor(data_cleaned$Beverage_category)
 colors <- rainbow(length(unique(data_cleaned$Beverage_category)))
 color_map <- setNames(colors, levels(data_cleaned$Beverage_category))
 par(mfrow = c(1, 1))
-plot(data_cleaned$Calories, 
-     data_cleaned$Total_Fat_g,
-     col = color_map[data_cleaned$Beverage_category],
-     pch = 19, xlab = "Calories", ylab = "Total Fat (g)",
-     main = "Calories vs Total Fat")
+plot(data_cleaned$Calories, data_cleaned$Total_Fat_g,
+     col = color_map[data_cleaned$Beverage_category], pch = 19,
+     xlab = "Calories", ylab = "Total Fat (g)", main = "Calories vs Total Fat")
 legend("topleft", legend = levels(data_cleaned$Beverage_category), 
        col = colors, cex = 0.4, pch = 19)
+```
+
+```{r fat_comparison_, fig.height=2.5, fig.width=6, echo=FALSE}
 # Numeric variable -> calculate density
 total_fat_density <- density(data_cleaned$Total_Fat)
 trans_fat_density <- density(data_cleaned$Trans_Fat)
+par(mfrow = c(1, 1), mar = c(2, 2, 2, 2))
 plot(total_fat_density, col = "#4ea5ff",
      main = "Comparison of Total Fat and Trans Fat Distributions", 
      xlab = "Fat Content (g)", ylab = "Density", 
      ylim = c(0, max(total_fat_density$y, trans_fat_density$y)),
-     xlim = range(data_cleaned$Total_Fat, data_cleaned$Trans_Fat), 
-     lwd = 2, lty = 1)
+     xlim = range(data_cleaned$Total_Fat, data_cleaned$Trans_Fat), lwd = 2, lty = 1)
 lines(trans_fat_density, col = "#ff810f", lwd = 2, lty = 1)
 legend("topright", legend = c("Total Fat", "Trans Fat"),
        col = c("#4ea5ff", "#ff810f"), lwd = 2, lty = 1)
@@ -352,20 +344,21 @@ legend("topright", legend = c("Total Fat", "Trans Fat"),
 Create scatterplot to look into relantionship between calories and other variables. 
 We will plot the relationship between calories and sodium, protein, vitamin C and fiber.
 
-```{r scatterplot, fig.height=4, fig.width=7}
+```{r scatterplot, fig.height=4, fig.width=7, echo=FALSE}
 par(mfrow = c(2, 2), mar = c(4, 4, 2, 2))
 with(data_cleaned, {
   plot(Calories, Sodium , main = "Relation between Calories and Sodium",
        xlab = "Calories", ylab = "Sodium (mg)", col = col[1])
   plot(Calories, Protein , main = "Relation between Calories and Protein",
        xlab = "Calories", ylab = "Protein (g)", col = col[5])
-  plot(Calories, Vitamin_C , main = "Relation between Calories and Vitamin C",
-       xlab = "Calories", ylab = "Vitamin C (mg)", col = col[10])
+  plot(Calories, Sugars , main = "Relation between Calories and Sugars",
+       xlab = "Calories", ylab = "Sugar (g)", col = col[10])
   plot(Calories, Cholesterol , main = "Relation between Calories and Fiber",
        xlab = "Calories", ylab = "Fiber (g)", col = col[15])
 })
 ```
 
+**TO CHANGE THIS SINCE I CHANGED ONE OF THE CATEGORIES WITH SUGAR**
 There's increase in every feature with increase in calories.
 Features like proteins and fiber rapidly increase, instead vitamin and cholesterol more flat growing. 
 Confirmed by correlation coefficients 
@@ -419,9 +412,11 @@ The model has a low AIC and BIC values, the R-squared value is $0.997$ so the mo
 
 ### Backward Elimination
 Now we apply the selection of the predictors with the backward elimination method.
-```{r backward_elimination, fig.height=4, fig.width=7, echo=FALSE}
+```{r backward_elimination_, include=FALSE}
 backward_model <- step(lm_model, direction = "backward")
-summary(backward_model)
+```
+
+```{r backward_elimination, fig.height=4, fig.width=7}
 par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
 plot(backward_model)
 kable(data.frame(AIC = AIC(backward_model), BIC = BIC(backward_model),
@@ -434,7 +429,7 @@ The backward selection drops only the variable "Saturated_Fat"  since it's not  
 
 Comarison between the models
 
-```{r comparison, fig.height=4, fig.width=7}
+```{r comparison, fig.height=4, fig.width=7, echo=FALSE}
 kable(data.frame(Model = c("Simple Linear Regression", "Multiple Linear Regression",
                            "Multiple Linear Regression with Backward Elimination"),
                  AIC = c(AIC(lm_simple), AIC(lm_model), AIC(backward_model)),
@@ -481,7 +476,7 @@ The ANOVA shows that the removal of the "Saturated_Fat" variable does not have a
 ### Multicollinearity
 
 To check for multicollinearity, we calculate the Variance Inflation Factors (VIF) for the variables in the multiple linear regression model, it measures how much the variance of the estimated coefficients is increased due to multicollinearity.Usually a VIF value greater than $10$ indicates a problematic amount of multicollinearity.
-```{r vif, fig.height=4, fig.width=7}
+```{r vif, fig.height=4, fig.width=7, echo=FALSE}
 kable(data.frame(VIF = vif(backward_model)),
       caption = "VIF values for the linear regression model")
 ```
@@ -526,8 +521,11 @@ plot(mod_log_tr)
 ```
 The model has a low AIC and BIC values, the R-squared value is $0.95$ so the model is a good fit for the data.
 However we have still collinearity, so we try to use backward elimination to check if this method will removes the variables that are not significant in the model.
-```{r backward_elimination_log, fig.height=4, fig.width=7}
+```{r backward_elimination_log_, include=FALSE}
 backward_model_log <- step(mod_log_tr, direction = "backward")
+```
+
+```{r backward_elimination_log, fig.height=4, fig.width=7}
 kable(data.frame(AIC = AIC(backward_model_log), BIC = BIC(backward_model_log),
                  R_squared = summary(backward_model_log)$r.squared, 
                  adj_R_squared = summary(backward_model_log)$adj.r.squared), 
@@ -538,13 +536,19 @@ kable(data.frame(VIF = vif(backward_model_log)),
 ```
 AIC slightly worst and the VIF values are still high, indicating that multicollinearity is still present in the model.
 So we try to remove manually the variables that has high VIF values.
-```{r backward_elimination_log_2, fig.height=4, fig.width=7}
+```{r manula_backward_elimination_log, fig.height=4, fig.width=7}
 mod_log_tr_updated <- lm(Calories ~ . - Cholesterol - Sugars,
                          data = std_data_log_df)
 kable(data.frame(VIF = vif(mod_log_tr_updated)),
-      caption = "VIF values for the log transformed data with\n
+      caption = "VIF values for the log transformed data with 
       manual removal of variables")
+```
+
+```{r backward_elimination_log_2_, include=FALSE}
 mod_log_tr_backward_2 <- step(mod_log_tr_updated, direction = "backward")
+```
+
+```{r backward_elimination_log_2, fig.height=4, fig.width=7}
 kable(data.frame(AIC = AIC(mod_log_tr_backward_2), BIC = BIC(mod_log_tr_backward_2),
                  R_squared = summary(mod_log_tr_backward_2)$r.squared, 
                  adj_R_squared = summary(mod_log_tr_backward_2)$adj.r.squared), 
@@ -560,7 +564,7 @@ The VIF values are now below $10$, indicating that multicollinearity has been re
 The R-squared value is decreased but it is still good.
 
 Model Diagnostics: Non-normal residuals suggest that some assumptions of linear regression might be violated. Specifically, the assumption of normality of the residuals is not met, this can affect the validity of hypothesis tests on the coefficients and predictions.
-```{r model_diagnostics, fig.height=4, fig.width=7}
+```{r model_diagnostics}
 shapiro.test((residuals(mod_log_tr_backward_2)))
 ```
 Given the p-value is significantly smaller than $0.05$, we reject the null hypothesis. This indicates that the residuals of the model mod_log_tr_backward_2 do not follow a normal distribution.
@@ -588,10 +592,9 @@ It performs automatic features selection by shrinking some coefficients to zero.
 ```{r lasso_regression, fig.height=4, fig.width=7}
 std_data <- as.data.frame(scale(data_num)) # Standardize the data
 mod_lasso <- cv.glmnet(x = as.matrix(std_data[, -1]),
-                       y = std_data$Calories,
-                       alpha = 1, standardize = FALSE)
+                       y = std_data$Calories, alpha = 1, standardize = FALSE)
 par(mfrow = c(1, 1))
-plot(mod_lasso)
+plot(mod_lasso, xvar = "lambda", label = TRUE)
 ```
 
 The lasso regression model selects the most important features in the data and penalizes the coefficients of the model. 
@@ -605,9 +608,8 @@ This helps to prevent overfitting and reduce the impact of collinearity in the d
 
 ```{r ridge_regression, fig.height=4, fig.width=7}
 mod_ridge <- cv.glmnet(x = as.matrix(std_data[, -1]),
-                       y = std_data$Calories,
-                       alpha = 0, standardize = FALSE)
-plot(mod_ridge)
+                       y = std_data$Calories, alpha = 0, standardize = FALSE)
+plot(mod_ridge, xvar = "lambda", label = TRUE)
 ```
 
 The ridge regression model reduces the impact of collinearity in the data and penalizes the coefficients of the model. 
@@ -621,15 +623,11 @@ We evaluate the models using the R-squared value, and the Mean Squared Error (MS
 The R-squared value is a measure of how well the model fits the data, it ranges from $0$ to $1$, with higher values indicating a better fit
 
 ```{r model_comparison}
-lasso_pred <- predict(mod_lasso, s = "lambda.min", 
-                      newx = as.matrix(std_data[, -1]))
+lasso_pred <- predict(mod_lasso, s = "lambda.min", newx = as.matrix(std_data[, -1]))
 lasso_r_squared <- cor(lasso_pred, std_data$Calories)^2
-ridge_pred <- predict(mod_ridge, s = "lambda.min", 
-                      newx = as.matrix(std_data[, -1]))
+ridge_pred <- predict(mod_ridge, s = "lambda.min",  newx = as.matrix(std_data[, -1]))
 ridge_r_squared <- cor(ridge_pred, std_data$Calories)^2
-
-kable(data.frame(Model = c("Linear Regression", "Lasso Regression",
-                           "Ridge Regression"),
+kable(data.frame(Model = c("Linear Regression", "Lasso Regression","Ridge Regression"),
                  R_squared = c(summary(lm_model)$r.squared,
                                lasso_r_squared, ridge_r_squared)), 
       caption = "R-squared values for the models")
@@ -646,9 +644,7 @@ linear_pred <- predict(lm_model, newdata = data_num)
 linear_mse <- mean((linear_pred - data_num$Calories)^2)
 lasso_mse <- mean((lasso_pred - std_data$Calories)^2)
 ridge_mse <- mean((ridge_pred - std_data$Calories)^2)
-
-kable(data.frame(Model = c("Linear Regression",
-                           "Lasso Regression", "Ridge Regression"),
+kable(data.frame(Model = c("Linear Regression", "Lasso Regression", "Ridge Regression"),
                  MSE = c(linear_mse, lasso_mse, ridge_mse)), 
       caption = "MSE values for the models")
 ```
@@ -665,37 +661,30 @@ This process is repeated multiple times to ensure that the model is robust and g
 We split the data into training and testing sets, fit the lasso regression model using the training set.
 
 ```{r cross_validation_lm}
-set.seed(123)
 train_index <- sample(1:nrow(std_data), 0.8 * nrow(std_data))
 train_data <- std_data[train_index, ]
 test_data <- std_data[-train_index, ]
-# Fit the lasso regression model on the training data
-mod_lasso_train <- cv.glmnet(x = as.matrix(train_data[, -1]),
-                             y = train_data$Calories,
+mod_lasso_train <- cv.glmnet(x = as.matrix(train_data[, -1]), y = train_data$Calories,
                              alpha = 1, standardize = FALSE)
 ```
 
 We evaluate the model using the testing set. 
 We make predictions using the testing set and calculate the mean squared error and the root mean squared error to assess the model's accuracy. 
 
-```{r model_evaluation_lm, fig.height=4, fig.width=6}
+```{r model_evaluation_lm}
 lasso_pred_test <- predict(mod_lasso_train, s = "lambda.min",
                            newx = as.matrix(test_data[, -1]))
-# R-squared value of the lasso regression model on the test data
 lasso_r_squared_test <- cor(lasso_pred_test, test_data$Calories)^2
-# MSE of the lasso regression model on the test data
 lasso_mse_test <- mean((lasso_pred_test - test_data$Calories)^2)
 ```
 
 The R-squared value and MSE are used to evaluate the performance of the model on the test data.
 
-```{r accuracy_lm, fig.height=4, fig.width=6}
-# Accuracy of the model
+```{r accuracy_lm, fig.height=3, fig.width=6}
 accuracy_lm <- 1 - (lasso_mse_test / var(test_data$Calories))
-# Plot the predicted values against the actual values on the test data
-plot(test_data$Calories, lasso_pred_test, xlab = "Actual Calories",
-     ylab = "Predicted Calories", main = "Predicted vs Actual Calories",
-     col = "#4ea5ff", pch = 19)
+par(mfrow = c(1, 1), mar = c(4, 4, 2, 2))
+plot(test_data$Calories, lasso_pred_test, xlab = "Actual Calories", col = "#4ea5ff",
+     ylab = "Predicted Calories", main = "Predicted vs Actual Calories", pch = 19)
 abline(0, 1, col = "#ff810f", lwd = 2)
 kable(data.frame(Accuracy = accuracy_lm, MSE = lasso_mse_test, 
                  R_squared = lasso_r_squared_test),
