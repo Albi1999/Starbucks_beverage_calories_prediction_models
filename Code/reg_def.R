@@ -253,13 +253,168 @@ library(glmnet)
 #This feature selection process inherently removes redundant variables and reduces multicollinearity in the model.
 
 # Fit the lasso regression model
-#we also have standardize data which is important for regularization tecniques
-#We use data with logaritmic trasformation in order to reduce multicollinearity and stabilize 
+#we also have standardize data which is important for regularization tecniques.
+#Standardization is essential because Lasso penalizes the coefficients of the predictors, and if the predictors are not on the same scale,
+#those with larger scales will be penalized more than those with smaller scales. This can lead to distorted results.
 
-#set y as calories
+#set y as calories which is our target variable 
+y <- data_cleaned$Calories 
+
+# Standardize the data
+std_data <- as.data.frame(scale(data_num))
+
+# Fit the lasso regression model
+mod_lasso <- cv.glmnet(x = as.matrix(std_data[, -1]),
+                       y = std_data$Calories,
+                       alpha = 1, standardize = FALSE)
+
+summary(mod_lasso)
+lasso_coef <- coef(mod_lasso, s = "lambda.min")
+lasso_coef
+
+#By setting some coefficients to zero such as Saturated_Fat), Lasso helps in feature selection, which reduces the complexity of the model.
+#The remaining non-zero coefficients indicate the variables that have a significant contribution to predicting the calories. 
+#The signs and magnitudes of these coefficients show the direction and strength of their relationships with the target variable (calories).
+#ad example A one-unit increase in Sodium, holding all other variables constant, is associated with a decrease of approximately 0.021 calories.
+#Specifically, the `cv.glmnet` function performs cross-validation to determine the value of lambda that minimizes the prediction error. 
+#This value is identified as `lambda.min, in our case we found that the optimal value of lambda is equal to 1.
+#To further evaluate the model's performance, metrics such as R-squared and Mean Squared Error (MSE) should be considered. 
+#These metrics will help in understanding how well the model explains the variance in the data and the average error of the predictions, respectively.
+#Also,the lambda value that minimizes the MSE is selected as the optimal lambda value
+
+# Calculate the R-squared value for the lasso regression model
+lasso_pred <- predict(mod_lasso, s = "lambda.min", newx = as.matrix(std_data[, -1]))
+lasso_r_squared <- cor(lasso_pred, std_data$Calories)^2
+lasso_r_squared
+
+# Calculate the MSE for the lasso regression model
+lasso_mse <- mean((lasso_pred - std_data$Calories)^2)
+lasso_mse
+
+#The R-squared value of approximately 0.998 indicates that the Lasso regression model explains about 99.76% of the variance in the Calories variable. 
+#This suggests a very strong fit, as the model is capturing almost all the variability in the target variable.
+
+#The Mean Squared Error (MSE) of approximately 0.0024 indicates a very low average squared difference between the observed actual outcomes and the outcomes predicted by the model. 
+#This suggests that the model's predictions are very close to the actual values, indicating high accuracy.
+
+## The optimal lambda value is used to fit the final lasso regression model
+par(mfrow = c(1, 1))
+plot(mod_lasso)
+#ADD COMMENT 
 
 
+#We also tried Ridge Regression in order to reduce multicollinearity:
+#Likely LASSO, the Ridge regression is regulariztion tecnique witch introduce a term of penality that 
+#tends to shrink coefficients towards zero without eliminating them entirely, meaning that all variables can remain in the model. 
+#Differently from LASSO, that has the ability to zero out some coefficients, making them exactly zero, thus providing a form of variable selection,
+#Ridge regression is an appropriate choice for reducing multicollinearity without sacrificing the presence of all variables in the model, 
+#whereas LASSO may be preferred when one wants to select only a subset of the most relevant variables.
 
+# The ridge regression model is fit using the glmnet package
+# The cv.glmnet() function is used to fit the ridge regression model with cross-validation
+
+# Fit the ridge regression model with the standardization
+mod_ridge <- cv.glmnet(x = as.matrix(std_data[, -1]),
+                       y = std_data$Calories,
+                       alpha = 0, standardize = FALSE)
+summary(mod_ridge)
+ridge_coef <- coef(mod_ridge, s = "lambda.min")
+ridge_coef
+
+#Again the best value of lambda is detemined by cross validation in order to minimize the error, likely to LASSO, is equal to 1.
+#the interpretation of coefficients is the same of lasso.
+
+#Evaluating the model with R^2 and MSE
+
+# Calculate the R-squared value for the ridge regression model
+
+ridge_pred <- predict(mod_ridge, s = "lambda.min", newx = as.matrix(std_data[, -1]))
+ridge_r_squared <- cor(ridge_pred, std_data$Calories)^2
+ridge_r_squared
+
+#similar to LASSO, very high 
+
+# Calculate the MSE for the ridge regression model
+ridge_mse <- mean((ridge_pred - std_data$Calories)^2)
+ridge_mse
+
+# Plot the cross-validated mean squared error (MSE) as a function of the lambda values
+plot(mod_ridge)
+#ADD comment
+
+#Model comparison: 
+# now we want to compare the model using the R-squared value
+# The R-squared value is a measure of how well the model fits the data
+# The R-squared value ranges from 0 to 1, with higher values indicating a better fit
+# The MSE is a measure of the average squared difference between the predicted and actual values
+# The MSE is used to evaluate the performance of the model, with lower values indicating better performance
+# We choose the model with the highest R-squared value and the lowest MSE
+#Based on these values we choose LASSO as the best model, since teh R^2 are equal, but the MSE is a bit better in LASSO.
+
+#??????????????????????we want to check is Lasso regression has effectvily reduced the multicollinearity, so we calculated the VIF on 
+#predictors resulted by fitted Lasso, by looking at coefficients and correlation matrix
+
+# Seleziona solo le variabili predittive rimanenti
+lasso_selected_vars <- std_data[, -1][, which(lasso_coef[-1] != 0)]
+
+# Calcola la matrice di correlazione
+cor_matrix_lasso <- cor(lasso_selected_vars)
+
+# Visualizza la matrice di correlazione con un grafico
+corrplot::corrplot(cor_matrix_lasso, method = "number")
+
+#TENERE?????????????????????????
+#The variables "Total_Fat," "Trans_Fat," "Sodium," "Total_Carbohydrates," "Cholesterol," "Dietary_Fibre," "Sugars," "Protein," "Vitamin_A," "Vitamin_C," "Calcium," "Iron," and "Caffeine" have coefficients of significant magnitudes, 
+#suggesting that these variables are important for predicting calories.
+#Despite the regularization of the Lasso model, some variables have coefficients of significant magnitudes, which could suggest that these variables are not strongly correlated with each other, thus reducing the impact of multicollinearity. 
+#Overall, the absence of coefficients with very large magnitudes and the presence of coefficients close to zero for some variables suggest that the Lasso model may have helped mitigate multicollinearity and select only the most important variables for predicting calories.
+
+### Cross validation ---- 
+#This is a way to see if the model perferm well on the test set and generalize effeciently the data we gave as training set
+# Split the data in training and test set then check the accuracy of the model.
+# Split the data into training with 80% of examples and test sets with 20% of examples
+set.seed(123)
+train_index <- sample(1:nrow(std_data), 0.8 * nrow(std_data))
+train_data <- std_data[train_index, ]
+test_data <- std_data[-train_index, ]
+
+# Fit the lasso regression model on the training data
+mod_lasso_train <- cv.glmnet(x = as.matrix(train_data[, -1]),
+                             y = train_data$Calories,
+                             alpha = 1, standardize = FALSE)
+
+# Predict the calories on the test data using the lasso regression model
+
+lasso_pred_test <- predict(mod_lasso_train, s = "lambda.min", newx = as.matrix(test_data[, -1]))
+
+# Calculate the R-squared value for the lasso regression model on the test data
+
+lasso_r_squared_test <- cor(lasso_pred_test, test_data$Calories)^2
+lasso_r_squared_test
+
+#The accuracy is really high on test indicating that the model has learned effectively from trained data
+#and generalize well on unknwon  examples 
+
+# Calculate the MSE for the lasso regression model on the test data
+# The MSE is a measure of the average squared difference between the predicted and actual values
+
+lasso_mse_test <- mean((lasso_pred_test - test_data$Calories)^2)
+lasso_mse_test
+
+#Overall, the high R-squared value and low MSE on the test data suggest that the lasso regression model has learned effectively from the training data and generalizes well to unseen examples.
+# Plot the predicted values against the actual values on the test data
+
+plot(test_data$Calories, lasso_pred_test, xlab = "Actual Calories",
+     ylab = "Predicted Calories", main = "Predicted vs Actual Calories",
+     col = "#4ea5ff", pch = 19)
+
+
+# The plot shows the predicted values against the actual values on the test data
+# The points are close to the diagonal line, indicating that the model is making accurate predictions
+# The R-squared value and MSE are used to evaluate the performance of the model
+# The R-squared value is 0.99, indicating that the model explains 99% of the variance in the data
+
+#Logistic regression 
 
 
 
