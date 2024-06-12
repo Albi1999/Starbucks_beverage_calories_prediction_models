@@ -1,7 +1,7 @@
 ---
 title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
-date: "2024-06-10"
+date: "2024-06-12"
 output:
   html_document:
     toc: true
@@ -25,19 +25,19 @@ output:
 
 # Introduction
 
-Here Eleonora you can write the introduction of the project describing the scope and the data used.
+In this project, we will conduct a thorough analysis of a dataset of our choice, to gain a full understanding of our data, and we will then build models that enable us to make accurate predictions.
+The dataset we chose is called *Starbucks Beverage Components* and contains information about the ingredients of Starbucks' beverages.
 
-Thank you Albi, I will. What is our project scope though?
-
-I think that we have to analyze the dataset and perform some statistical analysis on it. 
-We can start by calculating the correlation matrix and then we can visualize the data through histograms, pairplots, barplots and boxplots. 
-Finally, we can perform a regression analysis.
+We will go through several steps, including Data Cleaning, Exploratory Data Analysis (EDA) and Regression Analysis. 
+Indeed, first we will prepare our data for analysis by handling missing values and ensuring that our data is correctly formatted.
+Once our data is clean, we will proceed to the EDA stage, where we will avail ourself of visual and quantitative methods to understand the structure of our data and the relationships between variables.
+Finally, we will perform Regression Analysis to understand the relationship between our dependent and independent variables. This will allow us to make predictions about our data and understand the factors that influence our dependent variable, "Calories".
 
 
 
 # Data
 
-The dataset we will analyze in this project is *Starbucks Beverage Components* from Kaggle, that you can find at the following link: <https://www.kaggle.com/datasets/henryshan/starbucks>.
+As mentioned earlier, the dataset we will analyze in this project is *Starbucks Beverage Components* from Kaggle, that you can find at the following link: <https://www.kaggle.com/datasets/henryshan/starbucks>.
 
 This data provides a comprehensive guide to the nutritional content of the beverages available on the Starbucks menu. 
 We have a total of $242$ samples described by $18$ variables. 
@@ -146,22 +146,20 @@ Conversely, the distributions of the remaining variables display a noticeable sk
 
 ## Pairplot
 
-**io questi li toglierei. tanto spazio**
+**spostare dopo scatter plot**
+ 
+A pairplot, as the name suggests, is a plot that enables us to visualize the pairwise relationships between different variables in a dataset. It is essentially a matrix of scatterplots, where each scatterplot shows the relationship between a pair of variables.
+This type of visualization is particularly useful for exploring potential relationships and correlations between all the variables. As previously noted, by examining the scatterplots we can identify patterns, trends, and outliers in the data.
 
-We will plot a pairplot to visualize the relationship between the variables. 
-The pairplot is a grid of scatterplots that shows the relationship between each pair of variables in the dataset. 
-This visualization helps us to identify patterns and correlations between the variables.
-
-First of all we have to define the function for the pairplot.
-We will define a function for the histogram, the correlation and the smooth line.
+Before we can create a pairplot, we need to define a some functions for it. This functions will generate the scatterplots, as well as additional elements such as histograms, correlation coefficients, and a smooth line to help visualize the distribution and correlation of the data.
 
 
 
-Then we create the pairplot using the defined functions.
+Finally, we create the pairplot using the defined functions.
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/pairplot-1.png" style="display: block; margin: auto;" />
 
-ADD COMMENTS ON THE GRAPH
+**ADD COMMENTS ON THE GRAPH (I don't know how to comment it)**
 
 ## Barplot
 
@@ -174,7 +172,7 @@ These graphs are commonly used for categorical data, or numerical data that has 
 
 We can deduce some useful information by looking at these plots.
 
-For example, we can notice that variables such as "Saturated_Fat", "Dietary_Fibre", "Vitamin_C", and "Iron" are typically either absent or present in small quantities in the beverages.
+For example, we can notice that variables such as "Saturated_Fat", "Dietary_Fiber", "Vitamin_C", and "Iron" are typically either absent or present in small quantities in the beverages.
 In particular, the frequency of these variables rapidly diminishes as their levels increase.
 On the other hand, the variables "Calories", "Total_Fat", "Trans_Fat", and "Total_Carbohydrates" show a wide range of values across different beverage types, going from high levels in some beverages to minimal amounts in others.
 
@@ -199,40 +197,50 @@ Similarly, we compare the total sugars for each beverage preparation, gathering 
 
 ## Boxplot
 
-We will plot a boxplot of the data. 
-The boxplot is a graphical representation of the data that displays the distribution of the data, including the median, quartiles, and outliers. 
-This visualization helps us to identify the spread and variability of the data.
+Boxplots are a type of graphical representation used to display the distribution of a dataset. They provide a visual summary of the data, enabling us to quickly identify key statistical measures such as median, quartiles and outliers. This visualization also helps us to determine the spread and variability of the data.
+
+In this section, we create the boxplots of our dataset.
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-1.png" style="display: block; margin: auto;" />
 
+As we observed earlier, the majority of the graphs exhibits a skewness towards zero, with the exceptions being “Calories”, “Total_Carbohydrates”, “Cholesterol”, and “Sugars”.
+
+Another aspect that has not been previously highlighted is the presence of outliers. These are notably evident in “Dietary_Fiber”, “Vitamin_C”, and “Caffeine” plots.
+
+
 ## Scatterplot
 
-We will plot a scatterplot of the data. 
-The scatterplot is a graphical representation of the data that displays the relationship between two variables. 
-This visualization helps us to identify patterns and correlations between the variables.
+A scatterplot is a type of data visualization that uses dots to represent the values obtained for two different variables - one plotted along the x-axis and the other plotted along the y-axis. Scatterplots are used to observe relationships between variables.
+This type of graphical representation is crucial in detecting underlying patterns and potential correlations among the variables.
 
-We create a scatterplot to compare the amounts of calories and fat for each categories of bevarage. 
-We assign distinct colors to each beverage category and create a legend to identify each category.
+In particular, we place the calorie content and fat levels of various beverage categories side by side for comparison. To make the visualization more intuitive, we assign distinct colors to each beverage category and create a legend to identify each category.
+
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison-1.png" style="display: block; margin: auto;" />
 
+Let us look for any overall pattern or trend in the data points. For all the categories the two variables seem to be related following an almost linear trend, with a positive correlation - as one variable increases, so does the other. However, it is important to note that a very high "Total_Fat" value does not necessarily equate to a very high "Calories" value - see "Espresso Signature Drinks" category.
+
+Additionally we can observe that, given a specific category, it is possible that we find two clusters of data points that follow distinct distibutions. This phenomenon is observed in the "Classic Espresso Drinks", "Espresso Signature Drinks" and "Tazo Tea Drinks" categories and it is likely attributable to the diverse methods of drink preparation. 
+
+In the next plot we can also see a comparison between "Total_Fat" and "Trans_Fat" distributions:
+
 <img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison_-1.png" style="display: block; margin: auto;" />
 
-Create scatterplot to look into relantionship between calories and other variables. 
-We will plot the relationship between calories and sodium, protein, vitamin C and fiber.
+Finally, we create some scatterplots to look into relantionship between "Calories" and other variables. In particular we focus on "Sodium", "Protein", "Sugars" and "Dietary_Fiber".
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/scatterplot-1.png" style="display: block; margin: auto;" />
 
-**TO CHANGE THIS SINCE I CHANGED ONE OF THE CATEGORIES WITH SUGAR**
-There's increase in every feature with increase in calories.
-Features like proteins and fiber rapidly increase, instead vitamin and cholesterol more flat growing. 
-Confirmed by correlation coefficients 
+With an increase in calories, we observe a corresponding rise in all features. However, the rate of increase varies among different features. For instance, "Sugars" and "Dietary_Fiber" show a steep ascent, indicating a rapid increase with calorie count. On the other hand, "Sodium" and "Protein" exhibit a more gradual growth, suggesting a slower rate of increase despite the rising calorie content. These observations are further substantiated by the correlation coefficients, which provide a quantitative measure of these relationships. This highlights the complex interplay between calories and various nutritional components in our beverages.
 
-ADD COMMENTS ON THE GRAPH
 
 # Regression Analysis
 
+In this section we will conduct a comprehensive regression analysis on our dataset, exploring our data, constructing different models and lastly performing model selection and validation. Our goal is to build a model that accurately represents the relationships within our data and can provide meaningful predictions.
+In particular, the variable we want to predict is "Calories".
+
 ## Linear Regression
+
+The simplest form of regression analysis is linear regression, where we predict an outcome variable based on one or more predictor variables.
 
 Linear regression model to predict the amount of calories based on the amount of the other variables
 We use the lm() function to fit a linear regression model

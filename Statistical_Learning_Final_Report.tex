@@ -107,7 +107,7 @@
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\usepackage{bookmark}
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
@@ -118,7 +118,7 @@
 
 \title{Statistical Learning Final Report}
 \author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
-\date{2024-06-10}
+\date{2024-06-12}
 
 \begin{document}
 \maketitle
@@ -127,7 +127,8 @@
 \setcounter{tocdepth}{3}
 \tableofcontents
 }
-\section{Introduction}\label{introduction}
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
 
 Here Eleonora you can write the introduction of the project describing
 the scope and the data used.
@@ -139,7 +140,8 @@ analysis on it. We can start by calculating the correlation matrix and
 then we can visualize the data through histograms, pairplots, barplots
 and boxplots. Finally, we can perform a regression analysis.
 
-\section{Data}\label{data}
+\hypertarget{data}{%
+\section{Data}\label{data}}
 
 The dataset we will analyze in this project is \emph{Starbucks Beverage
 Components} from Kaggle, that you can find at the following link:
@@ -161,7 +163,8 @@ understanding of the data structure and the variables involved.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Data Transformation}\label{data-transformation}
+\hypertarget{data-transformation}{%
+\subsection{Data Transformation}\label{data-transformation}}
 
 Note that several variables in our dataset, namely
 ``Vitamin.A\ldots.DV.'', ``Vitamin.C\ldots.DV.'', ``Calcium\ldots.DV.''
@@ -187,7 +190,8 @@ it easier to explore, visualize, and understand our data.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Data Cleaning}\label{data-cleaning}
+\hypertarget{data-cleaning}{%
+\subsection{Data Cleaning}\label{data-cleaning}}
 
 Another challenge we have to face is the presence of missing data.
 Indeed, in ``Caffeine..mg.'' column there are some NA values. This is a
@@ -238,7 +242,8 @@ Lastly, taking in consideration our cleaned data, we renamed the columns
 by removing dots and units of measure, in order to obtain a more
 readable dataset.
 
-\section{Correlation Analysis}\label{correlation-analysis}
+\hypertarget{correlation-analysis}{%
+\section{Correlation Analysis}\label{correlation-analysis}}
 
 After completing these preliminary preprocessing steps, we calculate the
 correlation matrix for our dataset. This computation helps us in
@@ -256,7 +261,8 @@ plot such matrix.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/correlation_analysis-1} \end{center}
 
-\section{Data Visualization}\label{data-visualization}
+\hypertarget{data-visualization}{%
+\section{Data Visualization}\label{data-visualization}}
 
 Data visualization is a powerful tool that allows us to uncover
 patterns, correlations and outliers in our data. It provides visual
@@ -267,7 +273,8 @@ relationships among them. This enables us to recognize patterns quickly.
 So, let us transform our raw data into graphical representations, to
 gain a more comprehensive understanding of the information at hand.
 
-\subsection{Histograms}\label{histograms}
+\hypertarget{histograms}{%
+\subsection{Histograms}\label{histograms}}
 
 Histograms serve as a graphical interpretation of data distribution. In
 a histogram, each bar corresponds to the counted frequency within each
@@ -281,7 +288,8 @@ By looking at the graphs, we can notice that the variables ``Calories'',
 distributions that are nearly normal. Conversely, the distributions of
 the remaining variables display a noticeable skewness towards the left.
 
-\subsection{Pairplot}\label{pairplot}
+\hypertarget{pairplot}{%
+\subsection{Pairplot}\label{pairplot}}
 
 \textbf{io questi li toglierei. tanto spazio}
 
@@ -301,7 +309,8 @@ Then we create the pairplot using the defined functions.
 
 ADD COMMENTS ON THE GRAPH
 
-\subsection{Barplot}\label{barplot}
+\hypertarget{barplot}{%
+\subsection{Barplot}\label{barplot}}
 
 We will now plot the bar plots for our dataset. The primary use of bar
 plots is to make comparisons between the amounts of different
@@ -328,7 +337,8 @@ to be more evenly spread among the different levels in various
 beverages, while instead ``Caffeine'' plot is interesting as it exhibits
 three distinct peaks in frequency.
 
-\subsubsection{Beverages Barplot}\label{beverages-barplot}
+\hypertarget{beverages-barplot}{%
+\subsubsection{Beverages Barplot}\label{beverages-barplot}}
 
 As previously anticipated, bar plots also allows us to see the
 distribution of categorical variables like ``Beverage\_category'' and
@@ -352,27 +362,55 @@ beverage and successively creating a bar plot.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/total_sugars-1} \end{center}
 
-\subsection{Boxplot}\label{boxplot}
+\hypertarget{boxplot}{%
+\subsection{Boxplot}\label{boxplot}}
 
-We will plot a boxplot of the data. The boxplot is a graphical
-representation of the data that displays the distribution of the data,
-including the median, quartiles, and outliers. This visualization helps
-us to identify the spread and variability of the data.
+Boxplots are a type of graphical representation used to display the
+distribution of a dataset. They provide a visual summary of the data,
+enabling us to quickly identify key statistical measures such as median,
+quartiles and outliers. This visualization also helps us to determine
+the spread and variability of the data.
+
+In this section, we create the boxplots of our dataset.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-1} \end{center}
 
-\subsection{Scatterplot}\label{scatterplot}
+As we observed earlier, the majority of the graphs exhibits a skewness
+towards zero, with the exceptions being ``Calories'',
+``Total\_Carbohydrates'', ``Cholesterol'', and ``Sugars''.
 
-We will plot a scatterplot of the data. The scatterplot is a graphical
-representation of the data that displays the relationship between two
-variables. This visualization helps us to identify patterns and
-correlations between the variables.
+Another aspect that has not been previously highlighted is the presence
+of outliers. These are notably evident in ``Dietary\_Fiber'',
+``Vitamin\_C'', and ``Caffeine'' plots.
 
-We create a scatterplot to compare the amounts of calories and fat for
-each categories of bevarage. We assign distinct colors to each beverage
+\hypertarget{scatterplot}{%
+\subsection{Scatterplot}\label{scatterplot}}
+
+A scatterplot is a type of data visualization that uses dots to
+represent the values obtained for two different variables - one plotted
+along the x-axis and the other plotted along the y-axis. Scatterplots
+are used to observe relationships between variables. This type of
+graphical representation is crucial in detecting underlying patterns and
+potential correlations among the variables.
+
+In particular, we place the calorie content and fat levels of various
+beverage categories side by side for comparison. To make the
+visualization more intuitive, we assign distinct colors to each beverage
 category and create a legend to identify each category.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison-1} \end{center}
+
+We can look for any overall pattern or trend in the data points. For all
+the categories the two variables seem to be related following a linear
+trend, with a positive correlation (as one variable increases, so does
+the other).
+
+How closely do the points follow the trend determines the strength of
+the relationship: if they're very close to the trend line, the
+relationship is strong, if they're spread out, the relationship is weak.
+We also notice that the points seem to form distinct groups or clusters.
+This could suggest that there are different categories or types within
+our data.
 
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison_-1} \end{center}
 
@@ -389,15 +427,19 @@ cholesterol more flat growing. Confirmed by correlation coefficients
 
 ADD COMMENTS ON THE GRAPH
 
-\section{Regression Analysis}\label{regression-analysis}
+\hypertarget{regression-analysis}{%
+\section{Regression Analysis}\label{regression-analysis}}
 
-\subsection{Linear Regression}\label{linear-regression}
+\hypertarget{linear-regression}{%
+\subsection{Linear Regression}\label{linear-regression}}
 
 Linear regression model to predict the amount of calories based on the
 amount of the other variables We use the lm() function to fit a linear
 regression model
 
-\subsubsection{Simple Linear Regression}\label{simple-linear-regression}
+\hypertarget{simple-linear-regression}{%
+\subsubsection{Simple Linear
+Regression}\label{simple-linear-regression}}
 
 Fit linear simple regression with just one variable on data\_cleaned,
 looking at correlation plot we choose Sugars due to high correlation.
@@ -461,8 +503,9 @@ the data. Summarizing the model is too simple so it doesn't capture the
 complexity of the data, so we try to fit a multiple linear regression
 model.
 
+\hypertarget{multiple-linear-regression}{%
 \subsubsection{Multiple Linear
-Regression}\label{multiple-linear-regression}
+Regression}\label{multiple-linear-regression}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -502,7 +545,8 @@ AIC & BIC & R\_squared & adj\_R\_squared \\
 The model has a low AIC and BIC values, the R-squared value is \(0.997\)
 so the model is a good fit for the data.
 
-\subsubsection{Backward Elimination}\label{backward-elimination}
+\hypertarget{backward-elimination}{%
+\subsubsection{Backward Elimination}\label{backward-elimination}}
 
 Now we apply the selection of the predictors with the backward
 elimination method.
@@ -614,7 +658,8 @@ R-squared and residual standard error. The backward model is preferable
 because it has a slightly lower AIC, suggesting it is a more
 parsimonious model without sacrificing the quality of the fit.
 
-\subsubsection{Anova}\label{anova}
+\hypertarget{anova}{%
+\subsubsection{Anova}\label{anova}}
 
 Anova comparison between the models
 
@@ -664,7 +709,8 @@ that the model obtained through backward selection is more parsimonious
 without compromising the quality of the fit. Therefore, the backward
 model is preferable to the full model.
 
-\subsubsection{Multicollinearity}\label{multicollinearity}
+\hypertarget{multicollinearity}{%
+\subsubsection{Multicollinearity}\label{multicollinearity}}
 
 To check for multicollinearity, we calculate the Variance Inflation
 Factors (VIF) for the variables in the multiple linear regression model,
@@ -725,7 +771,8 @@ The high values of the VIF could be due to:
 In this case, normalizing the variables might help reduce
 multicollinearity.
 
-\subsubsection{Standardize the data}\label{standardize-the-data}
+\hypertarget{standardize-the-data}{%
+\subsubsection{Standardize the data}\label{standardize-the-data}}
 
 We have tried different kind of standardization to reduce the
 multicollinearity First at all we tried the scale by standard
@@ -1018,7 +1065,8 @@ Using regularization methods such as ridge regression or lasso
 regression penalizes the coefficients of variables, helping to reduce
 multicollinearity.
 
-\subsection{Lasso Regression}\label{lasso-regression}
+\hypertarget{lasso-regression}{%
+\subsection{Lasso Regression}\label{lasso-regression}}
 
 We use the glmnet package to fit a lasso regression model. Lasso
 regression is a type of linear regression that uses L1 regularization to
@@ -1059,7 +1107,8 @@ data and penalizes the coefficients of the model. The model has a low
 AIC and BIC values, the R-squared value is \(0.99\) so the model is a
 good fit for the data.
 
-\subsection{Ridge Regression}\label{ridge-regression}
+\hypertarget{ridge-regression}{%
+\subsection{Ridge Regression}\label{ridge-regression}}
 
 We use the glmnet package to fit a ridge regression model. Ridge
 regression is a type of linear regression that uses L2 regularization to
@@ -1081,7 +1130,8 @@ data and penalizes the coefficients of the model. The model has a low
 AIC and BIC values, the R-squared value is \(0.99\) so the model is a
 good fit for the data.
 
-\subsection{Model Comparison}\label{model-comparison}
+\hypertarget{model-comparison}{%
+\subsection{Model Comparison}\label{model-comparison}}
 
 We compare the linear regression, lasso regression, and ridge regression
 models to select the best model for predicting the amount of calories
@@ -1121,7 +1171,8 @@ Lasso Regression & 0.9975756 \\
 Ridge Regression & 0.9941815 \\
 \end{longtable}
 
-\subsection{Model Evaluation}\label{model-evaluation}
+\hypertarget{model-evaluation}{%
+\subsection{Model Evaluation}\label{model-evaluation}}
 
 We evaluate the performance of the linear regression, lasso regression,
 and ridge regression models using the mean squared error (MSE). The MSE
@@ -1163,7 +1214,8 @@ as the best model for predicting the amount of calories based on the
 amount of the other variables. The best model is the lasso because it
 has the lowest value for R\^{}2 and MSE and it is the most robust model.
 
-\subsection{Cross Validation}\label{cross-validation}
+\hypertarget{cross-validation}{%
+\subsection{Cross Validation}\label{cross-validation}}
 
 Cross validation is a technique used to evaluate the performance of a
 model. It involves splitting the data into training and testing sets,
