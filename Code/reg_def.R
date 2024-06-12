@@ -414,9 +414,127 @@ plot(test_data$Calories, lasso_pred_test, xlab = "Actual Calories",
 # The R-squared value and MSE are used to evaluate the performance of the model
 # The R-squared value is 0.99, indicating that the model explains 99% of the variance in the data
 
-#Logistic regression 
+#Logistic regression.
+#Logistic regression is a statistical model used to predict the outcome of a binary categorical dependent variable based on one or more independent variables.
+#Since logistic regression is tipycally used for classification task and our variable Calories ,that we want to predict is continous 
+#random variable, we have to traspose the problem into a classification one by making the variable binary. 
+#In order to do that we classify foods into two categories: "low calorie" and "high calories" defining a threshold to distinguish between the two classes.
+
+#let's take a look into the structure of the variable 
+#using numeric dataset only
 
 
+#We've tried with normal data, standardize data, and log trasformation since again it helps to reduce multicolli.
+#and we find out that the best is with log trasformed data 
+#looking at the summary and the plot of the variable, we notice that calories follow a semi-gaussian distribution
+#both Median and mean are reasonable approach to use, since they are close to each other. 
+#However we choose median as treshold is less sensitive to outliers and skewness in the data. 
+#It ensures that half the data points are classified as "low calories" and the other half as "high calories," providing balanced classes.
+
+y <- std_data_log_df$Calories
+calories_median <- median(y)
+calories_median
+
+# Load necessary package
+library(glmnet)
+
+# Create a new binary target variable based on the median
+std_data_log_df$Calorie_Class <- ifelse(std_data_log_df$Calories > calories_median, 1, 0)
+table(std_data_log_df$Calorie_Class)
+#Creates a new binary variable (Calorie_Class) where 1 indicates high calorie (above median) and 0 indicates low calorie (below or equal to median).
+
+
+#Fit a logistic regression model on the complete dataset obatines with log tasformation and by removing first column 
+logistic_model <- glm(Calorie_Class ~ ., data = std_data_log_df[,-1], family = binomial)
+
+#Summary of the logistic model
+summary(logistic_model)
+
+#The coefficient for Cholesterol is statistically significant at the 0.01 level.
+#The coefficient for Total_Fat it is marginally significant at the 0.05 level.
+# the residual deviance is much smaller than the null deviance, indicating that the model with predictors explains more variability than the null model.
+#the AIC is 69.424, suggesting that the model has reasonable fit.
+#Number of Fisher Scoring Iterations: Indicates the number of iterations performed by the Fisher scoring algorithm during model fitting. In this case, it took 11 iterations.
+
+# The best is with log transformation so we try to use it into the cross validation tecnique...
+
+#Split the data into training (80%) and test sets (20%)
+set.seed(123)
+train_index <- sample(1:nrow(std_data_log_df), size = 0.8 * nrow(std_data_log_df))
+train_data <- std_data_log_df[train_index, ]
+test_data <- std_data_log_df[-train_index, ]
+#remove the original calories column such as continous variable
+new_test_data <- test_data[,-1]
+str(train_data) #new variable is included
+#remove the original calories column such as continous variable
+new_train_data <- train_data[,-1]
+
+#Fit a logistic regression model on the new training data
+logistic_model_train <- glm(Calorie_Class ~ ., data = new_train_data, family = binomial)
+
+#Summary of the logistic model
+summary(logistic_model_train)
+
+#the coefficients significant are pretty much the same, with almost similar level of significance 
+#Total_Fat: Although not highly significant (p = 0.0558), 
+#it shows a tendency towards significance (p < 0.1), suggesting that it might have an effect on the probability of an observation being in the "high calorie" category.
+#Cholesterol: This predictor has a significant coefficient (p = 0.0219),
+#indicating that it likely influences the probability of an observation belonging to the "high calorie" category.
+#Given that this dataset is smaller, it's not unexpected to see fewer coefficients reaching statistical significance due to reduced statistical power
+#the AIC is lower that the one calculated in the full set indicating better performance
+
+#Predict on the new test data
+predictions <- predict(logistic_model_train, newdata = new_test_data, type = "response")
+predicted_classes <- ifelse(predictions > 0.5, 1, 0)
+
+# Evaluate the model
+conf_matrix <- table(Predicted = predicted_classes, Actual = new_test_data$Calorie_Class)
+
+# Print the confusion matrix
+print(conf_matrix)
+#The model correctly predicted 22 instances as "low calorie" when they were actually "low calorie."
+#The model incorrectly predicted 2 instances as "low calorie" when they were actually "high calorie."
+#The model incorrectly predicted 2 instances as "high calorie" when they were actually "low calorie."
+#The model correctly predicted 23 instances as "high calorie" when they were actually "high calorie."
+
+# Calculate accuracy
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+print(paste("Accuracy: ", accuracy))
+# The model's accuracy of approximately 91.8% indicates it is performing well overall in classifying the calorie content correctly.
+#Generalize well on the test set
+
+# Now we have to plot some graph of the model and integrate it in the report
+
+par(mfrow = c(2,2))
+plot(logistic_model_train)
+
+
+
+#Residuals vs Fitted:
+  
+ # This plot shows the Pearson residuals against the fitted values.
+#Ideally, there should be no clear pattern, indicating that the model is well-fitted. However, the presence of data points at extreme values (far from 0) suggests potential issues with model fit or outliers.
+#Normal Q-Q Plot:
+  
+ # The Q-Q plot compares the standardized deviance residuals to a theoretical normal distribution.
+#Significant deviations from the straight line suggest that the residuals are not normally distributed, which can indicate potential problems with the model. In this case, the data points deviate from the line, particularly at the higher quantiles, indicating that the residuals are not perfectly normally distributed.
+#Scale-Location Plot (Spread-Location Plot):
+  
+ # This plot shows the square root of the standardized residuals against the fitted values.
+#The red line helps to identify trends. Ideally, the points should be randomly scattered without a clear pattern. Here, we see some clustering and trends at extreme fitted values, suggesting heteroscedasticity or non-constant variance.
+#Residuals vs Leverage:
+  
+ # This plot shows standardized residuals against leverage, highlighting influential data points.
+#The dashed lines represent Cook's distance. Points outside these lines indicate influential observations that have a significant impact on the model. In this plot, several points, especially at higher leverage values, fall outside the dashed lines, indicating they are influential.
+#Interpretation
+#Potential Issues with Model Fit: The presence of extreme residuals in the Residuals vs Fitted and Scale-Location plots suggests that the model might not fit well across all observations. This can be due to outliers or the model not capturing the underlying data structure adequately.
+#Non-Normal Residuals: The Q-Q plot indicates that the residuals are not perfectly normally distributed, which is expected in logistic regression but still worth noting.
+#Influential Points: The Residuals vs Leverage plot shows several influential points, suggesting that some observations have a disproportionate impact on the model. These points should be investigated further to understand their nature and whether they are legitimate data points or outliers.
+#Next Steps
+#Investigate Influential Points: Check the data points identified as influential in the Residuals vs Leverage plot to understand why they have high leverage and residuals.
+#Consider Model Refinement: If certain variables consistently show poor performance, it might be necessary to transform them, add interaction terms, or consider alternative modeling techniques.
+#Check for Multicollinearity: Ensure that multicollinearity is not affecting the model by calculating Variance Inflation Factors (VIFs) for the predictors.
+#Evaluate Model with Additional Metrics: Use additional performance metrics such as ROC AUC, Precision-Recall curves, and confusion matrix to evaluate the model's predictive performance comprehensively.
 
 
 
