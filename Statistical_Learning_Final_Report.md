@@ -1,7 +1,7 @@
 ---
 title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
-date: "2024-06-12"
+date: "2024-06-13"
 output:
   html_document:
     toc: true
@@ -31,20 +31,17 @@ The dataset we chose is called *Starbucks Beverage Components* and contains info
 We will go through several steps, including Data Cleaning, Exploratory Data Analysis (EDA) and Regression Analysis. 
 Indeed, first we will prepare our data for analysis by handling missing values and ensuring that our data is correctly formatted.
 Once our data is clean, we will proceed to the EDA stage, where we will avail ourself of visual and quantitative methods to understand the structure of our data and the relationships between variables.
-Finally, we will perform Regression Analysis to understand the relationship between our dependent and independent variables. This will allow us to make predictions about our data and understand the factors that influence our dependent variable, "Calories".
+Finally, we will perform Regression Analysis to understand the relationship between our dependent and independent variables. This will allow us to make predictions about our data and understand the factors that influence our dependent variable, `"Calories"`.
 
 
 
 # Data
 
-As mentioned earlier, the dataset we will analyze in this project is *Starbucks Beverage Components* from Kaggle, that you can find at the following link: <https://www.kaggle.com/datasets/henryshan/starbucks>.
+The dataset we will analyze in this project is *Starbucks Beverage Components* from Kaggle, that you can find at the following link: <https://www.kaggle.com/datasets/henryshan/starbucks>.
 
 This data provides a comprehensive guide to the nutritional content of the beverages available on the Starbucks menu. 
 We have a total of $242$ samples described by $18$ variables. 
 These attributes include the name of the beverage, its categorization and preparation method, the total caloric content and the constituents of the beverage.
-
-In the upcoming code lines, we import the dataset and generate a summary visualization. 
-This initial step allows us to gain a better understanding of the data structure and the variables involved.
 
 
 ``` r
@@ -53,7 +50,7 @@ data <- read.csv("Data/starbucks.csv", header = TRUE, sep = ",")
 
 ## Data Transformation
 
-Note that several variables in our dataset, namely "Vitamin.A....DV.", "Vitamin.C....DV.", "Calcium....DV." and "Iron....DV.", are represented as percentages.
+Note that several variables in our dataset, namely `"Vitamin.A....DV."`, `"Vitamin.C....DV."`, `"Calcium....DV."` and `"Iron....DV."`, are represented as percentages.
 Consequently, the percentage symbol is included in our data. However, when conducting statistical analysis using R, the presence of non-numeric characters such as the percentage symbol can cause complications, interfering with the processing and analysis of the data. 
 Therefore, we proceed to remove it.
 
@@ -72,15 +69,15 @@ data$Calories <- as.numeric(data$Calories)
 
 ## Data Cleaning
 
-Another challenge we have to face is the presence of missing data. Indeed, in "Caffeine..mg." column there are some NA values. 
+Another challenge we have to face is the presence of missing data. Indeed, in `"Caffeine..mg."` column there are some `NA` values. 
 This is a common issue in data analysis and needs to be addressed appropriately to ensure the validity of our statistical results.
 
-One way to deal with these unwanted NA values is to omit the samples containing them from our study. 
+One way to deal with these unwanted `NA` values is to omit the samples containing them from our study. 
 This guarantees that our analysis is conducted solely on complete and dependable data. 
 Alternatively, we can fill them in with the average or the median of the observed values for that specific attribute. 
 This second method helps to preserve the overall data distribution while addressing the missing data points.
 
-In our work, we opt for the latter approach, replacing NA values with the median. 
+In our work, we opt for the latter approach, replacing `NA` values with the median. 
 This choice is particularly suitable for our data, which is skewed and contains outliers. 
 Indeed, the median, being a measure of central tendency that is not affected by extreme values, provides a more robust replacement in the presence of outliers.
 
@@ -141,13 +138,63 @@ We introduce these plots to see if our data is normally distributed, skewed, or 
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/histograms-1.png" style="display: block; margin: auto;" />
 
-By looking at the graphs, we can notice that the variables "Calories", "Total_Carbohydrates", "Cholesterol", and "Sugars" exhibit distributions that are nearly normal.
+By looking at the graphs, we can notice that the variables `"Calories"`, `"Total_Carbohydrates"`, `"Cholesterol"`, and `"Sugars"` exhibit distributions that are nearly normal.
 Conversely, the distributions of the remaining variables display a noticeable skewness towards the left.
+
+## Barplot
+
+We will now plot the bar plots for our dataset.
+The primary use of bar plots is to make comparisons between the amounts of different categories.
+Indeed, each bar corresponds to a category and the height of the bar represents the frequency or proportion of that category.
+These graphs are commonly used for categorical data, or numerical data that has been binned into categories.
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/barplot-1.png" style="display: block; margin: auto;" />
+
+We can deduce some useful information by looking at these plots.
+
+For example, we can notice that variables such as `"Saturated_Fat"`, `"Dietary_Fibre"`, `"Vitamin_C"`, and `"Iron"` are typically either absent or present in small quantities in the beverages.
+In particular, the frequency of these variables rapidly diminishes as their levels increase.
+On the other hand, the variables `"Calories"`, `"Total_Fat"`, `"Trans_Fat"`, and `"Total_Carbohydrates"` show a wide range of values across different beverage types, going from high levels in some beverages to minimal amounts in others.
+
+We can further observe that the distribution of `"Vitamin_A"` appears to be more evenly spread among the different levels in various beverages, while instead `"Caffeine"` plot is interesting as it exhibits three distinct peaks in frequency.
+
+## Boxplot
+
+Boxplots are a type of graphical representation used to display the distribution of a dataset. They provide a visual summary of the data, enabling us to quickly identify key statistical measures such as median, quartiles and outliers. This visualization also helps us to determine the spread and variability of the data.
+
+In this section, we create the boxplots of our dataset.
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-1.png" style="display: block; margin: auto;" />
+
+As we observed earlier, the majority of the graphs exhibits a skewness towards zero, with the exceptions being `“Calories”`, `“Total_Carbohydrates”`, `“Cholesterol”`, and `“Sugars”`.
+
+Another aspect that has not been previously highlighted is the presence of outliers. These are notably evident in `“Dietary_Fiber”`, `“Vitamin_C”`, and `“Caffeine”` plots.
+
+## Scatterplot
+
+A scatterplot is a type of data visualization that uses dots to represent the values obtained for two different variables - one plotted along the x-axis and the other plotted along the y-axis. Scatterplots are used to observe relationships between variables.
+This type of graphical representation is crucial in detecting underlying patterns and potential correlations among the variables.
+
+In particular, we place the calorie content and fat levels of various beverage categories side by side for comparison. To make the visualization more intuitive, we assign distinct colors to each beverage category and create a legend to identify each category.
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison-1.png" style="display: block; margin: auto;" />
+
+Let us look for any overall pattern or trend in the data points. For all the categories the two variables seem to be related following an almost linear trend, with a positive correlation - as one variable increases, so does the other. However, it is important to note that a very high `"Total_Fat"` value does not necessarily equate to a very high `"Calories"` value - see `"Espresso Signature Drinks"` category.
+
+Additionally we can observe that, given a specific category, it is possible that we find two clusters of data points that follow distinct distibutions. This phenomenon is observed in the `"Classic Espresso Drinks"`, `"Espresso Signature Drinks"` and `"Tazo Tea Drinks"` categories and it is likely attributable to the diverse methods of drink preparation. 
+
+In the next plot we can also see a comparison between `"Total_Fat`" and `"Trans_Fat"` distributions:
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison_-1.png" style="display: block; margin: auto;" />
+
+Finally, we create some scatterplots to look into relantionship between `"Calories"` and other variables. In particular we focus on `"Sodium"`, `"Protein"`, `"Sugars"` and `"Dietary_Fiber"`.
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/scatterplot-1.png" style="display: block; margin: auto;" />
+
+With an increase in calories, we observe a corresponding rise in all features. However, the rate of increase varies among different features. For instance, `"Sugars"` and `"Dietary_Fiber"` show a steep ascent, indicating a rapid increase with calorie count. On the other hand, `"Sodium"` and `"Protein"` exhibit a more gradual growth, suggesting a slower rate of increase despite the rising calorie content. These observations are further substantiated by the correlation coefficients, which provide a quantitative measure of these relationships. This highlights the complex interplay between calories and various nutritional components in our beverages.
 
 ## Pairplot
 
-**spostare dopo scatter plot**
- 
 A pairplot, as the name suggests, is a plot that enables us to visualize the pairwise relationships between different variables in a dataset. It is essentially a matrix of scatterplots, where each scatterplot shows the relationship between a pair of variables.
 This type of visualization is particularly useful for exploring potential relationships and correlations between all the variables. As previously noted, by examining the scatterplots we can identify patterns, trends, and outliers in the data.
 
@@ -161,95 +208,24 @@ Finally, we create the pairplot using the defined functions.
 
 **ADD COMMENTS ON THE GRAPH (I don't know how to comment it)**
 
-## Barplot
-
-We will now plot the bar plots for our dataset.
-The primary use of bar plots is to make comparisons between the amounts of different categories.
-Indeed, each bar corresponds to a category and the height of the bar represents the frequency or proportion of that category.
-These graphs are commonly used for categorical data, or numerical data that has been binned into categories.
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/barplot-1.png" style="display: block; margin: auto;" />
-
-We can deduce some useful information by looking at these plots.
-
-For example, we can notice that variables such as "Saturated_Fat", "Dietary_Fiber", "Vitamin_C", and "Iron" are typically either absent or present in small quantities in the beverages.
-In particular, the frequency of these variables rapidly diminishes as their levels increase.
-On the other hand, the variables "Calories", "Total_Fat", "Trans_Fat", and "Total_Carbohydrates" show a wide range of values across different beverage types, going from high levels in some beverages to minimal amounts in others.
-
-We can further observe that the distribution of "Vitamin_A" appears to be more evenly spread among the different levels in various beverages, while instead "Caffeine" plot is interesting as it exhibits three distinct peaks in frequency.
-
-### Beverages Barplot
-
-As previously anticipated, bar plots also allows us to see the distribution of categorical variables like "Beverage_category" and "Beverage_prep".
-In this way we can identify the most frequently occurring beverages and their preparation methods.
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/beverage_barplot-1.png" style="display: block; margin: auto;" /><img src="Statistical_Learning_Final_Report_files/figure-html/beverage_barplot-2.png" style="display: block; margin: auto;" />
-
-At this point, we aim to compare the total calorie content among different beverage categories.
-To do so, we first aggregate the data to obtain the total calories for each beverage category.
-Secondly, we construct a bar plot to visually represent the results.
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/total_calories-1.png" style="display: block; margin: auto;" />
-
-Similarly, we compare the total sugars for each beverage preparation, gathering data to obtain the total sugars for each preparation of beverage and successively creating a bar plot.
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/total_sugars-1.png" style="display: block; margin: auto;" />
-
-## Boxplot
-
-Boxplots are a type of graphical representation used to display the distribution of a dataset. They provide a visual summary of the data, enabling us to quickly identify key statistical measures such as median, quartiles and outliers. This visualization also helps us to determine the spread and variability of the data.
-
-In this section, we create the boxplots of our dataset.
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/boxplot-1.png" style="display: block; margin: auto;" />
-
-As we observed earlier, the majority of the graphs exhibits a skewness towards zero, with the exceptions being “Calories”, “Total_Carbohydrates”, “Cholesterol”, and “Sugars”.
-
-Another aspect that has not been previously highlighted is the presence of outliers. These are notably evident in “Dietary_Fiber”, “Vitamin_C”, and “Caffeine” plots.
-
-
-## Scatterplot
-
-A scatterplot is a type of data visualization that uses dots to represent the values obtained for two different variables - one plotted along the x-axis and the other plotted along the y-axis. Scatterplots are used to observe relationships between variables.
-This type of graphical representation is crucial in detecting underlying patterns and potential correlations among the variables.
-
-In particular, we place the calorie content and fat levels of various beverage categories side by side for comparison. To make the visualization more intuitive, we assign distinct colors to each beverage category and create a legend to identify each category.
-
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison-1.png" style="display: block; margin: auto;" />
-
-Let us look for any overall pattern or trend in the data points. For all the categories the two variables seem to be related following an almost linear trend, with a positive correlation - as one variable increases, so does the other. However, it is important to note that a very high "Total_Fat" value does not necessarily equate to a very high "Calories" value - see "Espresso Signature Drinks" category.
-
-Additionally we can observe that, given a specific category, it is possible that we find two clusters of data points that follow distinct distibutions. This phenomenon is observed in the "Classic Espresso Drinks", "Espresso Signature Drinks" and "Tazo Tea Drinks" categories and it is likely attributable to the diverse methods of drink preparation. 
-
-In the next plot we can also see a comparison between "Total_Fat" and "Trans_Fat" distributions:
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/fat_comparison_-1.png" style="display: block; margin: auto;" />
-
-Finally, we create some scatterplots to look into relantionship between "Calories" and other variables. In particular we focus on "Sodium", "Protein", "Sugars" and "Dietary_Fiber".
-
-<img src="Statistical_Learning_Final_Report_files/figure-html/scatterplot-1.png" style="display: block; margin: auto;" />
-
-With an increase in calories, we observe a corresponding rise in all features. However, the rate of increase varies among different features. For instance, "Sugars" and "Dietary_Fiber" show a steep ascent, indicating a rapid increase with calorie count. On the other hand, "Sodium" and "Protein" exhibit a more gradual growth, suggesting a slower rate of increase despite the rising calorie content. These observations are further substantiated by the correlation coefficients, which provide a quantitative measure of these relationships. This highlights the complex interplay between calories and various nutritional components in our beverages.
-
-
 # Regression Analysis
 
 In this section we will conduct a comprehensive regression analysis on our dataset, exploring our data, constructing different models and lastly performing model selection and validation. Our goal is to build a model that accurately represents the relationships within our data and can provide meaningful predictions.
-In particular, the variable we want to predict is "Calories".
+In particular, the variable we want to predict is `"Calories"`.
+To achieve this, we will first fit a linear regression model to predict the amount of calories based on the amount of the other variables. We will then compare different models, evaluate their performance, and select the best model for our data.
 
 ## Linear Regression
 
 The simplest form of regression analysis is linear regression, where we predict an outcome variable based on one or more predictor variables.
 
 Linear regression model to predict the amount of calories based on the amount of the other variables
-We use the lm() function to fit a linear regression model
+We use the `lm()` function to fit a linear regression model to predict the amount of calories based on the amount of the other variables in the dataset. We then evaluate the model using various metrics such as AIC, BIC, R-squared, and adjusted R-squared.
 
 ### Simple Linear Regression
-Fit linear simple regression with just one variable on data_cleaned, looking at correlation plot we choose Sugars due to high correlation.
+Fit linear simple regression with just one variable on `data_cleaned`, looking at correlation plot we choose `Sugars` due to high correlation.
 
 
-This code will fit a simple linear regression model predicting "Calories" using "Sugars" as the predictor variable and provide a summary of the model.
+This code will fit a simple linear regression model predicting `"Calories"` using `"Sugars"` as the predictor variable and provide a summary of the model.
 
 
 ``` r
@@ -274,12 +250,13 @@ plot(lm_simple)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/simple_linear_regression-1.png" style="display: block; margin: auto;" />
-The coefficient for "Sugars" ($4.7426$) indicates that, on average, for every one-unit increase in "Sugars", the predicted "Calories" increases by approximately $4.7426$ units.
-Both the intercept and the coefficient for "Sugars" are statistically significant ($p < 0.001$), indicating a strong linear relationship between "Sugars" and "Calories".
-The F-statistic is highly significant ($p < 2.2e-16$), indicating that the overall regression model is statistically significant in explaining the variance in "Calories".
-Model Fit:The adjusted R-squared value ($0.8268$) indicates that approximately $82.68%$ of the variance in "Calories" can be explained by the predictor variable "Sugars".
-Overall, this output suggests that the simple linear regression model provides a statistically significant relationship between "Sugars" and "Calories", with "Sugars" being a strong predictor of "Calories".
+The coefficient for `"Sugars"` ($4.7426$) indicates that, on average, for every one-unit increase in `"Sugars"`, the predicted `"Calories"` increases by approximately $4.7426$ units.
+Both the intercept and the coefficient for `"Sugars"` are statistically significant ($p < 0.001$), indicating a strong linear relationship between `"Sugars"` and `"Calories"`.
+The F-statistic is highly significant ($p < 2.2e-16$), indicating that the overall regression model is statistically significant in explaining the variance in `"Calories"`.
+Model Fit:The adjusted R-squared value ($0.8268$) indicates that approximately $82.68$% of the variance in `"Calories"` can be explained by the predictor variable `"Sugars"`.
+Overall, this output suggests that the simple linear regression model provides a statistically significant relationship between `"Sugars"` and `"Calories"`, with `"Sugars"` being a strong predictor of `"Calories"`.
 However, the AIC and BIC values suggest that there might be other models that provide a better fit for the data.
+
 Summarizing the model is too simple so it doesn't capture the complexity of the data, so we try to fit a multiple linear regression model.
 
 ### Multiple Linear Regression
@@ -310,6 +287,8 @@ The model has a low AIC and BIC values, the R-squared value is $0.997$ so the mo
 
 ### Backward Elimination
 Now we apply the selection of the predictors with the backward elimination method.
+This method starts with all the predictors in the model and then removes the least significant predictor one at a time until all remaining predictors are significant.
+
 
 
 
@@ -336,9 +315,9 @@ Table: Model evaluation metrics for the linear regression model
 |      AIC|     BIC| R_squared| adj_R_squared|
 |--------:|-------:|---------:|-------------:|
 | 1492.616| 1544.95| 0.9976578|     0.9975243|
-The backward selection drops only the variable "Saturated_Fat"  since it's not  considered significant in explaining the amount of calories mantaining the other variables.
+The backward selection drops only the variable `"Saturated_Fat"` since it's not considered significant in explaining the amount of calories mantaining the other variables.
 
-Comarison between the models
+**Comarison between the models:**
 
 
 Table: Model comparison
@@ -350,14 +329,14 @@ Table: Model comparison
 |Multiple Linear Regression with Backward Elimination | 1492.616| 1544.950| 0.9976578|     0.9975243|
 The multiple linear regression model with backward elimination has the lowest AIC and BIC values, the highest R-squared value, and the highest adjusted R-squared value, indicating that it is the best model for predicting the amount of calories based on the amount of the other variables.
 
-Coefficients:
-Both models have very similar coefficients for the variables that were retained. The removal of "Saturated_Fat" in the backward model did not significantly affect the estimates of the other coefficients.
+**Coefficients:**
+Both models have very similar coefficients for the variables that were retained. The removal of `"Saturated_Fat"` in the backward model did not significantly affect the estimates of the other coefficients.
 
-Significance of Variables:
-In the full model, "Saturated_Fat" had a high p-value ($0.589$), indicating it was not a significant variable.
-In the backward model, "Saturated_Fat" was removed, slightly improving the AIC while keeping all other variables significant.
+**Significance of Variables:**
+In the full model, `"Saturated_Fat"` had a high p-value ($0.589$), indicating it was not a significant variable.
+In the backward model, `"Saturated_Fat"` was removed, slightly improving the AIC while keeping all other variables significant.
 
-Overall Performance:
+**Overall Performance:**
 Both models perform very similarly in terms of R-squared and residual standard error.
 The backward model is preferable because it has a slightly lower AIC, suggesting it is a more parsimonious model without sacrificing the quality of the fit.
 
@@ -375,20 +354,21 @@ anova_results
   </script>
 </div>
 
-Degrees of Freedom (Res.Df): The full model has $227$ degrees of freedom, while the backward model has $228$. This is because we removed one variable from the full model.
+**Degrees of Freedom (Res.Df):** The full model has $227$ degrees of freedom, while the backward model has $228$. This is because we removed one variable from the full model.
 
-Residual Sum of Squares (RSS): The full model has an RSS of $5964.83$, while the backward model has an RSS of $5972.55$. This indicates that the difference between the two models in terms of residual error is very small.
+**Residual Sum of Squares (RSS):** The full model has an RSS of $5964.83$, while the backward model has an RSS of $5972.55$. This indicates that the difference between the two models in terms of residual error is very small.
 
-Sum of Squares (Sum of Sq): The difference between the two models in terms of sum of squares is $-7.7235$, indicating that the removed variable ("Saturated_Fat") does not significantly contribute to explaining the variability in calories.
+**Sum of Squares (Sum of Sq):** The difference between the two models in terms of sum of squares is $-7.7235$, indicating that the removed variable (`"Saturated_Fat"`) does not significantly contribute to explaining the variability in calories.
 
-F-statistic (F): The F value is $0.2937$ with a p-value of $0.588$. This high p-value indicates that there is no significant difference between the two models. In other words, the reduced model is not significantly worse than the full model.
+**F-statistic (F):** The F value is $0.2937$ with a p-value of $0.588$. This high p-value indicates that there is no significant difference between the two models. In other words, the reduced model is not significantly worse than the full model.
 
-Conclusion:
-The ANOVA shows that the removal of the "Saturated_Fat" variable does not have a significant impact on the model. This confirms that the model obtained through backward selection is more parsimonious without compromising the quality of the fit. Therefore, the backward model is preferable to the full model.
+**Conclusion:**
+The ANOVA shows that the removal of the `"Saturated_Fat"` variable does not have a significant impact on the model. This confirms that the model obtained through backward selection is more parsimonious without compromising the quality of the fit. Therefore, the backward model is preferable to the full model.
 
 ### Multicollinearity
 
 To check for multicollinearity, we calculate the Variance Inflation Factors (VIF) for the variables in the multiple linear regression model, it measures how much the variance of the estimated coefficients is increased due to multicollinearity.Usually a VIF value greater than $10$ indicates a problematic amount of multicollinearity.
+
 
 Table: VIF values for the linear regression model
 
@@ -407,6 +387,7 @@ Table: VIF values for the linear regression model
 |Calcium             |  37.105615|
 |Iron                |   5.027804|
 |Caffeine            |   1.176323|
+
 However as we can see from the *Table X* e have a problem with multicollinearity, the VIF values are high for some variables, so we have to act on the data to solve this problem
 
 The high values of the VIF could be due to:
@@ -424,6 +405,7 @@ The high values of the VIF could be due to:
 In this case, normalizing the variables might help reduce multicollinearity.
 
 ### Standardize the data
+
 We have tried different kind of standardization to reduce the multicollinearity
 First at all we tried the scale by standard normalization 
 The negative value of the AIC ($-748.2623$) indicates that the standardized linear regression model provides a better compromise between data fit and model complexity compared to the reference model. 
@@ -484,8 +466,10 @@ plot(mod_log_tr)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/standardization-1.png" style="display: block; margin: auto;" />
+
 The model has a low AIC and BIC values, the R-squared value is $0.95$ so the model is a good fit for the data.
 However we have still collinearity, so we try to use backward elimination to check if this method will removes the variables that are not significant in the model.
+
 
 
 
@@ -601,10 +585,12 @@ Table: VIF values for the log transformed data with backward
 |Vitamin_A           |  8.772514|
 |Vitamin_C           |  1.241962|
 |Iron                |  1.304571|
+
 The VIF values are now below $10$, indicating that multicollinearity has been reduced in the model.
 The R-squared value is decreased but it is still good.
 
-Model Diagnostics: Non-normal residuals suggest that some assumptions of linear regression might be violated. Specifically, the assumption of normality of the residuals is not met, this can affect the validity of hypothesis tests on the coefficients and predictions.
+**Model Diagnostics:** Non-normal residuals suggest that some assumptions of linear regression might be violated. Specifically, the assumption of normality of the residuals is not met, this can affect the validity of hypothesis tests on the coefficients and predictions.
+
 
 ``` r
 shapiro.test((residuals(mod_log_tr_backward_2)))
@@ -617,27 +603,21 @@ shapiro.test((residuals(mod_log_tr_backward_2)))
 ## data:  (residuals(mod_log_tr_backward_2))
 ## W = 0.82171, p-value = 5.816e-16
 ```
-Given the p-value is significantly smaller than $0.05$, we reject the null hypothesis. This indicates that the residuals of the model mod_log_tr_backward_2 do not follow a normal distribution.
-In this case, W is quite a bit lower than $1$, suggesting the residuals deviate from normality.
-Sol Robust Methods: Use robust regression methods that do not assume normality of errors
 
-We have tried other trasformation like min-max scaling and robust scaling but not satisfactory due to VIF still to high. 
+Given the p-value is significantly smaller than $0.05$, we reject the null hypothesis. This indicates that the residuals of the model `mod_log_tr_backward_2` do not follow a normal distribution.
+In this case, W is quite a bit lower than $1$, suggesting the residuals deviate from normality.
+Sol Robust Methods: Use robust regression methods that do not assume normality of errors.
+
+We have tried other trasformation like min-max scaling and robust scaling but not satisfactory due to VIF still to high.
 Regularization: Using regularization methods such as ridge regression or lasso regression penalizes the coefficients of variables, helping to reduce multicollinearity.
 
 ## Lasso Regression
 
-We use the glmnet package to fit a lasso regression model. 
-Lasso regression is a type of linear regression that uses L1 regularization to penalize the coefficients of the model. 
-This helps to prevent overfitting and select the most important features in the data.
+We use the `glmnet` package to fit a lasso regression model. Lasso regression, a type of linear regression that employs L1 regularization, penalizes the model's coefficients. This approach helps prevent overfitting and identifies the most significant features in the data.
 
-First we standardize the data and then we fit the lasso regression model using the cv.glmnet() function.
-We use cross-validation to select the optimal lambda value for the model. 
-The lambda value that minimizes the mean squared error (MSE) is selected as the optimal lambda value. 
-The optimal lambda value is used to fit the final lasso regression model.
+First, we standardize the data and then fit the lasso regression model using the `cv.glmnet` function. Cross-validation is employed to select the optimal lambda value for the model. The lambda value that minimizes the mean squared error (MSE) is chosen as the optimal value, which is then used to fit the final lasso regression model.
 
-Lasso regression tends to shrink the coefficients of less important variables towards zero, effectively performing variable selection. By eliminating irrelevant variables from the model, it reduces the number of predictors and thereby reduces multicollinearity.
-Lasso tends to produce sparse solutions, meaning it drives many coefficients to exactly zero. When variables are removed from the model, the multicollinearity among predictors decreases, leading to lower VIF values.
-It performs automatic features selection by shrinking some coefficients to zero. This feature selection process inherently removes redundant variables and reduces multicollinearity in the model.
+Lasso regression tends to shrink the coefficients of less important variables towards zero, effectively performing variable selection. By eliminating irrelevant variables, it reduces the number of predictors and, consequently, multicollinearity. Lasso regression often produces sparse solutions by driving many coefficients to exactly zero. This reduction in variables decreases multicollinearity among predictors, resulting in lower Variance Inflation Factor (VIF) values. The automatic feature selection inherent in lasso regression removes redundant variables and reduces multicollinearity in the model.
 
 
 ``` r
@@ -650,14 +630,19 @@ plot(mod_lasso, xvar = "lambda", label = TRUE)
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/lasso_regression-1.png" style="display: block; margin: auto;" />
 
-The lasso regression model selects the most important features in the data and penalizes the coefficients of the model. 
-The model has a low AIC and BIC values, the R-squared value is $0.99$ so the model is a good fit for the data.
+By setting some coefficients to zero (such as `"Saturated_Fat"`), lasso regression aids in feature selection, thereby reducing the model's complexity. The remaining non-zero coefficients indicate the variables that significantly contribute to predicting calories. The signs and magnitudes of these coefficients illustrate the direction and strength of their relationships with the target variable (`"calories"`). For example, a one-unit increase in sodium, holding all other variables constant, is associated with a decrease of approximately $0.021$ calories. 
+
+The `cv.glmnet` function performs cross-validation to determine the lambda value that minimizes the prediction error, identified as `lambda.min`. In our case, we found that the optimal lambda value is equal to $1$. 
+
+To further evaluate the model's performance, metrics such as R-squared and Mean Squared Error (MSE) should be considered. These metrics help in understanding how well the model explains the variance in the data and the average error of the predictions, respectively. Additionally, the lambda value that minimizes the MSE is selected as the optimal lambda value.
 
 ## Ridge Regression
 
-We use the glmnet package to fit a ridge regression model. 
-Ridge regression is a type of linear regression that uses L2 regularization to penalize the coefficients of the model. 
-This helps to prevent overfitting and reduce the impact of collinearity in the data.
+We also tried ridge regression to reduce multicollinearity. Like lasso regression, ridge regression is a regularization technique that introduces a penalty term to shrink coefficients towards zero without eliminating them entirely, meaning that all variables can remain in the model. Unlike lasso, which can zero out some coefficients and thus perform variable selection, ridge regression retains all variables, making it suitable for reducing multicollinearity without excluding any variables. Lasso may be preferred when selecting a subset of the most relevant variables is desired.
+
+We use the `glmnet` package to fit a ridge regression model. Ridge regression, a type of linear regression, uses L2 regularization to penalize the coefficients of the model. This approach helps prevent overfitting and reduces the impact of collinearity in the data.
+
+The ridge regression model is fit using the `cv.glmnet()` function, which incorporates cross-validation to determine the optimal lambda value. Similar to lasso, the best lambda value, which minimizes the error, was found to be equal to 1. The interpretation of the coefficients is the same as in lasso regression.
 
 
 ``` r
@@ -667,9 +652,6 @@ plot(mod_ridge, xvar = "lambda", label = TRUE)
 ```
 
 <img src="Statistical_Learning_Final_Report_files/figure-html/ridge_regression-1.png" style="display: block; margin: auto;" />
-
-The ridge regression model reduces the impact of collinearity in the data and penalizes the coefficients of the model. 
-The model has a low AIC and BIC values, the R-squared value is $0.99$ so the model is a good fit for the data.
 
 ## Model Comparison
 
@@ -699,6 +681,13 @@ Table: R-squared values for the models
 |Linear Regression | 0.9976608|
 |Lasso Regression  | 0.9975756|
 |Ridge Regression  | 0.9941815|
+
+Comment on Lasso:
+The R-squared value of approximately $0.998$ indicates that the Lasso regression model explains about $99.76$% of the variance in the Calories variable. 
+This suggests a very strong fit, as the model is capturing almost all the variability in the target variable.
+
+Comment on Ridge:
+Similar to LASSO, very high 
 
 ## Model Evaluation
 
@@ -730,16 +719,28 @@ Table: MSE values for the models
 We choose the model with the highest R-squared value and the lowest MSE as the best model for predicting the amount of calories based on the amount of the other variables.
 The best model is the lasso because it has the lowest value for R^2 and MSE and it is the most robust model.
 
+Comment on Lasso:
+The Mean Squared Error (MSE) of approximately $0.0024$ indicates a very low average squared difference between the observed actual outcomes and the outcomes predicted by the model. 
+This suggests that the model's predictions are very close to the actual values, indicating high accuracy.
+The optimal lambda value is used to fit the final lasso regression model
+
+?????????????????????? we want to check is Lasso regression has effectvily reduced the multicollinearity, so we calculated the VIF on predictors resulted by fitted Lasso, by looking at coefficients and correlation matrix
+
+Calcola i VIF
+TENERE?????????????????????????
+The variables `"Total_Fat"`, `"Trans_Fat"`, `"Sodium"`, `"Total_Carbohydrates"`, `"Cholesterol"`, `"Dietary_Fibre"`, `"Sugars"`, `"Protein"`, `"Vitamin_A"`, `"Vitamin_C"`, `"Calcium"`, `"Iron"`, and `"Caffeine"` have coefficients of significant magnitudes, suggesting that these variables are important for predicting calories.
+Despite the regularization of the Lasso model, some variables have coefficients of significant magnitudes, which could suggest that these variables are not strongly correlated with each other, thus reducing the impact of multicollinearity. 
+Overall, the absence of coefficients with very large magnitudes and the presence of coefficients close to zero for some variables suggest that the Lasso model may have helped mitigate multicollinearity and select only the most important variables for predicting calories.
+
 ## Cross Validation
 
 Cross validation is a technique used to evaluate the performance of a model. 
 It involves splitting the data into training and testing sets, fitting the model using the training set, and evaluating the model using the testing set.
-This process is repeated multiple times to ensure that the model is robust and generalizes well to new data.
-
-We split the data into training and testing sets, fit the lasso regression model using the training set.
+We decided to split the data with $80$% of examples for training and $20$% for testing.
 
 
 ``` r
+set.seed(123)
 train_index <- sample(1:nrow(std_data), 0.8 * nrow(std_data))
 train_data <- std_data[train_index, ]
 test_data <- std_data[-train_index, ]
@@ -747,8 +748,8 @@ mod_lasso_train <- cv.glmnet(x = as.matrix(train_data[, -1]), y = train_data$Cal
                              alpha = 1, standardize = FALSE)
 ```
 
-We evaluate the model using the testing set. 
-We make predictions using the testing set and calculate the mean squared error and the root mean squared error to assess the model's accuracy. 
+We evaluate the model using the testing set.
+We make predictions using the testing set and calculate the mean squared error and the root mean squared error to assess the model's accuracy.
 
 
 ``` r
@@ -759,6 +760,7 @@ lasso_mse_test <- mean((lasso_pred_test - test_data$Calories)^2)
 ```
 
 The R-squared value and MSE are used to evaluate the performance of the model on the test data.
+Overall, the high R-squared value and low MSE on the test data suggest that the lasso regression model has learned effectively from the training data and generalizes well to unseen examples.
 
 
 ``` r
@@ -783,10 +785,163 @@ Table: Model evaluation metrics on the test data
 
 |           |  Accuracy|       MSE| R_squared|
 |:----------|---------:|---------:|---------:|
-|lambda.min | 0.9973488| 0.0027738| 0.9973759|
+|lambda.min | 0.9979473| 0.0026283| 0.9979454|
 
-As we can see from *Table X* the R-squared value is $0.997$, indicating that the model explains $99%$ of the variance in the data and the MSE is $0.002628338$, indicating that the model has a low error rate.
+``` r
+lasso_mse_test
+```
+
+```
+## [1] 0.002628338
+```
+
+As we can see from *Table X* the R-squared value is $0.997$, indicating that the model explains $99$% of the variance in the data and the MSE is $0.002628338$, indicating that the model has a low error rate.
 The accuracy of the model is $0.9979473$, indicating that the model is able to predict the amount of calories with high accuracy.
-The plot shows the predicted values against the actual values on the test data
-The points are close to the diagonal line, indicating that the model is making accurate predictions.
+The plot shows the predicted values against the actual values on the test data, as we can see the points are close to the diagonal line, indicating that the model is making accurate predictions.
+
+## Logistic Regression
+
+Logistic regression is a statistical model used to predict the outcome of a binary categorical dependent variable based on one or more independent variables.
+Since logistic regression is tipycally used for classification task and our variable Calories ,that we want to predict is continous random variable, we have to traspose the problem into a classification one by making the variable binary. 
+In order to do that we classify foods into two categories: "low calorie" and "high calories" defining a threshold to distinguish between the two classes.
+
+let's take a look into the structure of the variable using numeric dataset only
+
+We've tried with normal data, standardize data, and log trasformation since again it helps to reduce multicollinearity and we find out that the best is with log trasformed data looking at the summary and the plot of the variable, we notice that calories follow a semi-gaussian distribution both Median and mean are reasonable approach to use, since they are close to each other. 
+However we choose median as treshold is less sensitive to outliers and skewness in the data. 
+It ensures that half the data points are classified as `"low calories"` and the other half as `"high calories"`, providing balanced classes.
+
+
+``` r
+y <- std_data_log_df$Calories
+calories_median <- median(y)
+# Create a new binary target variable based on the median
+std_data_log_df$Calorie_Class <- ifelse(std_data_log_df$Calories > calories_median, 1, 0)
+table(std_data_log_df$Calorie_Class)
+```
+
+```
+## 
+##   0   1 
+## 121 121
+```
+
+``` r
+# Creates a new binary variable (Calorie_Class) where 1 indicates high calorie 
+# (above median) and 0 indicates low calorie (below or equal to median).
+
+# Fit a logistic regression model on the complete dataset obatines with 
+# log tasformation and by removing first column 
+logistic_model <- glm(Calorie_Class ~ ., data = std_data_log_df[,-1], family = binomial)
+kable(data.frame(AIC = AIC(logistic_model), BIC = BIC(logistic_model), 
+                 Residual_deviance = logistic_model$deviance,
+                 Null_deviance = logistic_model$null.deviance,
+                 R_squared = 1 - logistic_model$deviance / logistic_model$null.deviance),
+      caption = "Model evaluation metrics for the logistic regression model")
+```
+
+
+
+Table: Model evaluation metrics for the logistic regression model
+
+|      AIC|      BIC| Residual_deviance| Null_deviance| R_squared|
+|--------:|--------:|-----------------:|-------------:|---------:|
+| 69.42364| 121.7577|          39.42364|      335.4832|  0.882487|
+
+``` r
+par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
+plot(logistic_model)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/logistic_regression-1.png" style="display: block; margin: auto;" />
+
+The statistically significant coefficient of the model are `"Cholesterol"` at the 0.01 level and `"Total_Fat"` at the 0.05 level.
+The residual deviance is much smaller than the null deviance, indicating that the model with predictors explains more variability than the null model.
+The AIC is 69.424, suggesting that the model has reasonable fit.
+Number of Fisher Scoring Iterations: Indicates the number of iterations performed by the Fisher scoring algorithm during model fitting. In this case, it took 11 iterations.
+
+Now we use the model to make predictions on the data and evaluate its performance using the confusion matrix, accuracy, precision, recall, and F1-score.
+
+
+
+
+``` r
+conf_matrix <- table(Predicted = predicted_classes, Actual = new_test_data$Calorie_Class)
+kable(conf_matrix, caption = "Confusion matrix for the logistic regression model")
+```
+
+
+
+Table: Confusion matrix for the logistic regression model
+
+|   |  0|  1|
+|:--|--:|--:|
+|0  | 22|  2|
+|1  |  2| 23|
+
+``` r
+accuracy <- (conf_matrix[1, 1] + conf_matrix[2, 2]) / sum(conf_matrix)
+precision <- conf_matrix[2, 2] / sum(conf_matrix[, 2])
+recall <- conf_matrix[2, 2] / sum(conf_matrix[2, ])
+f1_score <- 2 * (precision * recall) / (precision + recall)
+kable(data.frame(Accuracy = accuracy, Precision = precision, Recall = recall,
+                 F1_Score = f1_score), caption = "Model evaluation metrics")
+```
+
+
+
+Table: Model evaluation metrics
+
+|  Accuracy| Precision| Recall| F1_Score|
+|---------:|---------:|------:|--------:|
+| 0.9183673|      0.92|   0.92|     0.92|
+
+The model's accuracy of approximately 91.8% indicates it is performing well overall in classifying the calorie content correctly.
+Generalize well on the test set
+
+
+``` r
+par(mfrow = c(2,2), mar = c(2, 2, 2, 2))
+plot(logistic_model_train)
+```
+
+<img src="Statistical_Learning_Final_Report_files/figure-html/logistic_regression_evaluation_2-1.png" style="display: block; margin: auto;" />
+**Residuals vs Fitted:**
+  
+This plot shows the Pearson residuals against the fitted values.
+Ideally, there should be no clear pattern, indicating that the model is well-fitted. However, the presence of data points at extreme values (far from 0) suggests potential issues with model fit or outliers.
+
+**Normal Q-Q Plot:**
+  
+The Q-Q plot compares the standardized deviance residuals to a theoretical normal distribution.
+Significant deviations from the straight line suggest that the residuals are not normally distributed, which can indicate potential problems with the model. In this case, the data points deviate from the line, particularly at the higher quantiles, indicating that the residuals are not perfectly normally distributed.
+
+**Scale-Location Plot (Spread-Location Plot):**
+This plot shows the square root of the standardized residuals against the fitted values.
+The red line helps to identify trends. Ideally, the points should be randomly scattered without a clear pattern. Here, we see some clustering and trends at extreme fitted values, suggesting heteroscedasticity or non-constant variance.
+
+**Residuals vs Leverage:**
+This plot shows standardized residuals against leverage, highlighting influential data points.
+The dashed lines represent Cook's distance. Points outside these lines indicate influential observations that have a significant impact on the model. In this plot, several points, especially at higher leverage values, fall outside the dashed lines, indicating they are influential.
+
+**Interpretation**
+
+**Potential Issues with Model Fit:** The presence of extreme residuals in the Residuals vs Fitted and Scale-Location plots suggests that the model might not fit well across all observations. This can be due to outliers or the model not capturing the underlying data structure adequately.
+
+**Non-Normal Residuals:** The Q-Q plot indicates that the residuals are not perfectly normally distributed, which is expected in logistic regression but still worth noting.
+
+**Influential Points:** The Residuals vs Leverage plot shows several influential points, suggesting that some observations have a disproportionate impact on the model. These points should be investigated further to understand their nature and whether they are legitimate data points or outliers.
+
+**Next Steps**
+
+**Investigate Influential Points:** Check the data points identified as influential in the Residuals vs Leverage plot to understand why they have high leverage and residuals.
+
+**Consider Model Refinement:** If certain variables consistently show poor performance, it might be necessary to transform them, add interaction terms, or consider alternative modeling techniques.
+
+**Check for Multicollinearity:** Ensure that multicollinearity is not affecting the model by calculating Variance Inflation Factors (VIFs) for the predictors.
+
+**Evaluate Model with Additional Metrics:** Use additional performance metrics such as ROC AUC, Precision-Recall curves, and confusion matrix to evaluate the model's predictive performance comprehensively.
+
+
+
 

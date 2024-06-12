@@ -134,7 +134,7 @@ plot(final_model)
 
 #Determine VIF for the final model
 
-install.packages("car")
+
 library(car) 
 vif_mod <- vif(final_model)
 print(vif_mod)
