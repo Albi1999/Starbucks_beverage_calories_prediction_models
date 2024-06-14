@@ -3,6 +3,12 @@ title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    toc: true
+    number_sections: true
+    fig_caption: true
+    keep_tex: true
+    toc_depth: 3
   html_document:
     toc: true
     number_sections: true
@@ -13,12 +19,6 @@ output:
     fig_caption: true
     keep_md: true
     df_print: paged
-  pdf_document:
-    toc: true
-    number_sections: true
-    fig_caption: true
-    keep_tex: true
-    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
@@ -45,10 +45,7 @@ library(corrplot)
 library(knitr)
 library(car)
 library(glmnet)
-library(Matrix)
-col <- c('#ff0000', '#f70028', '#ee0040', '#e50055', '#dc0069',
-         '#d2007b', '#c7008d', '#bb009e', '#ae00ae', '#a000be',
-         '#8f00cc', '#7d00da', '#6700e7', '#4900f3', '#0000ff')
+col <- c('#c3f1b8', '#b8e8b6', '#aee0b3', '#a3d8b0', '#99cfad', '#8ec7ab', '#83bfa8', '#78b7a5', '#6dafa2', '#61a79f', '#549f9d', '#47989a', '#389097', '#258894', '#008191')
 ```
 
 # Data
@@ -168,7 +165,7 @@ for (i in 1:ncol(data_num)) {
   hist(data_num[, i], main = colnames(data_num)[i],
        xlab = colnames(data_num)[i], col = col[i], freq = FALSE)
   dens <- density(data_num[, i], na.rm=TRUE, adjust=1.25)
-  lines(dens, col = "black", lwd = 2)
+  lines(dens, col = "black", lwd = 1)
 }
 ```
 
@@ -202,7 +199,6 @@ We can further observe that the distribution of `"Vitamin_A"` appears to be more
 
 Boxplots are a type of graphical representation used to display the distribution of a dataset. They provide a visual summary of the data, enabling us to quickly identify key statistical measures such as median, quartiles and outliers. This visualization also helps us to determine the spread and variability of the data.
 
-In this section, we create the boxplots of our dataset.
 
 ```{r boxplot, fig.height=5, fig.width=7, echo=FALSE}
 par(mfrow = c(3, 5), mar = c(2, 2, 2, 2))
@@ -239,30 +235,13 @@ Let us look for any overall pattern or trend in the data points. For all the cat
 
 Additionally we can observe that, given a specific category, it is possible that we find two clusters of data points that follow distinct distibutions. This phenomenon is observed in the `"Classic Espresso Drinks"`, `"Espresso Signature Drinks"` and `"Tazo Tea Drinks"` categories and it is likely attributable to the diverse methods of drink preparation. 
 
-In the next plot we can also see a comparison between `"Total_Fat`" and `"Trans_Fat"` distributions:
-
-```{r fat_comparison_, fig.height=2.5, fig.width=6, echo=FALSE}
-# Numeric variable -> calculate density
-total_fat_density <- density(data_cleaned$Total_Fat)
-trans_fat_density <- density(data_cleaned$Trans_Fat)
-par(mfrow = c(1, 1), mar = c(2, 2, 2, 2))
-plot(total_fat_density, col = "#4ea5ff",
-     main = "Comparison of Total Fat and Trans Fat Distributions", 
-     xlab = "Fat Content (g)", ylab = "Density", 
-     ylim = c(0, max(total_fat_density$y, trans_fat_density$y)),
-     xlim = range(data_cleaned$Total_Fat, data_cleaned$Trans_Fat), lwd = 2, lty = 1)
-lines(trans_fat_density, col = "#ff810f", lwd = 2, lty = 1)
-legend("topright", legend = c("Total Fat", "Trans Fat"),
-       col = c("#4ea5ff", "#ff810f"), lwd = 2, lty = 1)
-```
-
 Finally, we create some scatterplots to look into relantionship between `"Calories"` and other variables. In particular we focus on `"Sodium"`, `"Protein"`, `"Sugars"` and `"Dietary_Fiber"`.
 
 ```{r scatterplot, fig.height=4, fig.width=7, echo=FALSE}
 par(mfrow = c(2, 2), mar = c(4, 4, 2, 2))
 with(data_cleaned, {
   plot(Calories, Sodium , main = "Relation between Calories and Sodium",
-       xlab = "Calories", ylab = "Sodium (mg)", col = col[1])
+       xlab = "Calories", ylab = "Sodium (mg)", col = col[2])
   plot(Calories, Protein , main = "Relation between Calories and Protein",
        xlab = "Calories", ylab = "Protein (g)", col = col[5])
   plot(Calories, Sugars , main = "Relation between Calories and Sugars",
@@ -314,7 +293,7 @@ Finally, we create the pairplot using the defined functions.
 
 ```{r pairplot, fig.height=12, fig.width=12, echo=FALSE}
 pairs(data_num, diag.panel = panel.hist, upper.panel = panel.cor, 
-      lower.panel = panel.smooth, colour = "#4ea5ff")
+      lower.panel = panel.smooth, colour = "#549f9d")
 ```
 
 **ADD COMMENTS ON THE GRAPH (I don't know how to comment it)**
@@ -360,7 +339,7 @@ However, the AIC and BIC values suggest that there might be other models that pr
 Summarizing the model is too simple so it doesn't capture the complexity of the data, so we try to fit a multiple linear regression model.
 
 ### Multiple Linear Regression
-```{r linear_regression, fig.height=4, fig.width=7}
+```{r multiple_linear_regression, fig.height=4, fig.width=7}
 lm_model <- lm(y ~ ., data = data_num_)
 par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
 plot(lm_model)
@@ -669,9 +648,9 @@ Overall, the high R-squared value and low MSE on the test data suggest that the 
 ```{r accuracy_lm, fig.height=3, fig.width=6}
 accuracy_lm <- 1 - (lasso_mse_test / var(test_data$Calories))
 par(mfrow = c(1, 1), mar = c(4, 4, 2, 2))
-plot(test_data$Calories, lasso_pred_test, xlab = "Actual Calories", col = "#4ea5ff",
+plot(test_data$Calories, lasso_pred_test, xlab = "Actual Calories", col = "#99cfad",
      ylab = "Predicted Calories", main = "Predicted vs Actual Calories", pch = 19)
-abline(0, 1, col = "#ff810f", lwd = 2)
+abline(0, 1, col = "#258894", lwd = 2)
 kable(data.frame(Accuracy = accuracy_lm, MSE = lasso_mse_test, 
                  R_squared = lasso_r_squared_test),
       caption = "Model evaluation metrics on the test data")

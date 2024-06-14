@@ -118,7 +118,7 @@
 
 \title{Statistical Learning Final Report}
 \author{Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli}
-\date{2024-06-13}
+\date{2024-06-14}
 
 \begin{document}
 \maketitle
@@ -325,8 +325,6 @@ enabling us to quickly identify key statistical measures such as median,
 quartiles and outliers. This visualization also helps us to determine
 the spread and variability of the data.
 
-In this section, we create the boxplots of our dataset.
-
 \begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/boxplot-1} \end{center}
 
 As we observed earlier, the majority of the graphs exhibits a skewness
@@ -369,11 +367,6 @@ distibutions. This phenomenon is observed in the
 \texttt{"Espresso\ Signature\ Drinks"} and \texttt{"Tazo\ Tea\ Drinks"}
 categories and it is likely attributable to the diverse methods of drink
 preparation.
-
-In the next plot we can also see a comparison between
-\texttt{"Total\_Fat}'' and \texttt{"Trans\_Fat"} distributions:
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/fat_comparison_-1} \end{center}
 
 Finally, we create some scatterplots to look into relantionship between
 \texttt{"Calories"} and other variables. In particular we focus on
@@ -516,7 +509,7 @@ Regression}\label{multiple-linear-regression}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/linear_regression-1} \end{center}
+\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/multiple_linear_regression-1} \end{center}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1316,9 +1309,9 @@ examples.
 \begin{Highlighting}[]
 \NormalTok{accuracy\_lm }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (lasso\_mse\_test }\SpecialCharTok{/} \FunctionTok{var}\NormalTok{(test\_data}\SpecialCharTok{$}\NormalTok{Calories))}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(test\_data}\SpecialCharTok{$}\NormalTok{Calories, lasso\_pred\_test, }\AttributeTok{xlab =} \StringTok{"Actual Calories"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#4ea5ff"}\NormalTok{,}
+\FunctionTok{plot}\NormalTok{(test\_data}\SpecialCharTok{$}\NormalTok{Calories, lasso\_pred\_test, }\AttributeTok{xlab =} \StringTok{"Actual Calories"}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#99cfad"}\NormalTok{,}
      \AttributeTok{ylab =} \StringTok{"Predicted Calories"}\NormalTok{, }\AttributeTok{main =} \StringTok{"Predicted vs Actual Calories"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
-\FunctionTok{abline}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#ff810f"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#258894"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
