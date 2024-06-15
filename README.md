@@ -16,15 +16,17 @@ We used R for all the analysis and Rmarkdown to write the report.
 
 ## Report Contents
 1. **Introduction**
-2. **Data Transformation**
+2. **Data**
+   - Data Transformation
    - Data Cleaning
-   - Correlation Analysis
-3. **Data Visualization**
+3. **Correlation Analysis**
+4. **Data Visualization**
    - Histograms
    - Barplot
-   - Scatterplot
    - Boxplot
-4. **Regression Analysis**
+   - Scatterplot
+   - Pairplot
+5. **Regression Analysis**
    - Simple Linear Regression
    - Multiple Linear Regression
      - Backward Elimination
