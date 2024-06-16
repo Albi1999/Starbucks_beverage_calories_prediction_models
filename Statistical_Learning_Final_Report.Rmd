@@ -3,12 +3,6 @@ title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    toc: true
-    number_sections: true
-    fig_caption: true
-    keep_tex: true
-    toc_depth: 3
   html_document:
     toc: true
     number_sections: true
@@ -19,6 +13,12 @@ output:
     fig_caption: true
     keep_md: true
     df_print: paged
+  pdf_document:
+    toc: true
+    number_sections: true
+    fig_caption: true
+    keep_tex: true
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
@@ -45,6 +45,7 @@ library(corrplot)
 library(knitr)
 library(car)
 library(glmnet)
+library(MASS)
 col <- c('#c3f1b8', '#b8e8b6', '#aee0b3', '#a3d8b0', '#99cfad', '#8ec7ab', '#83bfa8', '#78b7a5', '#6dafa2', '#61a79f', '#549f9d', '#47989a', '#389097', '#258894', '#008191')
 ```
 
@@ -320,7 +321,7 @@ data_num_ <- data_num[, -1]
 ```
 This code will fit a simple linear regression model predicting `"Calories"` using `"Sugars"` as the predictor variable and provide a summary of the model.
 
-```{r simple_linear_regression, fig.height=4, fig.width=7}
+```{r simple_linear_regression, fig.height=3, fig.width=6}
 lm_simple <- lm(Calories ~ Sugars, data = data_cleaned)
 kable(data.frame(AIC = AIC(lm_simple), BIC = BIC(lm_simple),
                  R_squared = summary(lm_simple)$r.squared, 
@@ -339,7 +340,7 @@ However, the AIC and BIC values suggest that there might be other models that pr
 Summarizing the model is too simple so it doesn't capture the complexity of the data, so we try to fit a multiple linear regression model.
 
 ### Multiple Linear Regression
-```{r multiple_linear_regression, fig.height=4, fig.width=7}
+```{r multiple_linear_regression, fig.height=3, fig.width=6}
 lm_model <- lm(y ~ ., data = data_num_)
 par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
 plot(lm_model)
@@ -354,13 +355,11 @@ The model has a low AIC and BIC values, the R-squared value is $0.997$ so the mo
 Now we apply the selection of the predictors with the backward elimination method.
 This method starts with all the predictors in the model and then removes the least significant predictor one at a time until all remaining predictors are significant.
 
-```{r backward_elimination_, include=FALSE}
+```{r backward_elimination_, results='hide'}
 backward_model <- step(lm_model, direction = "backward")
 ```
 
-```{r backward_elimination, fig.height=4, fig.width=7}
-par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
-plot(backward_model)
+```{r backward_elimination, echo=FALSE}
 kable(data.frame(AIC = AIC(backward_model), BIC = BIC(backward_model),
                  R_squared = summary(backward_model)$r.squared, 
                  adj_R_squared = summary(backward_model)$adj.r.squared),
@@ -371,7 +370,7 @@ The backward selection drops only the variable `"Saturated_Fat"` since it's not 
 
 **Comarison between the models:**
 
-```{r comparison, fig.height=4, fig.width=7, echo=FALSE}
+```{r comparison, echo=FALSE}
 kable(data.frame(Model = c("Simple Linear Regression", "Multiple Linear Regression",
                            "Multiple Linear Regression with Backward Elimination"),
                  AIC = c(AIC(lm_simple), AIC(lm_model), AIC(backward_model)),
@@ -399,7 +398,7 @@ The backward model is preferable because it has a slightly lower AIC, suggesting
 
 ### Anova
 Anova comparison between the models
-```{r anova, fig.height=4, fig.width=7}
+```{r anova, echo=FALSE}
 anova_results <- anova(lm_model, backward_model)
 anova_results
 ```
@@ -419,7 +418,7 @@ The ANOVA shows that the removal of the `"Saturated_Fat"` variable does not have
 
 To check for multicollinearity, we calculate the Variance Inflation Factors (VIF) for the variables in the multiple linear regression model, it measures how much the variance of the estimated coefficients is increased due to multicollinearity.Usually a VIF value greater than $10$ indicates a problematic amount of multicollinearity.
 
-```{r vif, fig.height=4, fig.width=7, echo=FALSE}
+```{r vif, echo=FALSE}
 kable(data.frame(VIF = vif(backward_model)),
       caption = "VIF values for the linear regression model")
 ```
@@ -451,7 +450,7 @@ To reduce the problem of high VIF in linear regression, it is generally preferab
 Log transformation: Reduces the variance of the variables, making the distribution more normal and reducing the impact of outliers.
 Standardization: Puts all variables on a common scale, with mean $0$ and standard deviation $1$, further reducing multicollinearity.
 
-```{r standardization, fig.height=4, fig.width=7}
+```{r standardization}
 std_data_log <- scale(log(data_num + 1)) # Standardize the data
 std_data_log_df <- as.data.frame(std_data_log) # Set as dataframe
 mod_log_tr <- lm(Calories ~ ., data = std_data_log_df)
@@ -461,18 +460,16 @@ kable(data.frame(AIC = AIC(mod_log_tr), BIC = BIC(mod_log_tr),
       caption = "Model evaluation metrics for the log transformed data")
 kable(data.frame(VIF = vif(mod_log_tr)),
       caption = "VIF values for the log transformed data")
-par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
-plot(mod_log_tr)
 ```
 
 The model has a low AIC and BIC values, the R-squared value is $0.95$ so the model is a good fit for the data.
 However we have still collinearity, so we try to use backward elimination to check if this method will removes the variables that are not significant in the model.
 
-```{r backward_elimination_log_, include=FALSE}
+```{r backward_elimination_log_, results='hide'}
 backward_model_log <- step(mod_log_tr, direction = "backward")
 ```
 
-```{r backward_elimination_log, fig.height=4, fig.width=7}
+```{r backward_elimination_log, echo=FALSE}
 kable(data.frame(AIC = AIC(backward_model_log), BIC = BIC(backward_model_log),
                  R_squared = summary(backward_model_log)$r.squared, 
                  adj_R_squared = summary(backward_model_log)$adj.r.squared), 
@@ -483,7 +480,7 @@ kable(data.frame(VIF = vif(backward_model_log)),
 ```
 AIC slightly worst and the VIF values are still high, indicating that multicollinearity is still present in the model.
 So we try to remove manually the variables that has high VIF values.
-```{r manula_backward_elimination_log, fig.height=4, fig.width=7}
+```{r manula_backward_elimination_log}
 mod_log_tr_updated <- lm(Calories ~ . - Cholesterol - Sugars,
                          data = std_data_log_df)
 kable(data.frame(VIF = vif(mod_log_tr_updated)),
@@ -491,18 +488,16 @@ kable(data.frame(VIF = vif(mod_log_tr_updated)),
       manual removal of variables")
 ```
 
-```{r backward_elimination_log_2_, include=FALSE}
+```{r backward_elimination_log_2_, results='hide'}
 mod_log_tr_backward_2 <- step(mod_log_tr_updated, direction = "backward")
 ```
 
-```{r backward_elimination_log_2, fig.height=4, fig.width=7}
+```{r backward_elimination_log_2, echo=FALSE}
 kable(data.frame(AIC = AIC(mod_log_tr_backward_2), BIC = BIC(mod_log_tr_backward_2),
                  R_squared = summary(mod_log_tr_backward_2)$r.squared, 
                  adj_R_squared = summary(mod_log_tr_backward_2)$adj.r.squared), 
       caption = "Model evaluation metrics for the log transformed data with
       backward elimination and manual removal of variables")
-par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
-plot(mod_log_tr_backward_2)
 kable(data.frame(VIF = vif(mod_log_tr_backward_2)),
       caption = "VIF values for the log transformed data with backward 
       elimination and manual removal of variables")
@@ -565,9 +560,9 @@ plot(mod_ridge, xvar = "lambda", label = TRUE)
 We compare the linear regression, lasso regression, and ridge regression models to select the best model for predicting the amount of calories based on the amount of the other variables. 
 We evaluate the models using the R-squared value, and the Mean Squared Error (MSE) for each model.
 
-The R-squared value is a measure of how well the model fits the data, it ranges from $0$ to $1$, with higher values indicating a better fit
+The R-squared value is a measure of how well the model fits the data, it ranges from $0$ to $1$, with higher values indicating a better fit.
 
-```{r model_comparison}
+```{r model_comparison, echo=FALSE}
 lasso_pred <- predict(mod_lasso, s = "lambda.min", newx = as.matrix(std_data[, -1]))
 lasso_r_squared <- cor(lasso_pred, std_data$Calories)^2
 ridge_pred <- predict(mod_ridge, s = "lambda.min",  newx = as.matrix(std_data[, -1]))
@@ -583,7 +578,7 @@ The R-squared value of approximately $0.998$ indicates that the Lasso regression
 This suggests a very strong fit, as the model is capturing almost all the variability in the target variable.
 
 Comment on Ridge:
-Similar to LASSO, very high 
+Similar to LASSO, very high
 
 ## Model Evaluation
 
@@ -591,7 +586,7 @@ We evaluate the performance of the linear regression, lasso regression, and ridg
 The MSE is a measure of the average squared difference between the predicted and actual values. 
 Lower values of the MSE indicate better performance of the model.
 
-```{r model_evaluation}
+```{r model_evaluation, echo=FALSE}
 linear_pred <- predict(lm_model, newdata = data_num)
 linear_mse <- mean((linear_pred - data_num$Calories)^2)
 lasso_mse <- mean((lasso_pred - std_data$Calories)^2)
@@ -654,7 +649,6 @@ abline(0, 1, col = "#258894", lwd = 2)
 kable(data.frame(Accuracy = accuracy_lm, MSE = lasso_mse_test, 
                  R_squared = lasso_r_squared_test),
       caption = "Model evaluation metrics on the test data")
-lasso_mse_test
 ```
 
 As we can see from *Table X* the R-squared value is $0.997$, indicating that the model explains $99$% of the variance in the data and the MSE is $0.002628338$, indicating that the model has a low error rate.
@@ -667,37 +661,28 @@ Logistic regression is a statistical model used to predict the outcome of a bina
 Since logistic regression is tipycally used for classification task and our variable Calories ,that we want to predict is continous random variable, we have to traspose the problem into a classification one by making the variable binary. 
 In order to do that we classify foods into two categories: "low calorie" and "high calories" defining a threshold to distinguish between the two classes.
 
-let's take a look into the structure of the variable using numeric dataset only
-
 We've tried with normal data, standardize data, and log trasformation since again it helps to reduce multicollinearity and we find out that the best is with log trasformed data looking at the summary and the plot of the variable, we notice that calories follow a semi-gaussian distribution both Median and mean are reasonable approach to use, since they are close to each other. 
 However we choose median as treshold is less sensitive to outliers and skewness in the data. 
 It ensures that half the data points are classified as `"low calories"` and the other half as `"high calories"`, providing balanced classes.
 
-```{r logistic_regression, fig.height=4, fig.width=7}
+```{r logistic_regression}
 y <- std_data_log_df$Calories
 calories_median <- median(y)
-# Create a new binary target variable based on the median
 std_data_log_df$Calorie_Class <- ifelse(std_data_log_df$Calories > calories_median, 1, 0)
 table(std_data_log_df$Calorie_Class)
-# Creates a new binary variable (Calorie_Class) where 1 indicates high calorie 
-# (above median) and 0 indicates low calorie (below or equal to median).
-
-# Fit a logistic regression model on the complete dataset obatines with 
-# log tasformation and by removing first column 
 logistic_model <- glm(Calorie_Class ~ ., data = std_data_log_df[,-1], family = binomial)
 kable(data.frame(AIC = AIC(logistic_model), BIC = BIC(logistic_model), 
                  Residual_deviance = logistic_model$deviance,
                  Null_deviance = logistic_model$null.deviance,
                  R_squared = 1 - logistic_model$deviance / logistic_model$null.deviance),
       caption = "Model evaluation metrics for the logistic regression model")
-par(mfrow = c(2, 2), mar = c(2, 2, 2, 2))
-plot(logistic_model)
 ```
 
-The statistically significant coefficient of the model are `"Cholesterol"` at the 0.01 level and `"Total_Fat"` at the 0.05 level.
+The statistically significant coefficient of the model are `"Cholesterol"` at the $0.01$ level and `"Total_Fat"` at the $0.05$ level.
 The residual deviance is much smaller than the null deviance, indicating that the model with predictors explains more variability than the null model.
-The AIC is 69.424, suggesting that the model has reasonable fit.
-Number of Fisher Scoring Iterations: Indicates the number of iterations performed by the Fisher scoring algorithm during model fitting. In this case, it took 11 iterations.
+The AIC is $69.424$, suggesting that the model has reasonable fit.
+
+Number of Fisher Scoring Iterations: Indicates the number of iterations performed by the Fisher scoring algorithm during model fitting. In this case, it took $11$ iterations.
 
 Now we use the model to make predictions on the data and evaluate its performance using the confusion matrix, accuracy, precision, recall, and F1-score.
 
@@ -713,7 +698,7 @@ predictions <- predict(logistic_model_train, newdata = new_test_data, type = "re
 predicted_classes <- ifelse(predictions > 0.5, 1, 0)
 ```
 
-```{r logistic_regression_accuracy}
+```{r logistic_regression_accuracy, echo=FALSE}
 conf_matrix <- table(Predicted = predicted_classes, Actual = new_test_data$Calorie_Class)
 kable(conf_matrix, caption = "Confusion matrix for the logistic regression model")
 accuracy <- (conf_matrix[1, 1] + conf_matrix[2, 2]) / sum(conf_matrix)
@@ -721,20 +706,21 @@ precision <- conf_matrix[2, 2] / sum(conf_matrix[, 2])
 recall <- conf_matrix[2, 2] / sum(conf_matrix[2, ])
 f1_score <- 2 * (precision * recall) / (precision + recall)
 kable(data.frame(Accuracy = accuracy, Precision = precision, Recall = recall,
-                 F1_Score = f1_score), caption = "Model evaluation metrics")
+                 F1_Score = f1_score), 
+      caption = "Model evaluation metrics for the logistic regression model")
 ```
 
-The model's accuracy of approximately 91.8% indicates it is performing well overall in classifying the calorie content correctly.
+The model's accuracy of approximately $91.8$% indicates it is performing well overall in classifying the calorie content correctly.
 Generalize well on the test set
 
-```{r logistic_regression_evaluation_2}
+```{r logistic_regression_evaluation_2, fig.height=3, fig.width=6}
 par(mfrow = c(2,2), mar = c(2, 2, 2, 2))
 plot(logistic_model_train)
 ```
 **Residuals vs Fitted:**
   
 This plot shows the Pearson residuals against the fitted values.
-Ideally, there should be no clear pattern, indicating that the model is well-fitted. However, the presence of data points at extreme values (far from 0) suggests potential issues with model fit or outliers.
+Ideally, there should be no clear pattern, indicating that the model is well-fitted. However, the presence of data points at extreme values (far from $0$) suggests potential issues with model fit or outliers.
 
 **Normal Q-Q Plot:**
   
@@ -767,6 +753,101 @@ The dashed lines represent Cook's distance. Points outside these lines indicate 
 
 **Evaluate Model with Additional Metrics:** Use additional performance metrics such as ROC AUC, Precision-Recall curves, and confusion matrix to evaluate the model's predictive performance comprehensively.
 
+## LDA
+
+Linear Discriminant Analysis (LDA) is a statistical technique primarily used for classification and dimensionality reduction. Its main goal is to find a linear combination of features that best separates two or more classes of objects or events.LDA seeks to maximize the separation between classes by minimizing the variance within classes and maximizing the variance between classes.
+
+In the context of our dataset, LDA is useful for classifying different categories of beverages (Beverage_category). LDA is particularly useful for classification problems where the goal is to assign observations to one of several classes. In our case, we want to classify beverages into different categories based on all numeric variables. If the categories of beverages in your dataset are linearly separable, LDA can find the linear combinations of predictive variables that best separate these categories.
+
+Dimensionality Reduction: Even if your dataset has a moderate number of variables, LDA can help reduce the dimensionality of the problem, making classification more manageable and reducing the risk of overfitting.
+
+Interpretability: LDA produces coefficients that are easily interpretable and can provide insights into how each variable contributes to the classification of beverages.
+
+We use the `MASS` package to fit an LDA model to predict the calorie class based on the other variables in the dataset. We then evaluate the model using the confusion matrix, accuracy, precision, recall, and F1-score.
+
+```{r lda_prep, echo=FALSE}
+data_cleaned$Beverage_category <- as.factor(data_cleaned$Beverage_category)
+target_var <- data_cleaned$Beverage_category
+data_lda <- cbind(data_num, Beverage_category = target_var)
+set.seed(123)
+train_index <- sample(seq_len(nrow(data_lda)), size = 0.8 * nrow(data_lda))
+train_data <- data_lda[train_index, ]
+test_data <- data_lda[-train_index, ]
+```
+
+```{r lda}
+target_var <- data_cleaned$Beverage_category
+lda_model <- lda(Beverage_category ~ ., data = train_data)
+```
+
+LDA aims to find the linear combination of predictors (numeric variables) that best separates the different categories of beverages.
+Method: It projects the data onto a lower-dimensional space (linear discriminants) while maximizing the separation between the different categories (`"Beverage_category"`).
+Application: By fitting an LDA model, you can classify new beverage entries based on their numeric attributes.
+
+we've used all numerical variables as predictors 
+
+1.The prior probabilities indicate the proportion of each beverage category in the training dataset. This shows the initial likelihood of each category before considering any predictors.
+
+2.These are the mean values of each numeric predictor for each beverage category. They provide insights into the average nutritional and compositional profile of each beverage type.
+Calories: Varies widely, with Coffee having the lowest ($4.67$) and Smoothies the highest ($282.22$).
+Total Fat, Trans Fat, Saturated Fat: Reflect the fat content differences across beverage types.
+Sodium, Total Carbohydrates, Cholesterol: Provide further details on the nutritional content.
+Dietary Fibre, Sugars, Protein: Highlight the beverage's dietary fiber, sugar, and protein content.
+Vitamin A, Vitamin C, Calcium, Iron, Caffeine: Show the average micronutrient and caffeine levels.
+
+3.The coefficients for each linear discriminant function (LD1 to LD8) indicate the importance and direction of each predictor in distinguishing between beverage categories.
+LD1: Accounts for $75.36$% of the variation between categories. Major contributing factors include Total Fat, Saturated Fat, and Sugars, suggesting these are crucial in separating the beverage types.
+LD2: Accounts for $17.12$% of the variation. Trans Fat and Dietary Fibre are significant contributors.
+Subsequent linear discriminants (LD3 to LD8) account for progressively smaller proportions of the variation.
+
+4.The proportion of trace values indicates how much of the total variability in the dataset is captured by each linear discriminant. 
+LD1 captures the majority ($75.36$%), followed by LD2 ($17.12$%), with the remaining discriminants capturing much smaller amounts of variability.
+
+After applying the Linear Discriminant Analysis (LDA) model to classify beverage categories in your dataset, we assessed its performance using a confusion matrix and calculated the accuracy.
+
+```{r lda_evaluation, fig.height=4, fig.width=7, echo=FALSE}
+predictions_lda <- predict(lda_model, test_data)$class
+conf_matrix_lda <- table(Predicted = predictions_lda, Actual = test_data$Beverage_category)
+conf_matrix_lda <- as.matrix(conf_matrix_lda)
+# kable(conf_matrix_lda, caption = "Confusion matrix for the LDA model", align = "c")
+# hidden confusion matrix since it is too large to display in the report
+accuracy_lda <- sum(diag(conf_matrix_lda)) / sum(conf_matrix_lda)
+print(paste("Accuracy:", round(accuracy_lda * 100, 2), "%"))
+plot(lda_model, col = color_map[data_cleaned$Beverage_category], pch = 19,
+     main = "LDA Plot of Beverage Categories")
+```
+The model made $4$ errors out of $49$ predictions: $2$ false negatives and $2$ false positives. 
+This suggests that while the model performs well, there are occasional misclassifications, which could be due to overlap in the predictor values between certain beverage categories.
+
+An accuracy of $91.84$% indicates that the LDA model is very effective in classifying the beverage categories based on the given predictors. 
+This high accuracy suggests that the nutritional and compositional variables we included are strong discriminators of the different beverage types.
+
+LDA can be highly accurate when there are well-separated classes, making it suitable for classifying distinct beverage types based on their nutritional and compositional attributes.
+
+**Interpretability:** LDA provides insights into which numeric variables are most influential in distinguishing between beverage categories.
+Performance: It often performs well even with relatively small datasets, provided the classes are linearly separable to some extent.
+
+
+**IMPOOOORTANTISSIMO**
+
+Given the high accuracy, this LDA model can be reliably used for classifying new beverage entries in your dataset. 
+It can help automate the categorization process, ensuring consistent and accurate classification based on the nutritional content.
+This model can assist in various aspects such as inventory management, nutritional labeling, and marketing strategies by accurately categorizing beverages into predefined categories based on their nutritional attributes.
+
+Overall:
+
+**Classification Power:** The LDA model effectively uses the nutritional and compositional variables to classify beverages into their respective categories. 
+The first few linear discriminants (especially LD1 and LD2) capture most of the variability, indicating that the model is likely to be quite effective in distinguishing between beverage types.
+
+**Important Predictors:** Total Fat, Saturated Fat, and Sugars are particularly important in differentiating between beverage categories.
+This suggests that these nutritional factors are key characteristics that define different types of beverages in your dataset.
+
+**Group Means Analysis:** By examining the group means, you can see which beverage types are higher or lower in certain nutrients.
+For instance, Smoothies have the highest calories and protein, whereas Coffee has the lowest in both.
+
+**Practical Application:** This LDA model can now be used to classify new beverage entries based on their numeric attributes. 
+It can help in identifying which category a new beverage falls into, which is useful for inventory management, nutritional analysis, and consumer information.
 
 
 
+# Conclusion
