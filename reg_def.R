@@ -14,6 +14,7 @@
 #fit linear simple regression with just one variable on data_cleaned
 #looking at correlation plot we choose Sugars due to high correlation 
 
+## Simple linear regression ----
 #This code will fit a simple linear regression model predicting "Calories" using "Sugars" as the predictor variable and provide a summary of the model.
 
 calories_lm_simple <- lm(Calories ~ Sugars, data = data_cleaned)
@@ -42,6 +43,7 @@ plot(calories_lm_simple)
 
 numerical_vars <- data_cleaned[, sapply(data_cleaned, is.numeric)]
 
+## Multiple linear regression ----
 #fit the regression model using amount of calories as target variable and all other numeric as predictors 
 #full model using standardized varriables
 calories_lm <- lm(Calories ~ ., data = numerical_vars)
@@ -53,6 +55,7 @@ BIC(calories_lm)
 # The model has a low AIC and BIC values, the R-squared value is 0.99 so the model is a good fit
 # The model is significant, the p-value is less than 0.05
 
+## Backward selection ----
 #Now we apply the selection of of predictors with backward method (automatic)
 calories_lm_backward <- step(calories_lm, direction = "backward")
 summary(calories_lm_backward)
@@ -134,7 +137,6 @@ plot(final_model)
 
 #Determine VIF for the final model
 
-install.packages("car")
 library(car) 
 vif_mod <- vif(final_model)
 print(vif_mod)
@@ -303,6 +305,7 @@ plot(mod_lasso)
 #ADD COMMENT 
 
 
+## Ridge Regression ----
 #We also tried Ridge Regression in order to reduce multicollinearity:
 #Likely LASSO, the Ridge regression is regulariztion tecnique witch introduce a term of penality that 
 #tends to shrink coefficients towards zero without eliminating them entirely, meaning that all variables can remain in the model. 
@@ -312,6 +315,7 @@ plot(mod_lasso)
 
 # The ridge regression model is fit using the glmnet package
 # The cv.glmnet() function is used to fit the ridge regression model with cross-validation
+
 
 # Fit the ridge regression model with the standardization
 mod_ridge <- cv.glmnet(x = as.matrix(std_data[, -1]),
@@ -369,7 +373,7 @@ corrplot::corrplot(cor_matrix_lasso, method = "number")
 #Despite the regularization of the Lasso model, some variables have coefficients of significant magnitudes, which could suggest that these variables are not strongly correlated with each other, thus reducing the impact of multicollinearity. 
 #Overall, the absence of coefficients with very large magnitudes and the presence of coefficients close to zero for some variables suggest that the Lasso model may have helped mitigate multicollinearity and select only the most important variables for predicting calories.
 
-### Cross validation ---- 
+## Cross validation ---- 
 #This is a way to see if the model perferm well on the test set and generalize effeciently the data we gave as training set
 # Split the data in training and test set then check the accuracy of the model.
 # Split the data into training with 80% of examples and test sets with 20% of examples
@@ -414,7 +418,7 @@ plot(test_data$Calories, lasso_pred_test, xlab = "Actual Calories",
 # The R-squared value and MSE are used to evaluate the performance of the model
 # The R-squared value is 0.99, indicating that the model explains 99% of the variance in the data
 
-#Logistic regression.
+## Logistic regression ----
 #Logistic regression is a statistical model used to predict the outcome of a binary categorical dependent variable based on one or more independent variables.
 #Since logistic regression is tipycally used for classification task and our variable Calories ,that we want to predict is continous 
 #random variable, we have to traspose the problem into a classification one by making the variable binary. 
@@ -537,6 +541,7 @@ plot(logistic_model_train)
 #Evaluate Model with Additional Metrics: Use additional performance metrics such as ROC AUC, Precision-Recall curves, and confusion matrix to evaluate the model's predictive performance comprehensively.
 
 
+## Polynomial regression ----
 #we try now to fit polynomial regression ,wich extend linear regression by modelling teh relationship between the target variable y and predictors
 #with a n-esim polynomial. It helps when the relationshion between variables is not linear and A simple straight line fails to capture the complexity of the data.
 
@@ -618,7 +623,7 @@ print(paste("R-squared: ", r_squared))
 #In general polynomail regression fits well, but we can notice that the quadratic terms and interaction betweem variables 
 #does not expain calories. so maybe not usefull 
 
-#LDA 
+##LDA ----
 
 #Linear Discriminant Analysis (LDA) is a statistical technique primarily used for classification and dimensionality reduction. 
 #Its main goal is to find a linear combination of features that best separates two or more classes of objects or events.
@@ -711,7 +716,11 @@ print(paste("Accuracy: ", accuracy))
 
 # Visualize the results -------> da sistemare senza ggplot fa cacare
 # Plot the LDA results (2 discriminant functions)
-plot(lda_model)
+plot(lda_model, col = color_map[data_cleaned$Beverage_category], pch = 19, main = "LDA Plot of Beverage Categories")
+
+# I added the legend but is to fix its position
+# legend("topright", legend = levels(data_cleaned$Beverage_category), col = color_map[data_cleaned$Beverage_category], pch = 19, title = "Beverage Category")
+
 
 #Overall:
 #Classification Power: The LDA model effectively uses the nutritional and compositional variables to classify beverages into their respective categories. 
