@@ -3,6 +3,12 @@ title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    toc: true
+    number_sections: true
+    fig_caption: true
+    keep_tex: true
+    toc_depth: 3
   html_document:
     toc: true
     number_sections: true
@@ -13,12 +19,6 @@ output:
     fig_caption: true
     keep_md: true
     df_print: paged
-  pdf_document:
-    toc: true
-    number_sections: true
-    fig_caption: true
-    keep_tex: true
-    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
@@ -238,7 +238,7 @@ Additionally we can observe that, given a specific category, it is possible that
 
 Finally, we create some scatterplots to look into relantionship between `"Calories"` and other variables. In particular we focus on `"Sodium"`, `"Protein"`, `"Sugars"` and `"Dietary_Fiber"`.
 
-```{r scatterplot, fig.height=4, fig.width=7, echo=FALSE}
+```{r scatterplot, fig.height=7, fig.width=7, echo=FALSE}
 par(mfrow = c(2, 2), mar = c(4, 4, 2, 2))
 with(data_cleaned, {
   plot(Calories, Sodium , main = "Relation between Calories and Sodium",
@@ -809,12 +809,9 @@ After applying the Linear Discriminant Analysis (LDA) model to classify beverage
 predictions_lda <- predict(lda_model, test_data)$class
 conf_matrix_lda <- table(Predicted = predictions_lda, Actual = test_data$Beverage_category)
 conf_matrix_lda <- as.matrix(conf_matrix_lda)
-# kable(conf_matrix_lda, caption = "Confusion matrix for the LDA model", align = "c")
-# hidden confusion matrix since it is too large to display in the report
+kable(conf_matrix_lda, caption = "Confusion matrix for the LDA model", align = "c")
 accuracy_lda <- sum(diag(conf_matrix_lda)) / sum(conf_matrix_lda)
 print(paste("Accuracy:", round(accuracy_lda * 100, 2), "%"))
-plot(lda_model, col = color_map[data_cleaned$Beverage_category], pch = 19,
-     main = "LDA Plot of Beverage Categories")
 ```
 The model made $4$ errors out of $49$ predictions: $2$ false negatives and $2$ false positives. 
 This suggests that while the model performs well, there are occasional misclassifications, which could be due to overlap in the predictor values between certain beverage categories.

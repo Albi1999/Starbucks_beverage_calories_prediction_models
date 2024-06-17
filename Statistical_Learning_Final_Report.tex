@@ -1537,11 +1537,80 @@ After applying the Linear Discriminant Analysis (LDA) model to classify
 beverage categories in your dataset, we assessed its performance using a
 confusion matrix and calculated the accuracy.
 
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1429}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1050}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0336}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1218}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1176}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1471}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0966}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1134}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0462}}
+  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0756}}@{}}
+\caption{Confusion matrix for the LDA model}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Classic Espresso Drinks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Coffee
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Frappuccino® Blended Coffee
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Frappuccino® Blended Crème
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Frappuccino® Light Blended Coffee
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Shaken Iced Beverages
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Signature Espresso Drinks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Smoothies
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Tazo® Tea Drinks
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Classic Espresso Drinks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Coffee
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Frappuccino® Blended Coffee
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Frappuccino® Blended Crème
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Frappuccino® Light Blended Coffee
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Shaken Iced Beverages
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Signature Espresso Drinks
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Smoothies
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Tazo® Tea Drinks
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Classic Espresso Drinks & 10 & 0 & 0 & 0 & 0 & 0 & 2 & 0 & 0 \\
+Coffee & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Frappuccino® Blended Coffee & 0 & 0 & 8 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Frappuccino® Blended Crème & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Frappuccino® Light Blended Coffee & 0 & 0 & 0 & 0 & 2 & 0 & 0 & 0 & 0 \\
+Shaken Iced Beverages & 0 & 0 & 0 & 0 & 0 & 5 & 0 & 0 & 0 \\
+Signature Espresso Drinks & 0 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 \\
+Smoothies & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 0 \\
+Tazo® Tea Drinks & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 9 \\
+\end{longtable}
+
 \begin{verbatim}
 ## [1] "Accuracy: 93.88 %"
 \end{verbatim}
-
-\begin{center}\includegraphics{Statistical_Learning_Final_Report_files/figure-latex/lda_evaluation-1} \end{center}
 
 The model made \(4\) errors out of \(49\) predictions: \(2\) false
 negatives and \(2\) false positives. This suggests that while the model
