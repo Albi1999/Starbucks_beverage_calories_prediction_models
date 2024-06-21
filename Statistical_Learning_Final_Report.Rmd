@@ -3,16 +3,6 @@ title: "Statistical Learning Final Report"
 author: "Alberto Calabrese, Eleonora Mesaglio, Greta d'Amore Grelli"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    toc: true
-    number_sections: true
-    toc_float:
-      collapsed: true
-    theme: cerulean
-    highlight: tango
-    fig_caption: true
-    keep_md: true
-    df_print: paged
   pdf_document:
     toc: true
     number_sections: true
@@ -272,51 +262,6 @@ with(data_cleaned, {
 ```
 
 With an increase in calories, we observe a corresponding rise in all features. However, the rate of increase varies among different features. For instance, `"Sugars"` and `"Dietary_Fiber"` show a steep ascent, indicating a rapid increase with calorie count. On the other hand, `"Sodium"` and `"Protein"` exhibit a more gradual growth, suggesting a slower rate of increase despite the rising calorie content. These observations are further substantiated by the correlation coefficients, which provide a quantitative measure of these relationships. This highlights the complex interplay between calories and various nutritional components in our beverages.
-
-## Pairplot
-
-A pairplot, as the name suggests, is a plot that enables us to visualize the pairwise relationships between different variables in a dataset. It is essentially a matrix of scatterplots, where each scatterplot shows the relationship between a pair of variables.
-This type of visualization is particularly useful for exploring potential relationships and correlations between all the variables. As previously noted, by examining the scatterplots we can identify patterns, trends, and outliers in the data.
-
-Before we can create a pairplot, we need to define a some functions for it. This functions will generate the scatterplots, as well as additional elements such as histograms, correlation coefficients, and a smooth line to help visualize the distribution and correlation of the data.
-
-```{r pairplot_definition, echo=FALSE}
-# Histogram function
-panel.hist <- function(x, colour, ...)
-{
-  usr <- par("usr")
-  on.exit(par(usr))
-  par(usr = c(usr[1:2], 0, 1.5))
-  h <- hist(x, plot = FALSE)
-  breaks <- h$breaks
-  nB <- length(breaks)
-  y <- h$counts
-  y <- y / max(y)
-  rect(breaks[-nB], 0, breaks[-1], y, col = colour, ...)
-}
-
-# Correlations function
-panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
-{
-  usr <- par("usr")
-  on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  r <- abs(cor(x, y))
-  txt <- format(c(r, 0.123456789), digits = digits)[1]
-  txt <- paste0(prefix, txt)
-  if(missing(cex.cor)) cex.cor <- 0.5/strwidth(txt)
-  text(0.5, 0.5, txt, cex = cex.cor * r)
-}
-```
-
-Finally, we create the pairplot using the defined functions.
-
-```{r pairplot, fig.height=12, fig.width=12, echo=FALSE}
-pairs(data_num, diag.panel = panel.hist, upper.panel = panel.cor, 
-      lower.panel = panel.smooth, colour = "#549f9d")
-```
-
-As this plot combines features of correlation plots, histograms, and scatterplots, we can observe the same results previously discussed. The key aspect of this plot is the strong linear relationship between various variables, such as `"Cholesterol"` and `"Sugars"`.
 
 # Regression Analysis
 
@@ -792,17 +737,21 @@ By fitting an LDA model, we can classify new beverage entries based on their num
 
 2. These are the mean values of each numeric predictor for each beverage category. They provide insights into the average nutritional and compositional profile of each beverage type.
 
-- Calories: Varies widely, with Coffee having the lowest ($4.67$) and Smoothies the highest ($282.22$).
-- Total Fat, Trans Fat, Saturated Fat: Reflect the fat content differences across beverage types.
-- Sodium, Total Carbohydrates, Cholesterol: Provide further details on the nutritional content.
-- Dietary Fibre, Sugars, Protein: Highlight the beverage's dietary fiber, sugar, and protein content.
-- Vitamin A, Vitamin C, Calcium, Iron, Caffeine: Show the average micronutrient and caffeine levels.
+    - Calories: Varies widely, with Coffee having the lowest ($4.67$) and Smoothies the highest ($282.22$).
+    
+    - Total Fat, Trans Fat, Saturated Fat: Reflect the fat content differences across beverage types.
+    
+    - Sodium, Total Carbohydrates, Cholesterol: Provide further details on the nutritional content.
+    
+    - Dietary Fibre, Sugars, Protein: Highlight the beverage's dietary fiber, sugar, and protein content.
+    
+    - Vitamin A, Vitamin C, Calcium, Iron, Caffeine: Show the average micronutrient and caffeine levels.
 
 3. The coefficients for each linear discriminant function (LD1 to LD8) indicate the importance and direction of each predictor in distinguishing between beverage categories.
 
-- LD1: Accounts for $75.36$% of the variation between categories. Major contributing factors include Total Fat, Saturated Fat, and Sugars, suggesting these are crucial in separating the beverage types.
+  - LD1: Accounts for $75.36$% of the variation between categories. Major contributing factors include Total Fat, Saturated Fat, and Sugars, suggesting these are crucial in separating the beverage types.
 
-- LD2: Accounts for $17.12$% of the variation. Trans Fat and Dietary Fibre are significant contributors.
+  - LD2: Accounts for $17.12$% of the variation. Trans Fat and Dietary Fibre are significant contributors.
 Subsequent linear discriminants (LD3 to LD8) account for progressively smaller proportions of the variation.
 
 4. The proportion of trace values indicates how much of the total variability in the dataset is captured by each linear discriminant. 

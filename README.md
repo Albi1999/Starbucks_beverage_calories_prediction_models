@@ -23,12 +23,13 @@ We used R for all the analysis and Rmarkdown to write the report.
 4. **Data Visualization**
    - Histograms
    - Barplot
+      - Beverages Barplot
    - Boxplot
    - Scatterplot
-   - Pairplot
 5. **Regression Analysis**
-   - Simple Linear Regression
-   - Multiple Linear Regression
+   - Linear Regression
+     - Simple Linear Regression
+     - Multiple Linear Regression
      - Backward Elimination
      - ANOVA analysis
      - Multicollinearity
@@ -38,7 +39,10 @@ We used R for all the analysis and Rmarkdown to write the report.
    - Model Comparison
    - Model Evaluation
    - Cross Validation
+6. **Classification Analysis**
    - Logistic Regression
+   - LDA
+7. **Conclusions**
 
 ## How to Run the Project
 1. Clone this repository.
