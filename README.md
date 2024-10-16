@@ -1,4 +1,4 @@
-# Statistical Learning Project
+# Estimating Calories in Starbucks Drinks: A Predictive Approach
 
 This repository contains the project for the Statistical Learning course of the Master's Degree in Data Science at the University of Padua.
 
