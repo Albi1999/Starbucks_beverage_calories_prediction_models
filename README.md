@@ -51,3 +51,7 @@ We used R for all the analysis and Rmarkdown to write the report.
 
 ## License
 This project is licensed under the terms of the MIT license.
+
+<p>
+  <img alt="R" src="https://img.shields.io/badge/R-276DC3?logo=r&logoColor=white&style=plastic" height="25"/>
+</p>
