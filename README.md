@@ -54,4 +54,5 @@ This project is licensed under the terms of the MIT license.
 
 <p>
   <img alt="R" src="https://img.shields.io/badge/R-276DC3?logo=r&logoColor=white&style=plastic" height="25"/>
+  <img alt="RStudio" src="https://img.shields.io/badge/RStudio-75AADB?style=plastic&logo=rstudioide&logoColor=white&logoSize=auto" height="25"/>
 </p>
