@@ -1,4 +1,19 @@
+<p align="center">
+  <img src="logo_unipd.png" alt="" height="70"/>
+</p>
+
 # Estimating Calories in Starbucks Drinks: A Predictive Approach
+
+
+</div>
+
+<p>
+
+  <img alt="R" src="https://img.shields.io/badge/R-276DC3?logo=r&logoColor=white&style=for-the-badge" height="25"/>
+  <img alt="RStudio" src="https://img.shields.io/badge/RStudio-75AADB?style=for-the-badge&logo=rstudioide&logoColor=white&logoSize=auto" height="25"/>
+  <img alt="Git" src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white&logoSize=auto" height="25"/>
+  <img alt="GitHub" src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white&logoSize=auto" height="25"/>
+<p>
 
 This repository contains the project for the Statistical Learning course of the Master's Degree in Data Science at the University of Padua.
 
@@ -51,8 +66,3 @@ We used R for all the analysis and Rmarkdown to write the report.
 
 ## License
 This project is licensed under the terms of the MIT license.
-
-<p>
-  <img alt="R" src="https://img.shields.io/badge/R-276DC3?logo=r&logoColor=white&style=plastic" height="25"/>
-  <img alt="RStudio" src="https://img.shields.io/badge/RStudio-75AADB?style=plastic&logo=rstudioide&logoColor=white&logoSize=auto" height="25"/>
-</p>
